@@ -17,14 +17,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Database
+ * Setup class
  *
  * Defines the raw database schema
  *
  * @package     Keychain
  * @subpackage  Migrations
  */
-class Database extends Migration {
+class Setup extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -45,6 +45,19 @@ class Database extends Migration {
 			$table->string('timezone', 80)->nullable();
 			$table->integer('status')->index();
 			$table->timestamps();
+		});
+
+		// Create the emails table
+		Schema::create('user_emails', function( $table )
+		{
+			$table->increments('id');
+			$table->integer('user_id')->unsigned();
+			$table->string('email', 80)->index();
+			$table->boolean('primary');
+			$table->boolean('verified');
+			$table->timestamps();
+
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
 
 		// Create the field types table
@@ -127,8 +140,8 @@ class Database extends Migration {
 			$table->timestamps();
 
 			$table->index(array('object_id', 'object_type', 'subject_id', 'subject_type'));
-			$table->foreign('object_id')->references('id')->on('object_types')->onDelete('cascade');
-			$table->foreign('subject_id')->references('id')->on('subject_types')->onDelete('cascade');
+			$table->foreign('object_type')->references('id')->on('object_types')->onDelete('cascade');
+			$table->foreign('subject_type')->references('id')->on('subject_types')->onDelete('cascade');
 		});
 
 		// Create the sessions table
@@ -137,6 +150,16 @@ class Database extends Migration {
 			$table->string('id')->unique()->index();
 			$table->text('payload');
 			$table->integer('last_activity');
+		});
+
+		// Create the token holder
+		Schema::create('tokens', function( $table )
+		{
+			$table->increments('id');
+			$table->string('token', 20)->index();
+			$table->integer('permits_id');
+			$table->string('permits_type', 20);
+			$table->timestamps();
 		});
 	}
 
@@ -147,6 +170,7 @@ class Database extends Migration {
 	 */
 	public function down()
 	{
+		Schema::drop('tokens');
 		Schema::drop('sessions');
 		Schema::drop('acl');
 		Schema::drop('user_groups');
@@ -156,6 +180,7 @@ class Database extends Migration {
 		Schema::drop('subject_types');
 		Schema::drop('object_types');
 		Schema::drop('field_types');
+		Schema::drop('user_emails');
 		Schema::drop('users');
 	}
 
