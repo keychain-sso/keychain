@@ -136,7 +136,8 @@ class Setup extends Migration {
 			$table->integer('object_type')->unsigned();
 			$table->integer('subject_id')->unsigned();
 			$table->integer('subject_type')->unsigned();
-			$table->enum('access', array('R', 'RW'));
+			$table->integer('field')->unsigned()->nullable();
+			$table->string('access', 20);
 			$table->timestamps();
 
 			$table->index(array('object_id', 'object_type', 'subject_id', 'subject_type'));
