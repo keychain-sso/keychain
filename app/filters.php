@@ -35,15 +35,15 @@ App::after(function($request, $response)
 
 Route::filter('auth', function()
 {
-	if (Auth::guest())
+	if (Auth::guest() && Request::segment(1) != 'auth')
 	{
-		if (Request::ajax())
+		if (Request::segment(1) == 'q')
 		{
 			return Response::make('Unauthorized', 401);
 		}
 		else
 		{
-			return Redirect::guest('login');
+			return Redirect::guest('auth/login');
 		}
 	}
 });

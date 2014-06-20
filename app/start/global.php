@@ -79,3 +79,29 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
+
+/*
+|--------------------------------------------------------------------------
+| Load the constants file
+|--------------------------------------------------------------------------
+|
+| We load the custom constants file here. The defined constants need to
+| be accessible across the applications.
+|
+*/
+
+require app_path().'/config/constants.php';
+
+/*
+|--------------------------------------------------------------------------
+| Keychain Authentication Driver
+|--------------------------------------------------------------------------
+|
+| Handles primary and multi-factor authentication for users.
+|
+*/
+
+Auth::extend('keychain', function()
+{
+	return new Guard(new KeychainUserProvider(), App::make('session.store'));
+});

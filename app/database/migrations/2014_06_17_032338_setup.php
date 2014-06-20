@@ -6,9 +6,9 @@
  * SSO login provider for enterprise.
  *
  * @package     Keychain
- * @copyright   (c) Sayak Banerjee, Ben Cooksley
+ * @copyright   (c) Keychain Developers
  * @license     http://opensource.org/licenses/BSD-3-Clause
- * @link        https://projects.kde.org/keychain
+ * @link        https://github.com/keychain-sso/keychain
  * @since       Version 1.0
  * @filesource
  */
@@ -37,9 +37,10 @@ class Setup extends Migration {
 		Schema::create('users', function($table)
 		{
 			$table->increments('id');
-			$table->string('password', 80);
 			$table->string('first_name', 80)->index();
 			$table->string('last_name', 80)->index();
+			$table->string('password', 80);
+			$table->string('remember_token', 60)->nullable()->index();
 			$table->enum('gender', array('M', 'F', 'O'))->nullable();
 			$table->timestamp('date_of_birth')->nullable();
 			$table->string('timezone', 80)->nullable();
@@ -54,7 +55,7 @@ class Setup extends Migration {
 			$table->integer('user_id')->unsigned();
 			$table->string('email', 80)->index();
 			$table->boolean('primary');
-			$table->boolean('verified');
+			$table->boolean('verified')->index();
 			$table->timestamps();
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -162,6 +163,26 @@ class Setup extends Migration {
 			$table->string('permits_type', 20);
 			$table->timestamps();
 		});
+
+		// Insert admin user account
+		$user = new User;
+
+		$user->first_name = 'Site';
+		$user->last_name  = 'Administrator';
+		$user->password   = Hash::make('password');
+		$user->status     = UserStatus::ACTIVE;
+
+		$user->save();
+
+		// Insert admin user email
+		$email = new UserEmail;
+
+		$email->user_id   = 1;
+		$email->email     = 'admin@keychain.sso';
+		$email->primary   = 1;
+		$email->verified  = 1;
+
+		$email->save();
 	}
 
 	/**
