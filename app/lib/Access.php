@@ -50,13 +50,13 @@ class Access {
 
 			// Get the current user and group memberships
 			$user = Auth::user();
-			$userGroups = $user->groups->toArray();
 			$groups = array();
 
-			array_walk($userGroups, function($item) use (&$groups)
+			// Build a one-dimensional array of groups
+			foreach ($user->groups as $item)
 			{
 				$groups[] = $item['group_id'];
-			});
+			}
 
 			// Query the ACL and look up all flags set for the user, or the
 			// group memberships the user has
