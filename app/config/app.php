@@ -191,6 +191,7 @@ return array(
 		'Validator'            => 'Illuminate\Support\Facades\Validator',
 
 		// Keychain libraries
+		'GateKeeper'           => 'Keychain\GateKeeper',
 		'View'                 => 'Keychain\View',
 
 		// Keychain drivers
