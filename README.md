@@ -28,4 +28,4 @@ Next, you need to set up an encryption key for your keychain instance. Open `app
 
 ### Reporting issues
 
-Please report all issues on our [GitHub issue tracker](https://github.com/keychain-sso/keychain/issues)
+Please report all issues on our [GitHub issue tracker](https://github.com/keychain-sso/keychain/issues).
