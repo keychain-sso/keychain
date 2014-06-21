@@ -68,20 +68,6 @@ class Setup extends Migration {
 			$table->string('name', 80);
 		});
 
-		// Create the ACL object types table
-		Schema::create('object_types', function($table)
-		{
-			$table->increments('id');
-			$table->string('name', 80);
-		});
-
-		// Create the ACL subject types table
-		Schema::create('subject_types', function($table)
-		{
-			$table->increments('id');
-			$table->string('name', 80);
-		});
-
 		// Create the field definitions table
 		Schema::create('fields', function($table)
 		{
@@ -129,6 +115,13 @@ class Setup extends Migration {
 			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
 		});
 
+		// Create the ACL subject types table
+		Schema::create('acl_types', function($table)
+		{
+			$table->increments('id');
+			$table->string('name', 80);
+		});
+
 		// Create the ACL base table
 		Schema::create('acl', function($table)
 		{
@@ -141,9 +134,9 @@ class Setup extends Migration {
 			$table->string('access', 20);
 			$table->timestamps();
 
-			$table->index(array('object_id', 'object_type', 'subject_id', 'subject_type'));
-			$table->foreign('object_type')->references('id')->on('object_types')->onDelete('cascade');
-			$table->foreign('subject_type')->references('id')->on('subject_types')->onDelete('cascade');
+			$table->index(array('subject_id', 'subject_type'));
+			$table->foreign('object_type')->references('id')->on('acl_types')->onDelete('cascade');
+			$table->foreign('subject_type')->references('id')->on('acl_types')->onDelete('cascade');
 		});
 
 		// Create the sessions table
@@ -165,24 +158,39 @@ class Setup extends Migration {
 		});
 
 		// Insert admin user account
-		$user = new User;
-
-		$user->first_name = 'Site';
-		$user->last_name  = 'Administrator';
-		$user->password   = Hash::make('password');
-		$user->status     = UserStatus::ACTIVE;
-
-		$user->save();
+		DB::table('users')->insert(array(
+			'first_name' => 'Site',
+			'last_name'  => 'Admin',
+			'password'   => Hash::make('password'),
+			'status'     => UserStatus::ACTIVE,
+		));
 
 		// Insert admin user email
-		$email = new UserEmail;
+		DB::table('user_emails')->insert(array(
+			'user_id'  => 1,
+			'email'    => 'admin@keychain.sso',
+			'primary'  => 1,
+			'verified' => 1,
+		));
 
-		$email->user_id   = 1;
-		$email->email     = 'admin@keychain.sso';
-		$email->primary   = 1;
-		$email->verified  = 1;
+		// Insert the sysadmin group
+		DB::table('groups')->insert(array(
+			'name'        => 'Sysadmins',
+			'description' => 'System administrators with full control over the website.',
+		));
 
-		$email->save();
+		// Link the admin user to the sysadmin group
+		DB::table('user_groups')->insert(array(
+			'user_id'  => 1,
+			'group_id' => 1,
+		));
+
+		// Insert ACL types
+		DB::table('acl_types')->insert(array(
+			array('name' => 'Field'),
+			array('name' => 'User'),
+			array('name' => 'Group'),
+		));
 	}
 
 	/**
@@ -195,12 +203,11 @@ class Setup extends Migration {
 		Schema::drop('tokens');
 		Schema::drop('sessions');
 		Schema::drop('acl');
+		Schema::drop('acl_types');
 		Schema::drop('user_groups');
 		Schema::drop('user_fields');
 		Schema::drop('groups');
 		Schema::drop('fields');
-		Schema::drop('subject_types');
-		Schema::drop('object_types');
 		Schema::drop('field_types');
 		Schema::drop('user_emails');
 		Schema::drop('users');
