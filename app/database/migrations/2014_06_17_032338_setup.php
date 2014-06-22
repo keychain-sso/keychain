@@ -33,6 +33,13 @@ class Setup extends Migration {
 	 */
 	public function up()
 	{
+		// Create the user status table
+		Schema::create('user_status', function($table)
+		{
+			$table->increments('id');
+			$table->string('name', 80);
+		});
+
 		// Create the main user table
 		Schema::create('users', function($table)
 		{
@@ -44,9 +51,11 @@ class Setup extends Migration {
 			$table->enum('gender', array('M', 'F', 'O'))->nullable();
 			$table->timestamp('date_of_birth')->nullable();
 			$table->string('timezone', 80)->nullable();
-			$table->integer('status')->index();
+			$table->integer('status')->unsigned()->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
+
+			$table->foreign('status')->references('id')->on('user_status')->onDelete('cascade');
 		});
 
 		// Create the emails table
@@ -165,6 +174,13 @@ class Setup extends Migration {
 			$table->timestamp('updated_at');
 		});
 
+		// Insert the user status values
+		DB::table('user_status')->insert(array(
+			array('name' => 'Inactive'),
+			array('name' => 'Active'),
+			array('name' => 'Blocked'),
+		));
+
 		// Insert admin user account
 		DB::table('users')->insert(array(
 			'first_name' => 'Site',
@@ -220,6 +236,7 @@ class Setup extends Migration {
 		Schema::drop('field_types');
 		Schema::drop('user_emails');
 		Schema::drop('users');
+		Schema::drop('user_status');
 	}
 
 }
