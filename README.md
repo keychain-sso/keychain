@@ -2,7 +2,7 @@
 
 Keychain is a SSO provider for enterprise. The project is currently in its inception phase.
 
-### Download
+## Download
 
 Clone or download the `keychain` repository:
 
@@ -10,7 +10,7 @@ Clone or download the `keychain` repository:
 $ git clone https://github.com/keychain-sso/keychain.git
 ```
 
-### Installation
+## Installation
 
 The following commands need to be executed in the root folder of your keychain clone.
 
@@ -26,6 +26,6 @@ $ php artisan migrate
 
 Next, you need to set up an encryption key for your keychain instance. Open `app/config/app.php` and set the `key` parameter to a 32 character alphanumeric hash.
 
-### Reporting issues
+## Reporting issues
 
 Please report all issues on our [GitHub issue tracker](https://github.com/keychain-sso/keychain/issues).
