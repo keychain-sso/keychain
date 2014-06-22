@@ -23,4 +23,29 @@ class ACLType {
 
 }
 
+/**
+ * Categories of profile fields
+ */
+class FieldCategory {
+
+	const BASIC = 0;
+	const CONTACT = 1;
+	const OTHER = 2;
+
+}
+
+/**
+ * Types of profile fields
+ */
+class FieldType {
+
+	const TEXT_BOX = 0;
+	const TEXT_AREA = 1;
+	const RADIO_BUTTON = 2;
+	const CHECK_BOX = 3;
+	const DROP_DOWN_MENU = 4;
+	const MULTI_SELECT = 5;
+
+}
+
 ?>

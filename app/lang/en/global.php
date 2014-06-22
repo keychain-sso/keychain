@@ -7,7 +7,7 @@ return array(
 	| Global Site Language Lines
 	|--------------------------------------------------------------------------
 	|
-	| The following are localized texts that are used across Sticky Notes
+	| The following are localized texts that are used across Keychain
 	|
 	*/
 
@@ -16,5 +16,13 @@ return array(
 	"email_address"     => "Email address",
 	"password"          => "Password",
 	"logout"            => "Logout",
+	"gender"            => "Gender",
+	"male"              => "Male",
+	"female"            => "Female",
+	"other"             => "Other",
+	"date_of_birth"     => "Date of birth",
+	"timezone"          => "Timezone",
+	"primary_email"     => "Primary e-mail address",
+	"other_email"       => "Other e-mail addresses",
 
 );

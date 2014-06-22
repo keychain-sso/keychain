@@ -34,4 +34,15 @@ class UserGroup extends Eloquent {
 		return $this->belongsTo('User');
 	}
 
+	/**
+	 * Relationship with the 'Group' model
+	 *
+	 * @access public
+	 * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function group()
+	{
+		return $this->belongsTo('Group');
+	}
+
 }

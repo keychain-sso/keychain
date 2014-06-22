@@ -49,9 +49,10 @@ class Setup extends Migration {
 			$table->string('password', 80);
 			$table->string('remember_token', 60)->nullable()->index();
 			$table->enum('gender', array('M', 'F', 'O'))->nullable();
-			$table->timestamp('date_of_birth')->nullable();
-			$table->string('timezone', 80)->nullable();
+			$table->timestamp('date_of_birth');
+			$table->string('timezone', 80);
 			$table->string('avatar', 15)->nullable();
+			$table->string('title', 80)->nullable();
 			$table->integer('status')->unsigned()->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
@@ -80,6 +81,13 @@ class Setup extends Migration {
 			$table->string('name', 80);
 		});
 
+		// Create the field categories table
+		Schema::create('field_categories', function($table)
+		{
+			$table->increments('id');
+			$table->string('name', 80);
+		});
+
 		// Create the field definitions table
 		Schema::create('fields', function($table)
 		{
@@ -87,11 +95,13 @@ class Setup extends Migration {
 			$table->string('name', 80);
 			$table->string('machine_name', 80);
 			$table->integer('type')->unsigned();
+			$table->integer('category')->unsigned();
 			$table->mediumText('options')->nullable();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
 
 			$table->foreign('type')->references('id')->on('field_types')->onDelete('cascade');
+			$table->foreign('category')->references('id')->on('field_categories')->onDelete('cascade');
 		});
 
 		// Create the groups table
@@ -175,6 +185,31 @@ class Setup extends Migration {
 			$table->timestamp('updated_at');
 		});
 
+		// Insert ACL types
+		DB::table('acl_types')->insert(array(
+			array('name' => 'Field'),
+			array('name' => 'Self'),
+			array('name' => 'User'),
+			array('name' => 'Group'),
+		));
+
+		// Insert field categories
+		DB::table('field_categories')->insert(array(
+			array('name' => 'Basic'),
+			array('name' => 'Contact'),
+			array('name' => 'Other'),
+		));
+
+		// Insert field types
+		DB::table('field_types')->insert(array(
+			array('name' => 'TextBox'),
+			array('name' => 'TextArea'),
+			array('name' => 'RadioButton'),
+			array('name' => 'CheckBox'),
+			array('name' => 'DropdownMenu'),
+			array('name' => 'MultiSelect'),
+		));
+
 		// Insert the user status values
 		DB::table('user_status')->insert(array(
 			array('name' => 'Inactive'),
@@ -184,13 +219,17 @@ class Setup extends Migration {
 
 		// Insert admin user account
 		DB::table('users')->insert(array(
-			'first_name' => 'Site',
-			'last_name'  => 'Admin',
-			'password'   => Hash::make('password'),
-			'status'     => UserStatus::ACTIVE,
+			'first_name'    => 'John',
+			'last_name'     => 'Doe',
+			'gender'        => 'M',
+			'date_of_birth' => '1980-07-01',
+			'timezone'      => 'America/Chicago',
+			'password'      => Hash::make('password'),
+			'title'         => 'Site administrator',
+			'status'        => UserStatus::ACTIVE,
 		));
 
-		// Insert admin user email
+		// Insert admin user emails
 		DB::table('user_emails')->insert(array(
 			'user_id'  => 1,
 			'email'    => 'admin@keychain.sso',
@@ -198,7 +237,49 @@ class Setup extends Migration {
 			'verified' => 1,
 		));
 
-		// Insert the sysadmin group
+		DB::table('user_emails')->insert(array(
+			'user_id'  => 1,
+			'email'    => 'alternate@keychain.sso',
+			'primary'  => 0,
+			'verified' => 1,
+		));
+
+		// Add an address field
+		DB::table('fields')->insert(array(
+			'name'         => 'Address',
+			'machine_name' => 'address',
+			'type'         => 1,
+			'category'     => 1,
+		));
+
+		// Add a SSH ket size field
+		DB::table('fields')->insert(array(
+			'name'         => 'SSH key',
+			'machine_name' => 'ssh_key',
+			'type'         => 1,
+			'category'     => 2,
+		));
+
+		// Add the admin's address
+		DB::table('user_fields')->insert(array(
+			'user_id'  => 1,
+			'field_id' => 1,
+			'value'    => "2400 Hudson Dr. #200\nAustin TX 75234\nUnited States",
+		));
+
+		// Add the admin's T-Shirt size!
+		DB::table('user_fields')->insert(array(
+			'user_id'  => 1,
+			'field_id' => 2,
+			'value'    => str_random(128).'==',
+		));
+
+		// Insert the group entries
+		DB::table('groups')->insert(array(
+			'name'        => 'Registered users',
+			'description' => 'All registered users on the website.',
+		));
+
 		DB::table('groups')->insert(array(
 			'name'        => 'Sysadmins',
 			'description' => 'System administrators with full control over the website.',
@@ -210,12 +291,9 @@ class Setup extends Migration {
 			'group_id' => 1,
 		));
 
-		// Insert ACL types
-		DB::table('acl_types')->insert(array(
-			array('name' => 'Field'),
-			array('name' => 'Self'),
-			array('name' => 'User'),
-			array('name' => 'Group'),
+		DB::table('user_groups')->insert(array(
+			'user_id'  => 1,
+			'group_id' => 2,
 		));
 	}
 
@@ -234,6 +312,7 @@ class Setup extends Migration {
 		Schema::drop('user_fields');
 		Schema::drop('groups');
 		Schema::drop('fields');
+		Schema::drop('field_categories');
 		Schema::drop('field_types');
 		Schema::drop('user_emails');
 		Schema::drop('users');

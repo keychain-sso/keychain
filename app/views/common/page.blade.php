@@ -41,7 +41,7 @@
 		@yield('body')
 	</div>
 
-	<footer>
+	<footer class="text-center">
 		&copy; <a href="https://github.com/keychain-sso">Keychain Developers</a>
 	</footer>
 </body>

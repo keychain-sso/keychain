@@ -13,6 +13,7 @@
  * @filesource
  */
 
+use Auth;
 use Session;
 
 /**
@@ -48,6 +49,7 @@ class View extends \Illuminate\Support\Facades\View {
 				'error'      => Session::get('messages.error'),
 				'success'    => Session::get('messages.success'),
 				'global'     => Session::get('messages.global'),
+				'user'       => Auth::user(),
 			);
 		}
 

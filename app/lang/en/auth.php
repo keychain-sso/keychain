@@ -4,10 +4,10 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
-	| Global Site Language Lines
+	| Authentication Language Lines
 	|--------------------------------------------------------------------------
 	|
-	| The following are localized texts that are used across Sticky Notes
+	| The following are localized texts that are used on the auth screens
 	|
 	*/
 

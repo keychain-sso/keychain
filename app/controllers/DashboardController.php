@@ -31,7 +31,50 @@ class DashboardController extends BaseController {
 	 */
 	public function getIndex()
 	{
-		return View::make('dashboard/index');
+		$user = Auth::user();
+
+		// Parse user's email addresses as primary and other
+		$emails = new stdClass;
+
+		foreach ($user->emails as $addr)
+		{
+			if ($addr->primary)
+			{
+				$emails->primary = $addr->email;
+			}
+			else
+			{
+				$emails->other[] = $addr->email;
+			}
+		}
+
+		// Get custom profile fields
+		$userFields = UserField::where('user_id', $user->id)->with('field')->get();
+
+		$fields = new stdClass;
+		$fields->{FieldCategory::BASIC} = array();
+		$fields->{FieldCategory::CONTACT} = array();
+		$fields->{FieldCategory::OTHER} = array();
+
+		foreach ($userFields as $item)
+		{
+			$fields->{$item->field->category}[] = (object) array(
+				'name'  => $item->field->name,
+				'value' => nl2br($item->value),
+			);
+		}
+
+		// Get user-group data
+		$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
+
+		// Assign the view data
+		$data = array(
+			'emails'      => $emails,
+			'fields'      => $fields,
+			'memberships' => $memberships,
+		);
+
+		return View::make('dashboard/index', $data);
 	}
 
 }

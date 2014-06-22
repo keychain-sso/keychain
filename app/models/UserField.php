@@ -34,4 +34,15 @@ class UserField extends Eloquent {
 		return $this->belongsTo('User');
 	}
 
+	/**
+	 * Relationship with the 'Field' model
+	 *
+	 * @access public
+	 * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function field()
+	{
+		return $this->belongsTo('Field');
+	}
+
 }
