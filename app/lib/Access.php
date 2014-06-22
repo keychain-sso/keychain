@@ -41,7 +41,7 @@ class Access {
 	 * @param  int  $field
 	 * @return bool
 	 */
-	public static function check($flag, $objectId, $objectType, $field = null)
+	public static function check($flag, $objectId, $objectType, $field = 0)
 	{
 		// Fetch all privileges tied to the subject and store them in the session
 		if ( ! Session::has('security.acl'))

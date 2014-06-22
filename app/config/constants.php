@@ -17,8 +17,9 @@ class UserStatus {
 class ACLType {
 
 	const FIELD = 0;
-	const USER = 1;
-	const GROUP = 2;
+	const SELF = 1;
+	const USER = 2;
+	const GROUP = 3;
 
 }
 

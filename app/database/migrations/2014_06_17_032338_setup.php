@@ -45,7 +45,8 @@ class Setup extends Migration {
 			$table->timestamp('date_of_birth')->nullable();
 			$table->string('timezone', 80)->nullable();
 			$table->integer('status')->index();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
 		});
 
 		// Create the emails table
@@ -56,7 +57,8 @@ class Setup extends Migration {
 			$table->string('email', 80)->index();
 			$table->boolean('primary');
 			$table->boolean('verified')->index();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
@@ -76,7 +78,8 @@ class Setup extends Migration {
 			$table->string('machine_name', 80);
 			$table->integer('type')->unsigned();
 			$table->mediumText('options')->nullable();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
 
 			$table->foreign('type')->references('id')->on('field_types')->onDelete('cascade');
 		});
@@ -87,7 +90,8 @@ class Setup extends Migration {
 			$table->increments('id');
 			$table->string('name', 80)->index();
 			$table->mediumText('description');
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
 		});
 
 		// Create the mapping between users and fields
@@ -97,7 +101,8 @@ class Setup extends Migration {
 			$table->integer('user_id')->unsigned()->index();
 			$table->integer('field_id')->unsigned()->index();
 			$table->mediumText('value');
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
@@ -109,7 +114,8 @@ class Setup extends Migration {
 			$table->increments('id');
 			$table->integer('user_id')->unsigned()->index();
 			$table->integer('group_id')->unsigned()->index();
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
@@ -126,13 +132,14 @@ class Setup extends Migration {
 		Schema::create('acl', function($table)
 		{
 			$table->increments('id');
-			$table->integer('object_id')->unsigned();
-			$table->integer('object_type')->unsigned();
+			$table->integer('object_id')->unsigned()->default(0);
+			$table->integer('object_type')->unsigned()->default(1);
 			$table->integer('subject_id')->unsigned();
 			$table->integer('subject_type')->unsigned();
-			$table->integer('field')->unsigned()->nullable();
+			$table->integer('field')->unsigned()->default(0);
 			$table->string('access', 20);
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
 
 			$table->index(array('subject_id', 'subject_type'));
 			$table->foreign('object_type')->references('id')->on('acl_types')->onDelete('cascade');
@@ -154,7 +161,8 @@ class Setup extends Migration {
 			$table->string('token', 20)->index();
 			$table->integer('permits_id');
 			$table->string('permits_type', 20);
-			$table->timestamps();
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
 		});
 
 		// Insert admin user account
@@ -188,6 +196,7 @@ class Setup extends Migration {
 		// Insert ACL types
 		DB::table('acl_types')->insert(array(
 			array('name' => 'Field'),
+			array('name' => 'Self'),
 			array('name' => 'User'),
 			array('name' => 'Group'),
 		));
