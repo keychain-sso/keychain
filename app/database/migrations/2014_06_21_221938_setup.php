@@ -51,6 +51,7 @@ class Setup extends Migration {
 			$table->enum('gender', array('M', 'F', 'O'))->nullable();
 			$table->timestamp('date_of_birth')->nullable();
 			$table->string('timezone', 80)->nullable();
+			$table->string('avatar', 15)->nullable();
 			$table->integer('status')->unsigned()->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
