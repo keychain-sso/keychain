@@ -10,14 +10,14 @@
 |
 */
 
-// The dashboard is the homepage
+// The user profile is the homepage
 Route::get('/', function()
 {
-	return Redirect::to('dashboard');
+	return Redirect::to('profile');
 });
 
-// User homepage route
-Route::controller('dashboard', 'DashboardController');
+// User profile route
+Route::controller('profile', 'ProfileController');
 
 // Authentication route
 Route::controller('auth', 'AuthController');

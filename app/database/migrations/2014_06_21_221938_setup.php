@@ -54,6 +54,7 @@ class Setup extends Migration {
 			$table->string('avatar', 15)->nullable();
 			$table->string('title', 80)->nullable();
 			$table->integer('status')->unsigned()->index();
+			$table->string('hash', 8)->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
 
@@ -226,6 +227,7 @@ class Setup extends Migration {
 			'timezone'      => 'America/Chicago',
 			'password'      => Hash::make('password'),
 			'title'         => 'Site administrator',
+			'hash'          => str_random(8),
 			'status'        => UserStatus::ACTIVE,
 		));
 

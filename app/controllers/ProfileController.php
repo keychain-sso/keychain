@@ -14,24 +14,36 @@
  */
 
 /**
- * DashboardController class
+ * ProfileController class
  *
- * Handles display and actions on the user's dashboard
+ * Handles display and actions on the user's profile
  *
  * @package     Keychain
  * @subpackage  Controllers
  */
-class DashboardController extends BaseController {
+class ProfileController extends BaseController {
 
 	/**
-	 * Displays the user dash
+	 * Redirects to the logged in user's profile
 	 *
 	 * @access public
-	 * @return \Illuminate\Support\Facades\View
+	 * @return \Illuminate\Support\Facades\Redirect
 	 */
 	public function getIndex()
 	{
-		$user = Auth::user();
+		return Redirect::to('profile/view/'.Auth::user()->hash);
+	}
+
+	/**
+	 * Displays a specific user's profile
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return \Illuminate\Support\Facades\View
+	 */
+	public function getView($hash)
+	{
+		$user = User::where('hash', $hash)->firstOrFail();
 
 		// Parse user's email addresses as primary and other
 		$emails = new stdClass;
@@ -74,7 +86,19 @@ class DashboardController extends BaseController {
 			'memberships' => $memberships,
 		);
 
-		return View::make('dashboard/index', $data);
+		return View::make('profile/view', $data);
+	}
+
+	/**
+	 * Displays the edit profile screen for the user
+	 *
+	 * @access public
+	 * @param  string $category
+	 * @return \Illuminate\Support\Facades\View
+	 */
+	public function getEdit()
+	{
+		return 'Coming soon';
 	}
 
 }

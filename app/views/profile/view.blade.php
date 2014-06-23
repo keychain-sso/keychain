@@ -1,57 +1,13 @@
 @extends('common.page')
 
 @section('body')
-	<div class="text-center">
-		@if ( ! empty($user->avatar))
-			{{
-				HTML::image(asset('uploads/avatars'.$user->avatar), null, array(
-					'class' => 'img-circle img-thumbnail',
-				))
-			}}
-		@else
-			{{
-				HTML::image(asset('img/default-avatar.png'), null, array(
-					'class' => 'img-circle img-thumbnail',
-				))
-			}}
-		@endif
-
-		<h1>{{ sprintf('%s %s', $user->first_name, $user->last_name) }}</h1>
-		<p>{{ $user->title }}</p>
-	</div>
-
-	<nav class="navbar navbar-default" role="navigation">
-		<div class="container-fluid">
-			<ul class="nav navbar-nav">
-				<li>
-					<a href="#">
-						<span class="glyphicon glyphicon-pencil"></span>
-						{{ Lang::get('dashboard.edit_profile') }}
-					</a>
-				</li>
-
-				<li>
-					<a href="#">
-						<span class="glyphicon glyphicon-briefcase"></span>
-						{{ Lang::get('dashboard.manage_keys') }}
-					</a>
-				</li>
-
-				<li>
-					<a href="#">
-						<span class="glyphicon glyphicon-lock"></span>
-						{{ Lang::get('dashboard.security_settings') }}
-					</a>
-				</li>
-			</ul>
-		</div>
-	</nav>
+	@include('profile.header')
 
 	<div class="row">
 		<div class="col-md-4">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div class="panel-title">{{ Lang::get('dashboard.basic_info') }}</div>
+					<div class="panel-title">{{ Lang::get('profile.basic_info') }}</div>
 				</div>
 
 				<ul class="list-group">
@@ -94,7 +50,7 @@
 		<div class="col-md-4">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div class="panel-title">{{ Lang::get('dashboard.contact_info') }}</div>
+					<div class="panel-title">{{ Lang::get('profile.contact_info') }}</div>
 				</div>
 
 				<ul class="list-group">
@@ -133,7 +89,7 @@
 		<div class="col-md-4">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div class="panel-title">{{ Lang::get('dashboard.group_memberships') }}</div>
+					<div class="panel-title">{{ Lang::get('profile.group_memberships') }}</div>
 				</div>
 
 				<ul class="list-group">
@@ -151,7 +107,7 @@
 						@endforeach
 					@else
 						<li class="list-group-item">
-							<p class="list-group-item-text">{{ Lang::get('dashboard.no_memberships') }}</p>
+							<p class="list-group-item-text">{{ Lang::get('profile.no_memberships') }}</p>
 						</li>
 					@endif
 				</ul>
@@ -164,7 +120,7 @@
 			<div class="col-md-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<div class="panel-title">{{ Lang::get('dashboard.other_details') }}</div>
+						<div class="panel-title">{{ Lang::get('profile.other_details') }}</div>
 					</div>
 
 					<ul class="list-group">
