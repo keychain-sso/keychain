@@ -55,8 +55,6 @@ class KeychainUserProvider implements UserProviderInterface {
 	 */
 	public function retrieveByToken($identifier, $token)
 	{
-		$model = $this->createModel();
-
 		return User::where('id', $identifier)->where('remember_token', $token)->first();
 	}
 
