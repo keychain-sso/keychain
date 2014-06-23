@@ -104,35 +104,30 @@ class Access {
 		{
 			case 'User':
 
-				if ($object->id == $subjectUser->id)
+				// Does the user have access to his/her own field?
+				if ($object->id == $subjectUser->id && isset($acl[ACLType::SELF.".{$field}.{$flag}"]))
 				{
-					// Does the user have access to his/her own field?
-					if (isset($acl[ACLType::SELF.".{$field}.{$flag}"]))
-					{
-						return true;
-					}
+					return true;
 				}
-				else
+
+				// Does the subject have access to all users?
+				if (isset($acl[ACLType::ALL.".{$field}.{$flag}"]))
 				{
-					// Does the subject have access to all users?
-					if (isset($acl[ACLType::ALL.".{$field}.{$flag}"]))
+					return true;
+				}
+
+				// Does the subject have access to this specific object user?
+				if (isset($acl[$object->id.'.'.ACLType::USER.".{$field}.{$flag}"]))
+				{
+					return true;
+				}
+
+				// Does the subject have access to any of the object user's groups?
+				foreach ($object->groups as $group)
+				{
+					if (isset($acl[$group->group_id.'.'.ACLType::GROUP.".{$field}.{$flag}"]))
 					{
 						return true;
-					}
-
-					// Does the subject have access to this specific object user?
-					if (isset($acl[$object->id.'.'.ACLType::USER.".{$field}.{$flag}"]))
-					{
-						return true;
-					}
-
-					// Does the subject have access to any of the object user's groups?
-					foreach ($object->groups as $group)
-					{
-						if (isset($acl[$group->group_id.'.'.ACLType::GROUP.".{$field}.{$flag}"]))
-						{
-							return true;
-						}
 					}
 				}
 
