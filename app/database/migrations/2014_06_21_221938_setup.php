@@ -298,6 +298,43 @@ class Setup extends Migration {
 			'user_id'  => 1,
 			'group_id' => 2,
 		));
+
+		// Give sysadmins access to everything
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLType::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLType::GROUP,
+			'field_id'     => 1,
+			'access'       => 'u_field_view',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLType::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLType::GROUP,
+			'field_id'     => 1,
+			'access'       => 'u_field_edit',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLType::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLType::GROUP,
+			'field_id'     => 2,
+			'access'       => 'u_field_view',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLType::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLType::GROUP,
+			'field_id'     => 2,
+			'access'       => 'u_field_edit',
+		));
 	}
 
 	/**

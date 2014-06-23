@@ -15,7 +15,6 @@
 
 use ACL;
 use ACLType;
-use Auth;
 use Session;
 
 /**
@@ -117,7 +116,7 @@ class Access {
 				}
 
 				// Does the subject have access to this specific object user?
-				if (isset($acl[$object->id.'.'.ACLType::USER.".{$field}.{$flag}"]))
+				if (isset($acl["{$object->id}.".ACLType::USER.".{$field}.{$flag}"]))
 				{
 					return true;
 				}
@@ -125,7 +124,7 @@ class Access {
 				// Does the subject have access to any of the object user's groups?
 				foreach ($object->groups as $group)
 				{
-					if (isset($acl[$group->group_id.'.'.ACLType::GROUP.".{$field}.{$flag}"]))
+					if (isset($acl["{$group->group_id}.".ACLType::GROUP.".{$field}.{$flag}"]))
 					{
 						return true;
 					}
@@ -135,7 +134,7 @@ class Access {
 
 			case 'Group':
 
-				if (isset($acl[$object->id.'.'.ACLType::GROUP.".{$field}.{$flag}"]))
+				if (isset($acl["{$object->id}.".ACLType::GROUP.".{$field}.{$flag}"]))
 				{
 					return true;
 				}

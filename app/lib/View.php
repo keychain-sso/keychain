@@ -13,7 +13,6 @@
  * @filesource
  */
 
-use Auth;
 use Session;
 
 /**
