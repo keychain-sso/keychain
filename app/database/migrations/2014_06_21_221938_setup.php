@@ -157,7 +157,7 @@ class Setup extends Migration {
 			$table->integer('object_type')->unsigned()->default(1);
 			$table->integer('subject_id')->unsigned();
 			$table->integer('subject_type')->unsigned();
-			$table->integer('field')->unsigned()->default(0);
+			$table->integer('field_id')->unsigned()->default(0);
 			$table->string('access', 20);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
@@ -165,6 +165,7 @@ class Setup extends Migration {
 			$table->index(array('subject_id', 'subject_type'));
 			$table->foreign('object_type')->references('id')->on('acl_types')->onDelete('cascade');
 			$table->foreign('subject_type')->references('id')->on('acl_types')->onDelete('cascade');
+			$table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
 		});
 
 		// Create the sessions table
@@ -188,8 +189,8 @@ class Setup extends Migration {
 
 		// Insert ACL types
 		DB::table('acl_types')->insert(array(
-			array('name' => 'Field'),
 			array('name' => 'Self'),
+			array('name' => 'All'),
 			array('name' => 'User'),
 			array('name' => 'Group'),
 		));
@@ -235,31 +236,31 @@ class Setup extends Migration {
 		DB::table('user_emails')->insert(array(
 			'user_id'  => 1,
 			'email'    => 'admin@keychain.sso',
-			'primary'  => 1,
-			'verified' => 1,
+			'primary'  => Flag::YES,
+			'verified' => Flag::YES,
 		));
 
 		DB::table('user_emails')->insert(array(
 			'user_id'  => 1,
 			'email'    => 'alternate@keychain.sso',
-			'primary'  => 0,
-			'verified' => 1,
+			'primary'  => Flag::NO,
+			'verified' => Flag::YES,
 		));
 
 		// Add an address field
 		DB::table('fields')->insert(array(
 			'name'         => 'Address',
 			'machine_name' => 'address',
-			'type'         => 1,
-			'category'     => 1,
+			'type'         => FieldType::TEXT_AREA,
+			'category'     => FieldCategory::CONTACT,
 		));
 
 		// Add a SSH ket size field
 		DB::table('fields')->insert(array(
 			'name'         => 'SSH key',
 			'machine_name' => 'ssh_key',
-			'type'         => 1,
-			'category'     => 2,
+			'type'         => FieldType::TEXT_AREA,
+			'category'     => FieldCategory::OTHER,
 		));
 
 		// Add the admin's address

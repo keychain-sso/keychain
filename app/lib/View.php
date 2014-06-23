@@ -19,7 +19,7 @@ use Session;
 /**
  * View class
  *
- * Abstraction over \Illuminate\Support\Facades\View to enable skin support
+ * Abstraction over \Illuminate\Support\Facades\View
  *
  * @package     Keychain
  * @subpackage  Libraries

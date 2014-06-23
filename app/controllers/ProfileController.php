@@ -70,10 +70,14 @@ class ProfileController extends BaseController {
 
 		foreach ($userFields as $item)
 		{
-			$fields->{$item->field->category}[] = (object) array(
-				'name'  => $item->field->name,
-				'value' => nl2br($item->value),
-			);
+			if (Access::check('u_field_view', $user, $item->field->id))
+			{
+				$fields->{$item->field->category}[] = (object) array(
+					'id'    => $item->field->id,
+					'name'  => $item->field->name,
+					'value' => nl2br($item->value),
+				);
+			}
 		}
 
 		// Get user-group data

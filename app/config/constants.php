@@ -1,13 +1,23 @@
 <?php
 
 /**
+ * A general yes/no flag
+ */
+class Flag {
+
+	const YES = 1;
+	const NO = 0;
+
+}
+
+/**
  * Defines various user account states
  */
 class UserStatus {
 
-	const INACTIVE = 0;
-	const ACTIVE = 1;
-	const BLOCKED = 2;
+	const INACTIVE = 1;
+	const ACTIVE = 2;
+	const BLOCKED = 3;
 
 }
 
@@ -16,10 +26,10 @@ class UserStatus {
  */
 class ACLType {
 
-	const FIELD = 0;
 	const SELF = 1;
-	const USER = 2;
-	const GROUP = 3;
+	const ALL = 2;
+	const USER = 3;
+	const GROUP = 4;
 
 }
 
@@ -28,9 +38,9 @@ class ACLType {
  */
 class FieldCategory {
 
-	const BASIC = 0;
-	const CONTACT = 1;
-	const OTHER = 2;
+	const BASIC = 1;
+	const CONTACT = 2;
+	const OTHER = 3;
 
 }
 
@@ -39,12 +49,12 @@ class FieldCategory {
  */
 class FieldType {
 
-	const TEXT_BOX = 0;
-	const TEXT_AREA = 1;
-	const RADIO_BUTTON = 2;
-	const CHECK_BOX = 3;
-	const DROP_DOWN_MENU = 4;
-	const MULTI_SELECT = 5;
+	const TEXT_BOX = 1;
+	const TEXT_AREA = 2;
+	const RADIO_BUTTON = 3;
+	const CHECK_BOX = 4;
+	const DROP_DOWN_MENU = 5;
+	const MULTI_SELECT = 6;
 
 }
 

@@ -153,7 +153,6 @@ return array(
 		// Illuminate
 		'App'                  => 'Illuminate\Support\Facades\App',
 		'Artisan'              => 'Illuminate\Support\Facades\Artisan',
-		'Auth'                 => 'Illuminate\Support\Facades\Auth',
 		'Blade'                => 'Illuminate\Support\Facades\Blade',
 		'Cache'                => 'Illuminate\Support\Facades\Cache',
 		'ClassLoader'          => 'Illuminate\Support\ClassLoader',
@@ -192,6 +191,7 @@ return array(
 
 		// Keychain libraries
 		'Access'               => 'Keychain\Access',
+		'Auth'                 => 'Keychain\Auth',
 		'View'                 => 'Keychain\View',
 
 		// Keychain drivers
