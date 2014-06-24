@@ -24,5 +24,7 @@ return array(
 	"timezone"          => "Timezone",
 	"primary_email"     => "Primary e-mail address",
 	"other_email"       => "Other e-mail addresses",
+	"first_name"        => "First name",
+	"last_name"         => "Last name",
 
 );

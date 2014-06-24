@@ -235,31 +235,31 @@ class Setup extends Migration {
 		DB::table('user_emails')->insert(array(
 			'user_id'  => 1,
 			'email'    => 'admin@keychain.sso',
-			'primary'  => Flag::YES,
-			'verified' => Flag::YES,
+			'primary'  => Flags::YES,
+			'verified' => Flags::YES,
 		));
 
 		DB::table('user_emails')->insert(array(
 			'user_id'  => 1,
 			'email'    => 'alternate@keychain.sso',
-			'primary'  => Flag::NO,
-			'verified' => Flag::YES,
+			'primary'  => Flags::NO,
+			'verified' => Flags::YES,
 		));
 
 		// Add an address field
 		DB::table('fields')->insert(array(
 			'name'         => 'Address',
 			'machine_name' => 'address',
-			'type'         => FieldType::TEXTAREA,
-			'category'     => FieldCategory::CONTACT,
+			'type'         => FieldTypes::TEXTAREA,
+			'category'     => FieldCategories::CONTACT,
 		));
 
 		// Add a SSH ket size field
 		DB::table('fields')->insert(array(
 			'name'         => 'SSH key',
 			'machine_name' => 'ssh_key',
-			'type'         => FieldType::TEXTAREA,
-			'category'     => FieldCategory::OTHER,
+			'type'         => FieldTypes::TEXTAREA,
+			'category'     => FieldCategories::OTHER,
 		));
 
 		// Add the admin's address
@@ -301,36 +301,36 @@ class Setup extends Migration {
 		// Give sysadmins access to everything
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
-			'object_type'  => ACLType::ALL,
+			'object_type'  => ACLTypes::ALL,
 			'subject_id'   => 2,
-			'subject_type' => ACLType::GROUP,
+			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 1,
 			'access'       => 'u_field_view',
 		));
 
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
-			'object_type'  => ACLType::ALL,
+			'object_type'  => ACLTypes::ALL,
 			'subject_id'   => 2,
-			'subject_type' => ACLType::GROUP,
+			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 1,
 			'access'       => 'u_field_edit',
 		));
 
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
-			'object_type'  => ACLType::ALL,
+			'object_type'  => ACLTypes::ALL,
 			'subject_id'   => 2,
-			'subject_type' => ACLType::GROUP,
+			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 2,
 			'access'       => 'u_field_view',
 		));
 
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
-			'object_type'  => ACLType::ALL,
+			'object_type'  => ACLTypes::ALL,
 			'subject_id'   => 2,
-			'subject_type' => ACLType::GROUP,
+			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 2,
 			'access'       => 'u_field_edit',
 		));

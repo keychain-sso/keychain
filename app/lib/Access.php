@@ -14,7 +14,7 @@
  */
 
 use ACL;
-use ACLType;
+use ACLTypes;
 use Session;
 
 /**
@@ -66,12 +66,12 @@ class Access {
 
 			$list = $list->where(function($query) use ($user)
 			{
-				$query->where('subject_id', $user->id)->where('subject_type', ACLType::USER);
+				$query->where('subject_id', $user->id)->where('subject_type', ACLTypes::USER);
 			});
 
 			$list = $list->orWhere(function($query) use ($groups)
 			{
-				$query->whereIn('subject_id', $groups)->where('subject_type', ACLType::GROUP);
+				$query->whereIn('subject_id', $groups)->where('subject_type', ACLTypes::GROUP);
 			});
 
 			// Iterate through the list and build the access data
@@ -104,19 +104,19 @@ class Access {
 			case 'User':
 
 				// Does the user have access to his/her own field?
-				if ($object->id == $subjectUser->id && isset($acl[ACLType::SELF.".{$field}.{$flag}"]))
+				if ($object->id == $subjectUser->id && isset($acl[ACLTypes::SELF.".{$field}.{$flag}"]))
 				{
 					return true;
 				}
 
 				// Does the subject have access to all users?
-				if (isset($acl[ACLType::ALL.".{$field}.{$flag}"]))
+				if (isset($acl[ACLTypes::ALL.".{$field}.{$flag}"]))
 				{
 					return true;
 				}
 
 				// Does the subject have access to this specific object user?
-				if (isset($acl["{$object->id}.".ACLType::USER.".{$field}.{$flag}"]))
+				if (isset($acl["{$object->id}.".ACLTypes::USER.".{$field}.{$flag}"]))
 				{
 					return true;
 				}
@@ -124,7 +124,7 @@ class Access {
 				// Does the subject have access to any of the object user's groups?
 				foreach ($object->groups as $group)
 				{
-					if (isset($acl["{$group->group_id}.".ACLType::GROUP.".{$field}.{$flag}"]))
+					if (isset($acl["{$group->group_id}.".ACLTypes::GROUP.".{$field}.{$flag}"]))
 					{
 						return true;
 					}
@@ -134,7 +134,7 @@ class Access {
 
 			case 'Group':
 
-				if (isset($acl["{$object->id}.".ACLType::GROUP.".{$field}.{$flag}"]))
+				if (isset($acl["{$object->id}.".ACLTypes::GROUP.".{$field}.{$flag}"]))
 				{
 					return true;
 				}

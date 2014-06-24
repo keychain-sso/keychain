@@ -15,6 +15,7 @@
 
 use Access;
 use Cache;
+use FieldCategories;
 use FieldCategory;
 use FieldType;
 use UserField;
@@ -44,9 +45,9 @@ class FormField {
 		$userFields = UserField::where('user_id', $user->id)->with('field')->get();
 
 		$fields = new stdClass;
-		$fields->{FieldCategory::BASIC} = array();
-		$fields->{FieldCategory::CONTACT} = array();
-		$fields->{FieldCategory::OTHER} = array();
+		$fields->{FieldCategories::BASIC} = array();
+		$fields->{FieldCategories::CONTACT} = array();
+		$fields->{FieldCategories::OTHER} = array();
 
 		// Compile user fields for display
 		foreach ($userFields as $item)
@@ -77,9 +78,9 @@ class FormField {
 		$fieldTypes = static::types();
 
 		$fields = new stdClass;
-		$fields->{FieldCategory::BASIC} = array();
-		$fields->{FieldCategory::CONTACT} = array();
-		$fields->{FieldCategory::OTHER} = array();
+		$fields->{FieldCategories::BASIC} = array();
+		$fields->{FieldCategories::CONTACT} = array();
+		$fields->{FieldCategories::OTHER} = array();
 
 		// Compile user field controls
 		foreach ($userFields as $item)

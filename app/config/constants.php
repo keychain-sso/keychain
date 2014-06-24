@@ -3,7 +3,7 @@
 /**
  * A general yes/no flag
  */
-class Flag {
+class Flags {
 
 	const YES = 1;
 	const NO = 0;
@@ -24,7 +24,7 @@ class UserStatus {
 /**
  * Various types controlled by the ACL
  */
-class ACLType {
+class ACLTypes {
 
 	const SELF = 1;
 	const ALL = 2;
@@ -36,11 +36,24 @@ class ACLType {
 /**
  * Categories of profile fields
  */
-class FieldCategory {
+class FieldCategories {
 
 	const BASIC = 1;
 	const CONTACT = 2;
 	const OTHER = 3;
+
+}
+
+/**
+ * Types of profile fields
+ */
+class FieldTypes {
+
+	const TEXTBOX = 1;
+	const TEXTAREA = 2;
+	const RADIO = 3;
+	const CHECKBOX = 4;
+	const DROPDOWN = 5;
 
 }
 

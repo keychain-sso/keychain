@@ -20,28 +20,21 @@
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
 		<ul class="nav navbar-nav">
-			<li>
+			<li @if (Request::segment(2) == 'edit') class="active" @endif>
 				<a href="{{ url('profile/edit/'.$user->hash) }}">
 					<span class="glyphicon glyphicon-pencil"></span>
 					{{ Lang::get('profile.edit_profile') }}
 				</a>
 			</li>
 
-			<li>
+			<li @if (Request::segment(2) == 'emails') class="active" @endif>
 				<a href="#">
 					<span class="glyphicon glyphicon-envelope"></span>
 					{{ Lang::get('profile.manage_email_addresses') }}
 				</a>
 			</li>
 
-			<li>
-				<a href="#">
-					<span class="glyphicon glyphicon-briefcase"></span>
-					{{ Lang::get('profile.manage_keys') }}
-				</a>
-			</li>
-
-			<li>
+			<li @if (Request::segment(2) == 'security') class="active" @endif>
 				<a href="#">
 					<span class="glyphicon glyphicon-lock"></span>
 					{{ Lang::get('profile.security_settings') }}

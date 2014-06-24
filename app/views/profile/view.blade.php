@@ -37,7 +37,7 @@
 						<p class="list-group-item-text">{{ $user->timezone }}</p>
 					</li>
 
-					@foreach ($fields->{FieldCategory::BASIC} as $field)
+					@foreach ($fields->{FieldCategories::BASIC} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
 							<p class="list-group-item-text">{{ $field->value }}</p>
@@ -76,7 +76,7 @@
 						</li>
 					@endif
 
-					@foreach ($fields->{FieldCategory::CONTACT} as $field)
+					@foreach ($fields->{FieldCategories::CONTACT} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
 							<p class="list-group-item-text">{{ $field->value }}</p>
@@ -115,7 +115,7 @@
 		</div>
 	</div>
 
-	@if ( ! empty($fields->{FieldCategory::OTHER}))
+	@if ( ! empty($fields->{FieldCategories::OTHER}))
 		<div class="row">
 			<div class="col-md-12">
 				<div class="panel panel-default">
@@ -124,7 +124,7 @@
 					</div>
 
 					<ul class="list-group">
-						@foreach ($fields->{FieldCategory::OTHER} as $field)
+						@foreach ($fields->{FieldCategories::OTHER} as $field)
 							<li class="list-group-item">
 								<h4 class="list-group-item-heading">{{ $field->name }}</h4>
 								<p class="list-group-item-text">{{ $field->value }}</p>

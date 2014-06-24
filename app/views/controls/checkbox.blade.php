@@ -1,5 +1,5 @@
 {{
-	Form::checkbox($name, Flag::YES, $value == Flag::YES, array(
+	Form::checkbox($name, Flags::YES, $value == Flags::YES, array(
 		'class'    => 'form-control',
 		'disabled' => $disabled,
 	))
