@@ -31,4 +31,5 @@ Next, you need to set up an encryption key for your keychain instance. Open `app
 Please report all issues on our [GitHub issue tracker](https://github.com/keychain-sso/keychain/issues).
 
 ### License
+
 Keychain is licensed under the [BSD 3-Clause license](http://opensource.org/licenses/BSD-3-Clause).
