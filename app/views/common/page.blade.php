@@ -9,11 +9,6 @@
 
 	<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
 	<link href="{{ asset('css/keychain.css') }}" rel="stylesheet" />
-
-	<script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('js/jquery.cookie.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('js/jquery.scrollto.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
 </head>
 
 <body>
@@ -44,6 +39,12 @@
 	<footer class="text-center">
 		&copy; <a href="https://github.com/keychain-sso">Keychain Developers</a>
 	</footer>
+
+	<script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/jquery.cookie.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/jquery.scrollto.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/keychain.js') }}"></script>
 </body>
 
 </html>

@@ -1,7 +1,29 @@
 @extends('common.page')
 
 @section('body')
-	@include('profile.header')
+	<nav class="navbar navbar-default navbar-static-top navbar-lg">
+		<div class="container-fluid">
+			<ul class="nav nav-icons text-center">
+				<li class="active">
+					<a href="#" title="{{ Lang::get('profile.edit_profile') }}" data-toggle="tooltip">
+						<span class="glyphicon glyphicon-pencil"></span>
+					</a>
+				</li>
+
+				<li>
+					<a href="{{ url('profile/emails/'.$user->hash) }}" title="{{ Lang::get('profile.manage_email_addresses') }}" data-toggle="tooltip">
+						<span class="glyphicon glyphicon-envelope"></span>
+					</a>
+				</li>
+
+				<li>
+					<a href="{{ url('profile/security/'.$user->hash) }}" title="{{ Lang::get('profile.security_settings') }}" data-toggle="tooltip">
+						<span class="glyphicon glyphicon-lock"></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
 
 	<div class="row">
 		<div class="col-md-6">

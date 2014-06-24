@@ -14,3 +14,23 @@
 footer {
   margin: 20px;
 }
+.navbar-lg {
+  height: 110px;
+}
+.nav-icons {
+  margin: 23px;
+}
+.nav-icons li {
+  display: inline;
+}
+.nav-icons li a {
+  display: inline;
+  font-size: 55px;
+  color: #777;
+}
+.nav-icons li.active a {
+  color: #428bca;
+}
+.nav-icons li:hover a {
+  background: transparent;
+}
