@@ -44,18 +44,4 @@ class FieldCategory {
 
 }
 
-/**
- * Types of profile fields
- */
-class FieldType {
-
-	const TEXT_BOX = 1;
-	const TEXT_AREA = 2;
-	const RADIO_BUTTON = 3;
-	const CHECK_BOX = 4;
-	const DROP_DOWN_MENU = 5;
-	const MULTI_SELECT = 6;
-
-}
-
 ?>

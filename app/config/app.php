@@ -192,6 +192,7 @@ return array(
 		// Keychain libraries
 		'Access'               => 'Keychain\Access',
 		'Auth'                 => 'Keychain\Auth',
+		'FormField'            => 'Keychain\FormField',
 		'View'                 => 'Keychain\View',
 
 		// Keychain drivers

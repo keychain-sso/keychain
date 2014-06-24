@@ -206,10 +206,9 @@ class Setup extends Migration {
 		DB::table('field_types')->insert(array(
 			array('name' => 'TextBox'),
 			array('name' => 'TextArea'),
-			array('name' => 'RadioButton'),
+			array('name' => 'Radio'),
 			array('name' => 'CheckBox'),
-			array('name' => 'DropdownMenu'),
-			array('name' => 'MultiSelect'),
+			array('name' => 'Dropdown'),
 		));
 
 		// Insert the user status values
@@ -251,7 +250,7 @@ class Setup extends Migration {
 		DB::table('fields')->insert(array(
 			'name'         => 'Address',
 			'machine_name' => 'address',
-			'type'         => FieldType::TEXT_AREA,
+			'type'         => FieldType::TEXTAREA,
 			'category'     => FieldCategory::CONTACT,
 		));
 
@@ -259,7 +258,7 @@ class Setup extends Migration {
 		DB::table('fields')->insert(array(
 			'name'         => 'SSH key',
 			'machine_name' => 'ssh_key',
-			'type'         => FieldType::TEXT_AREA,
+			'type'         => FieldType::TEXTAREA,
 			'category'     => FieldCategory::OTHER,
 		));
 

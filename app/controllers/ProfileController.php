@@ -60,33 +60,14 @@ class ProfileController extends BaseController {
 			}
 		}
 
-		// Get custom profile fields
-		$userFields = UserField::where('user_id', $user->id)->with('field')->get();
-
-		$fields = new stdClass;
-		$fields->{FieldCategory::BASIC} = array();
-		$fields->{FieldCategory::CONTACT} = array();
-		$fields->{FieldCategory::OTHER} = array();
-
-		foreach ($userFields as $item)
-		{
-			if (Access::check('u_field_view', $user, $item->field->id))
-			{
-				$fields->{$item->field->category}[] = (object) array(
-					'id'    => $item->field->id,
-					'name'  => $item->field->name,
-					'value' => nl2br($item->value),
-				);
-			}
-		}
-
 		// Get user-group data
 		$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
 
 		// Assign the view data
 		$data = array(
+			'user'        => $user,
 			'emails'      => $emails,
-			'fields'      => $fields,
+			'fields'      => FormField::get($user),
 			'memberships' => $memberships,
 		);
 
@@ -94,15 +75,23 @@ class ProfileController extends BaseController {
 	}
 
 	/**
-	 * Displays the edit profile screen for the user
+	 * Displays the edit basic profile screen for the user
 	 *
 	 * @access public
-	 * @param  string $category
+	 * @param  string  $hash
 	 * @return \Illuminate\Support\Facades\View
 	 */
-	public function getEdit()
+	public function getEdit($hash)
 	{
-		return 'Coming soon';
+		$user = User::where('hash', $hash)->firstOrFail();
+
+		// Assign the view data
+		$data = array(
+			'user'   => $user,
+			'fields' => FormField::build($user),
+		);
+
+		return View::make('profile/edit', $data);
 	}
 
 }

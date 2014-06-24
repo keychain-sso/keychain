@@ -21,7 +21,7 @@
 	<div class="container-fluid">
 		<ul class="nav navbar-nav">
 			<li>
-				<a href="{{ url('profile/edit') }}">
+				<a href="{{ url('profile/edit/'.$user->hash) }}">
 					<span class="glyphicon glyphicon-pencil"></span>
 					{{ Lang::get('profile.edit_profile') }}
 				</a>
