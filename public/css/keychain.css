@@ -14,8 +14,12 @@
 footer {
   margin: 20px;
 }
+.navbar-modal {
+  margin: -20px -20px 20px -20px;
+  border-radius: 6px 6px 0 0;
+}
 .navbar-lg {
-  height: 110px;
+  height: 100px;
 }
 .nav-icons {
   margin: 23px;
@@ -25,7 +29,7 @@ footer {
 }
 .nav-icons li a {
   display: inline;
-  font-size: 55px;
+  font-size: 45px;
   color: #777;
 }
 .nav-icons li.active a {
@@ -33,4 +37,27 @@ footer {
 }
 .nav-icons li:hover a {
   background: transparent;
+}
+.modal-loader {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 500px;
+  font-size: 55px;
+  min-height: 500px;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+}
+.modal-editor fieldset:not(:first-child) {
+  margin-top: 20px;
+}
+.modal-editor .modal-body {
+  padding-bottom: 5px;
+}
+.modal-editor .modal-footer {
+  margin-top: 0;
+}
+.datepicker {
+  z-index: 2000 !important;
 }

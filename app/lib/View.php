@@ -13,6 +13,7 @@
  * @filesource
  */
 
+use Config;
 use Session;
 
 /**
@@ -45,9 +46,10 @@ class View extends \Illuminate\Support\Facades\View {
 		if (is_null(static::$viewDefaults))
 		{
 			static::$viewDefaults = array(
-				'error'      => Session::get('messages.error'),
-				'success'    => Session::get('messages.success'),
-				'global'     => Session::get('messages.global'),
+				'error'     => Session::get('messages.error'),
+				'success'   => Session::get('messages.success'),
+				'global'    => Session::get('messages.global'),
+				'appconfig' => Config::get('app'),
 			);
 		}
 

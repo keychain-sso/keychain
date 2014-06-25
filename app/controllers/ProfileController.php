@@ -67,7 +67,7 @@ class ProfileController extends BaseController {
 		$data = array(
 			'user'        => $user,
 			'emails'      => $emails,
-			'fields'      => FormField::get($user),
+			'fields'      => FormField::show($user),
 			'memberships' => $memberships,
 		);
 
@@ -87,11 +87,23 @@ class ProfileController extends BaseController {
 
 		// Assign the view data
 		$data = array(
-			'user'   => $user,
-			'fields' => FormField::build($user),
+			'user'      => $user,
+			'fields'    => FormField::edit($user),
+			'timezones' => System::timezones(),
 		);
 
 		return View::make('profile/edit', $data);
+	}
+
+	/**
+	 * Handles profile save functionality
+	 *
+	 * @access public
+	 * @return \Illuminate\Support\Facades\Redirect
+	 */
+	public function postEdit()
+	{
+
 	}
 
 }

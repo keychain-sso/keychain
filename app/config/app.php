@@ -194,6 +194,7 @@ return array(
 		'Auth'                 => 'Keychain\Auth',
 		'FormField'            => 'Keychain\FormField',
 		'View'                 => 'Keychain\View',
+		'System'               => 'Keychain\System',
 
 		// Keychain drivers
 		'KeychainUserProvider' => 'Keychain\Auth\KeychainUserProvider',

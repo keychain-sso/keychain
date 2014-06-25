@@ -1,8 +1,16 @@
-@foreach ($options as $option)
+<div class="form-group">
 	{{
-		Form::radio("{$name}[]", $value, $option == $value, array(
-			'class'    => 'form-control',
-			'disabled' => $disabled,
+		Form::label($machine_name, $name, array(
+			'class' => 'control-label'
 		))
 	}}
-@endforeach
+
+		@foreach ($options as $option)
+		{{
+			Form::radio("{$name}[]", $value, $option == $value, array(
+				'class'    => 'form-control',
+				'disabled' => $disabled,
+			))
+		}}
+	@endforeach
+</div>

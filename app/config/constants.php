@@ -54,6 +54,7 @@ class FieldTypes {
 	const RADIO = 3;
 	const CHECKBOX = 4;
 	const DROPDOWN = 5;
+	const DATEPICKER = 6;
 
 }
 

@@ -209,6 +209,7 @@ class Setup extends Migration {
 			array('name' => 'Radio'),
 			array('name' => 'CheckBox'),
 			array('name' => 'Dropdown'),
+			array('name' => 'DatePicker'),
 		));
 
 		// Insert the user status values
@@ -262,6 +263,14 @@ class Setup extends Migration {
 			'category'     => FieldCategories::OTHER,
 		));
 
+		// Add a SSH ket size field
+		DB::table('fields')->insert(array(
+			'name'         => 'Developer username',
+			'machine_name' => 'dev_username',
+			'type'         => FieldTypes::TEXTBOX,
+			'category'     => FieldCategories::BASIC,
+		));
+
 		// Add the admin's address
 		DB::table('user_fields')->insert(array(
 			'user_id'  => 1,
@@ -274,6 +283,13 @@ class Setup extends Migration {
 			'user_id'  => 1,
 			'field_id' => 2,
 			'value'    => str_random(128).'==',
+		));
+
+		// Add the admin's dev username
+		DB::table('user_fields')->insert(array(
+			'user_id'  => 1,
+			'field_id' => 3,
+			'value'    => 'johndoe',
 		));
 
 		// Insert the group entries
@@ -332,6 +348,24 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 2,
+			'access'       => 'u_field_edit',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 3,
+			'access'       => 'u_field_view',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 3,
 			'access'       => 'u_field_edit',
 		));
 	}

@@ -24,21 +24,21 @@
 		<div class="container-fluid">
 			<ul class="nav navbar-nav">
 				<li>
-					<a href="{{ url('profile/edit/'.$user->hash) }}">
+					<a href="{{ url('profile/edit/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile">
 						<span class="glyphicon glyphicon-pencil"></span>
 						{{ Lang::get('profile.edit_profile') }}
 					</a>
 				</li>
 
 				<li>
-					<a href="#">
+					<a href="{{ url('profile/emails/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile">
 						<span class="glyphicon glyphicon-envelope"></span>
 						{{ Lang::get('profile.manage_email_addresses') }}
 					</a>
 				</li>
 
 				<li>
-					<a href="#">
+					<a href="{{ url('profile/security/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile">
 						<span class="glyphicon glyphicon-lock"></span>
 						{{ Lang::get('profile.security_settings') }}
 					</a>
@@ -74,7 +74,7 @@
 
 					<li class="list-group-item">
 						<h4 class="list-group-item-heading">{{ Lang::get('global.date_of_birth') }}</h4>
-						<p class="list-group-item-text">{{ date('jS F Y', strtotime($user->date_of_birth)) }}</p>
+						<p class="list-group-item-text">{{ date('Y-m-d', strtotime($user->date_of_birth)) }}</p>
 					</li>
 
 					<li class="list-group-item">
@@ -180,4 +180,10 @@
 			</div>
 		</div>
 	@endif
+
+	<div id="modal-profile" class="modal modal-editor">
+		<div class="modal-dialog">
+			<div class="modal-content"></div>
+		</div>
+	</div>
 @stop

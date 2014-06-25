@@ -40,7 +40,7 @@ class FormField {
 	 * @param  User  $user
 	 * @return stdClass
 	 */
-	public static function get($user)
+	public static function show($user)
 	{
 		$userFields = UserField::where('user_id', $user->id)->with('field')->get();
 
@@ -72,7 +72,7 @@ class FormField {
 	 * @param  User  $user
 	 * @return stdClass
 	 */
-	public static function build($user)
+	public static function edit($user)
 	{
 		$userFields = UserField::where('user_id', $user->id)->with('field')->get();
 		$fieldTypes = static::types();
@@ -88,10 +88,11 @@ class FormField {
 			if (Access::check('u_field_view', $user, $item->field->id))
 			{
 				$data = array(
-					'name'     => $item->field->name,
-					'value'    => $item->value,
-					'options'  => $item->field->options != null ? explode("\n", $item->field->options) : null,
-					'disabled' => Access::check('u_field_edit', $user, $item->field->id) ? null : 'disabled',
+					'name'         => $item->field->name,
+					'machine_name' => $item->field->machine_name,
+					'value'        => $item->value,
+					'options'      => $item->field->options != null ? explode("\n", $item->field->options) : null,
+					'disabled'     => Access::check('u_field_edit', $user, $item->field->id) ? null : 'disabled',
 				);
 
 				$fields->{$item->field->category}[] = View::make("controls/{$fieldTypes[$item->field->type]}", $data)->render();

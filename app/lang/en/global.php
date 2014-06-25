@@ -26,5 +26,7 @@ return array(
 	"other_email"       => "Other e-mail addresses",
 	"first_name"        => "First name",
 	"last_name"         => "Last name",
+	"save"              => "Save",
+	"close"             => "Close",
 
 );
