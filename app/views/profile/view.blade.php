@@ -85,7 +85,7 @@
 					@foreach ($fields->{FieldCategories::BASIC} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{{ $field->value }}}</p>
+							<p class="list-group-item-text">{{ $field->value }}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -124,7 +124,7 @@
 					@foreach ($fields->{FieldCategories::CONTACT} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{{ $field->value }}}</p>
+							<p class="list-group-item-text">{{ $field->value }}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -172,7 +172,7 @@
 						@foreach ($fields->{FieldCategories::OTHER} as $field)
 							<li class="list-group-item">
 								<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-								<p class="list-group-item-text">{{{ $field->value }}}</p>
+								<p class="list-group-item-text">{{ $field->value }}</p>
 							</li>
 						@endforeach
 					</ul>
