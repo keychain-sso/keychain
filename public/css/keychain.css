@@ -22,7 +22,7 @@ footer {
   height: 100px;
 }
 .nav-icons {
-  margin: 23px;
+  margin: 23px 23px 23px 13px;
 }
 .nav-icons li {
   display: inline;
