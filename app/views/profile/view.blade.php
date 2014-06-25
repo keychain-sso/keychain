@@ -181,7 +181,7 @@
 		</div>
 	@endif
 
-	<div id="modal-profile" class="modal modal-editor">
+	<div id="modal-profile" class="modal modal-editor fade">
 		<div class="modal-dialog">
 			<div class="modal-content"></div>
 		</div>
