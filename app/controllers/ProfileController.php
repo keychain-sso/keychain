@@ -113,7 +113,11 @@ class ProfileController extends BaseController {
 	 */
 	public function postEdit()
 	{
+		$hash = Input::get('hash');
 
+		Session::flash('user.profile.preview', 'edit');
+
+		return Redirect::to("profile/view/{$hash}");
 	}
 
 }

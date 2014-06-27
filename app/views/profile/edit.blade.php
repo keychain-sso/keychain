@@ -2,7 +2,6 @@
 	Form::open(array(
 		'action' => 'ProfileController@postEdit',
 		'role'   => 'form',
-
 	))
 }}
 
@@ -154,6 +153,8 @@
 </div>
 
 <div class="modal-footer">
+	{{ Form::hidden('hash', $user->hash) }}
+
 	{{
 		Form::submit(Lang::get('global.save'), array(
 			'name'  => '_save',
