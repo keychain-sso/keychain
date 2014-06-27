@@ -34,6 +34,16 @@ class ACLTypes {
 }
 
 /**
+ * Actions associated with the field parser
+ */
+class FieldParserActions {
+
+	const SHOW = 1;
+	const EDIT = 2;
+
+}
+
+/**
  * Categories of profile fields
  */
 class FieldCategories {
@@ -55,6 +65,7 @@ class FieldTypes {
 	const CHECKBOX = 4;
 	const DROPDOWN = 5;
 	const DATEPICKER = 6;
+	const SSHKEY = 7;
 
 }
 

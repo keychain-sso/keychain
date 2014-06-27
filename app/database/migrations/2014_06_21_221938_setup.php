@@ -210,6 +210,7 @@ class Setup extends Migration {
 			array('name' => 'CheckBox'),
 			array('name' => 'Dropdown'),
 			array('name' => 'DatePicker'),
+			array('name' => 'SSHKey'),
 		));
 
 		// Insert the user status values
@@ -259,7 +260,7 @@ class Setup extends Migration {
 		DB::table('fields')->insert(array(
 			'name'         => 'SSH key',
 			'machine_name' => 'ssh_key',
-			'type'         => FieldTypes::TEXTAREA,
+			'type'         => FieldTypes::SSHKEY,
 			'category'     => FieldCategories::OTHER,
 		));
 
@@ -282,7 +283,11 @@ class Setup extends Migration {
 		DB::table('user_fields')->insert(array(
 			'user_id'  => 1,
 			'field_id' => 2,
-			'value'    => str_random(128).'==',
+			'value'    => 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCbIEIZZ1TOwy4e'.
+			              'Jyk5XK5chARjnGJnfvJUbDBrDuyYqPsAgX/uoHWV/T8XN80cwpTc'.
+			              'LalfS2lYsBrEy75w4o2vfto6VCIFKG2w5anABC0BVB52DBUGXp1x'.
+			              '1gGU4RZ3VNdQAmeMaJijzoCpkRb6+uD9pw2wrlnmSiNINdBXYmC2'.
+			              'fw== phpseclib-generated-key',
 		));
 
 		// Add the admin's dev username
