@@ -189,4 +189,12 @@
 			<div class="modal-content"></div>
 		</div>
 	</div>
+
+	<div id="modal-loader" class="hide">
+		@include('common.ajax.loader')
+	</div>
+
+	<div id="modal-error" class="hide">
+		@include('common.ajax.error')
+	</div>
 @stop

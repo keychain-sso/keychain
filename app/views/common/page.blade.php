@@ -41,10 +41,6 @@
 		&copy; <a href="https://github.com/keychain-sso">Keychain Developers</a>
 	</footer>
 
-	<div id="modal-loader" class="hide">
-		@include('common.loader')
-	</div>
-
 	<script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/jquery.cookie.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/jquery.scrollto.js') }}"></script>

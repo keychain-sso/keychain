@@ -16,11 +16,9 @@
  */
 $(function()
 {
-	// Load bootstrap
 	loadBootstrapUtils();
-
-	// Initialize AJAX modals
 	setupAjaxModals();
+	setupAutoNavigation();
 });
 
 /**
@@ -45,15 +43,23 @@ function loadBootstrapUtils()
 function setupAjaxModals()
 {
 	// Handle click event for AJAX enabled links
-	$('[data-nav=ajax-modal]').click(function(e)
-	{
-		var href = $(this).attr('href');
-		var modal = $(this).attr('data-target');
+	$('[data-nav=ajax-modal]')
+		.off('click')
+		.on('click', function(e)
+		{
+			var href = $(this).attr('href');
+			var modal = $(this).attr('data-target');
 
-		navigateAjaxModals(href, modal);
-		e.preventDefault();
-	});
+			navigateAjaxModals(href, modal);
+			e.preventDefault();
+		});
+}
 
+/**
+ * Sets up automatic navigation controls
+ */
+function setupAutoNavigation()
+{
 	// Auto load preview links
 	var preview = $('[data-nav=ajax-modal][data-auto=true]');
 
@@ -74,7 +80,11 @@ function setupAjaxModals()
  */
 function navigateAjaxModals(href, modal)
 {
-	var loader = $('#modal.loader').html();
+	var loader = $('#modal-loader').html();
+	var error = $('#modal-error').html();
+
+	// Push the current URL to history
+	window.history.pushState(null, null, href);
 
 	// Set the modal up for events
 	$(modal)
@@ -88,11 +98,23 @@ function navigateAjaxModals(href, modal)
 	$(modal + ' .modal-content').html(loader);
 
 	// Load the target page on the modal
-	$.get(href, function(data)
-	{
-		$(modal + ' .modal-content').html(data);
+	$.ajax({
+		url: href,
 
-		loadBootstrapUtils();
-		window.history.pushState(data, null, href);
+		// AJAX callback
+		success: function(data)
+		{
+			$(modal + ' .modal-content').html(data);
+
+			// Reload active components
+			loadBootstrapUtils();
+			setupAjaxModals();
+		},
+
+		// Error handler
+		error: function()
+		{
+			$(modal + ' .modal-content').html(error);
+		}
 	});
 }
