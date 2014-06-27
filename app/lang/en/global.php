@@ -28,5 +28,7 @@ return array(
 	"last_name"         => "Last name",
 	"save"              => "Save",
 	"close"             => "Close",
+	"yes"               => "Yes",
+	"no"                => "No",
 
 );

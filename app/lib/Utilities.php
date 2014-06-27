@@ -17,14 +17,14 @@ use Cache;
 use DateTimeZone;
 
 /**
- * System class
+ * Utilities class
  *
- * Handles system level functionalities such as config management
+ * Provider helper functionalities across the board
  *
  * @package     Keychain
  * @subpackage  Libraries
  */
-class System {
+class Utilities {
 
 	/**
 	 * Returns a list of timezones supported by the server
@@ -37,17 +37,30 @@ class System {
 	{
 		return Cache::rememberForever('system.timezones', function()
 		{
-			$timezones = array();
 			$identifiers = DateTimeZone::listIdentifiers();
 
-			// Set both the key and value as the timezone name
-			foreach ($identifiers as $identifier)
-			{
-				$timezones[$identifier] = $identifier;
-			}
-
-			return $timezones;
+			return static::arrayToSelect($identifiers);
 		});
+	}
+
+	/**
+	 * Transforms a 1D array to a laravel select worthy array
+	 *
+	 * @static
+	 * @access public
+	 * @param  array  $array
+	 * @return array
+	 */
+	public static function arrayToSelect($array)
+	{
+		$select = array();
+
+		foreach ($array as $item)
+		{
+			$select[$item] = $item;
+		}
+
+		return $select;
 	}
 
 }

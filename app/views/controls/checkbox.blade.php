@@ -5,10 +5,15 @@
 		))
 	}}
 
-	{{
-		Form::checkbox($machine_name, Flags::YES, $value == Flags::YES, array(
-			'class'    => 'form-control',
-			'disabled' => $disabled,
-		))
-	}}
+	<div class="checkbox">
+		<label>
+			{{
+				Form::checkbox($machine_name, Flags::YES, $value == Flags::YES, array(
+					'disabled' => $disabled,
+				))
+			}}
+
+			{{{ $options }}}
+		</label>
+	</div>
 </div>

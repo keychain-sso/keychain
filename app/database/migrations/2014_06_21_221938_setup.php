@@ -98,6 +98,7 @@ class Setup extends Migration {
 			$table->integer('type')->unsigned();
 			$table->integer('category')->unsigned();
 			$table->mediumText('options')->nullable();
+			$table->integer('order')->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
 
@@ -233,7 +234,7 @@ class Setup extends Migration {
 			'status'        => UserStatus::ACTIVE,
 		));
 
-		// Insert admin user emails
+		// Insert admin email addresses
 		DB::table('user_emails')->insert(array(
 			'user_id'  => 1,
 			'email'    => 'admin@keychain.sso',
@@ -254,22 +255,64 @@ class Setup extends Migration {
 			'machine_name' => 'address',
 			'type'         => FieldTypes::TEXTAREA,
 			'category'     => FieldCategories::CONTACT,
+			'order'        => 1,
 		));
 
-		// Add a SSH ket size field
+		// Add a SSH key field
 		DB::table('fields')->insert(array(
 			'name'         => 'SSH key',
 			'machine_name' => 'ssh_key',
 			'type'         => FieldTypes::SSHKEY,
 			'category'     => FieldCategories::OTHER,
+			'order'        => 1,
 		));
 
-		// Add a SSH ket size field
+		// Add a dev username field
 		DB::table('fields')->insert(array(
 			'name'         => 'Developer username',
 			'machine_name' => 'dev_username',
 			'type'         => FieldTypes::TEXTBOX,
 			'category'     => FieldCategories::BASIC,
+			'order'        => 2,
+		));
+
+		// Add a honor field
+		DB::table('fields')->insert(array(
+			'name'         => 'Honor',
+			'machine_name' => 'honor',
+			'type'         => FieldTypes::RADIO,
+			'category'     => FieldCategories::BASIC,
+			'options'      => "Mr.\nMs.\nNone",
+			'order'        => 1,
+		));
+
+		// Add a 'beverage preference' field
+		DB::table('fields')->insert(array(
+			'name'         => 'Beverage preference',
+			'machine_name' => 'beverage_preference',
+			'type'         => FieldTypes::DROPDOWN,
+			'category'     => FieldCategories::OTHER,
+			'options'      => "No preference\nI like tea\nI like coffee",
+			'order'        => 2,
+		));
+
+		// Add a 'linux user since' field
+		DB::table('fields')->insert(array(
+			'name'         => 'Linux user since',
+			'machine_name' => 'linux_user_since',
+			'type'         => FieldTypes::DATEPICKER,
+			'category'     => FieldCategories::OTHER,
+			'order'        => 3,
+		));
+
+		// Add a 'can contact' field
+		DB::table('fields')->insert(array(
+			'name'         => 'Available on phone?',
+			'machine_name' => 'available_on_phone',
+			'type'         => FieldTypes::CHECKBOX,
+			'category'     => FieldCategories::CONTACT,
+			'options'      => 'Calls accepted',
+			'order'        => 2,
 		));
 
 		// Add the admin's address
@@ -279,7 +322,7 @@ class Setup extends Migration {
 			'value'    => "2400 Hudson Dr. #200\nAustin TX 75234\nUnited States",
 		));
 
-		// Add the admin's T-Shirt size!
+		// Add the admin's SSH key!
 		DB::table('user_fields')->insert(array(
 			'user_id'  => 1,
 			'field_id' => 2,
@@ -295,6 +338,35 @@ class Setup extends Migration {
 			'user_id'  => 1,
 			'field_id' => 3,
 			'value'    => 'johndoe',
+		));
+
+		// Set the admin's honoritic
+		DB::table('user_fields')->insert(array(
+			'user_id'  => 1,
+			'field_id' => 4,
+			'value'    => 'Mr.',
+		));
+
+		// Set the admin's honoritic
+		DB::table('user_fields')->insert(array(
+			'user_id'  => 1,
+			'field_id' => 5,
+			'value'    => 'I like coffee',
+		));
+
+		// Set the admin's honoritic
+		DB::table('user_fields')->insert(array(
+			'user_id'  => 1,
+			'field_id' => 6,
+			'value'    => '2004-04-02',
+		));
+
+
+		// Set the admin's honoritic
+		DB::table('user_fields')->insert(array(
+			'user_id'  => 1,
+			'field_id' => 7,
+			'value'    => 1,
 		));
 
 		// Insert the group entries
@@ -371,6 +443,78 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 3,
+			'access'       => 'u_field_edit',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 4,
+			'access'       => 'u_field_view',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 4,
+			'access'       => 'u_field_edit',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 5,
+			'access'       => 'u_field_view',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 5,
+			'access'       => 'u_field_edit',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 6,
+			'access'       => 'u_field_view',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 6,
+			'access'       => 'u_field_edit',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 7,
+			'access'       => 'u_field_view',
+		));
+
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'field_id'     => 7,
 			'access'       => 'u_field_edit',
 		));
 	}

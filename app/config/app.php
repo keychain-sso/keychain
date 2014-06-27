@@ -193,8 +193,8 @@ return array(
 		'Access'               => 'Keychain\Access',
 		'Auth'                 => 'Keychain\Auth',
 		'FormField'            => 'Keychain\FormField',
+		'Utilities'            => 'Keychain\Utilities',
 		'View'                 => 'Keychain\View',
-		'System'               => 'Keychain\System',
 
 		// Keychain drivers
 		'KeychainUserProvider' => 'Keychain\Auth\KeychainUserProvider',

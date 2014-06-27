@@ -89,7 +89,7 @@ class ProfileController extends BaseController {
 		$data = array(
 			'user'      => $user,
 			'fields'    => FormField::edit($user),
-			'timezones' => System::timezones(),
+			'timezones' => Utilities::timezones(),
 		);
 
 		return View::make('profile/edit', $data);

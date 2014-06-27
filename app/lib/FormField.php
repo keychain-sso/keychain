@@ -20,7 +20,10 @@ use FieldCategory;
 use FieldParserActions;
 use FieldType;
 use FieldTypes;
+use Flags;
+use Lang;
 use UserField;
+use Utilities;
 
 use stdClass;
 
@@ -44,25 +47,34 @@ class FormField {
 	 */
 	public static function show($user)
 	{
-		$userFields = UserField::where('user_id', $user->id)->with('field')->get();
-
-		$fields = new stdClass;
-		$fields->{FieldCategories::BASIC} = array();
-		$fields->{FieldCategories::CONTACT} = array();
-		$fields->{FieldCategories::OTHER} = array();
-
-		// Compile user fields for display
-		foreach ($userFields as $item)
+		if ( ! Session::has('user.field.data'))
 		{
-			if (Access::check('u_field_view', $user, $item->field->id))
-			{
-				$value = static::parse(FieldParserActions::SHOW, $item->field->type, $item->value);
+			$userFields = UserField::where('user_id', $user->id)->with('field')->get();
 
-				$fields->{$item->field->category}[] = (object) array(
-					'name'  => $item->field->name,
-					'value' => $value,
-				);
+			$fields = new stdClass;
+			$fields->{FieldCategories::BASIC} = array();
+			$fields->{FieldCategories::CONTACT} = array();
+			$fields->{FieldCategories::OTHER} = array();
+
+			// Compile user fields for display
+			foreach ($userFields as $item)
+			{
+				if (Access::check('u_field_view', $user, $item->field->id))
+				{
+					$item = static::parse(FieldParserActions::SHOW, $item);
+
+					$fields->{$item->field->category}[$item->field->order] = (object) array(
+						'name'  => $item->field->name,
+						'value' => $item->value,
+					);
+				}
 			}
+
+			Session::put('user.fields.view', $fields);
+		}
+		else
+		{
+			$fields = Session::get('user.field.data');
 		}
 
 		return $fields;
@@ -91,17 +103,17 @@ class FormField {
 		{
 			if (Access::check('u_field_view', $user, $item->field->id))
 			{
-				$value = static::parse(FieldParserActions::EDIT, $item->field->type, $item->value);
+				$item = static::parse(FieldParserActions::EDIT, $item);
 
 				$data = array(
 					'name'         => $item->field->name,
 					'machine_name' => $item->field->machine_name,
-					'options'      => $item->field->options != null ? explode("\n", $item->field->options) : null,
-					'value'        => $value,
+					'value'        => $item->value,
+					'options'      => $item->field->options,
 					'disabled'     => Access::check('u_field_edit', $user, $item->field->id) ? null : 'disabled',
 				);
 
-				$fields->{$item->field->category}[] = View::make("controls/{$fieldTypes[$item->field->type]}", $data)->render();
+				$fields->{$item->field->category}[$item->field->order] = View::make("controls/{$fieldTypes[$item->field->type]}", $data)->render();
 			}
 		}
 
@@ -134,18 +146,17 @@ class FormField {
 	 * Parses a field for display based on its type
 	 *
 	 * @param  int  $action
-	 * @param  string  $type
-	 * @param  string  $value
+	 * @param  string  $item
 	 * @return string
 	 */
-	private static function parse($action, $type, $value)
+	private static function parse($action, $item)
 	{
-		switch ($type)
+		switch ($item->field->type)
 		{
 			// Format date for display
 			case FieldTypes::DATEPICKER:
 
-				$value = date('Y-m-d', strtotime($value));
+				$item->value = date('Y-m-d', strtotime($item->value));
 				break;
 
 			// Generate a SSH key fingerprint
@@ -153,8 +164,38 @@ class FormField {
 
 				if ($action == FieldParserActions::SHOW)
 				{
-					$content = explode(' ', $value, 3);
-					$value = join(':', str_split(md5(base64_decode($content[1])), 2));
+					$content = explode(' ', $item->value, 3);
+					$item->value = join(':', str_split(md5(base64_decode($content[1])), 2));
+				}
+
+				break;
+
+			// Build the checkbox value
+			case FieldTypes::CHECKBOX:
+
+				if ($action == FieldParserActions::SHOW)
+				{
+					$flag = $item->value == Flags::YES ? Lang::get('global.yes') : Lang::get('global.no');
+					$item->value = "{$item->field->options}: {$flag}";
+				}
+
+				break;
+
+			// Format radio/dropdown options
+			case FieldTypes::RADIO:
+			case FieldTypes::DROPDOWN:
+
+				if ($action == FieldParserActions::EDIT)
+				{
+					if ($item->field->options != null)
+					{
+						$item->field->options = explode("\n", $item->field->options);
+						$item->field->options = Utilities::arrayToSelect($item->field->options);
+					}
+					else
+					{
+						$item->field->options = null;
+					}
 				}
 
 				break;
@@ -164,13 +205,13 @@ class FormField {
 
 				if ($action == FieldParserActions::SHOW)
 				{
-					$value = nl2br($value);
+					$item->value = nl2br($item->value);
 				}
 
 				break;
 		}
 
-		return $value;
+		return $item;
 	}
 
 }
