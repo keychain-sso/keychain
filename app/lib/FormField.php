@@ -24,6 +24,7 @@ use Flags;
 use Lang;
 use UserField;
 use Utilities;
+use Session;
 
 use stdClass;
 
