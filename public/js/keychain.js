@@ -44,22 +44,55 @@ function loadBootstrapUtils()
  */
 function setupAjaxModals()
 {
+	// Handle click event for AJAX enabled links
 	$('[data-nav=ajax-modal]').click(function(e)
 	{
 		var href = $(this).attr('href');
 		var modal = $(this).attr('data-target');
-		var loader = $('#modal.loader').html();
 
-		$(modal).modal();
-		$(modal + ' .modal-content').html(loader);
+		navigateAjaxModals(href, modal);
+		e.preventDefault();
+	});
 
-		$.get(href, function(data)
+	// Auto load preview links
+	var preview = $('[data-nav=ajax-modal][data-auto=true]');
+
+	if (preview.length == 1)
+	{
+		var href = preview.attr('href');
+		var modal = preview.attr('data-target');
+
+		navigateAjaxModals(href, modal);
+	}
+}
+
+/**
+ * Handles the navigation part for AJAX modals
+ *
+ * @param  string  href
+ * @param  object  modal
+ */
+function navigateAjaxModals(href, modal)
+{
+	var loader = $('#modal.loader').html();
+
+	// Set the modal up for events
+	$(modal)
+		.modal()
+		.on('hidden.bs.modal', function()
 		{
-			$(modal + ' .modal-content').html(data);
-
-			loadBootstrapUtils();
+			window.history.back();
 		});
 
-		e.preventDefault();
+	// Show the loader as a placeholder
+	$(modal + ' .modal-content').html(loader);
+
+	// Load the target page on the modal
+	$.get(href, function(data)
+	{
+		$(modal + ' .modal-content').html(data);
+
+		loadBootstrapUtils();
+		window.history.pushState(data, null, href);
 	});
 }

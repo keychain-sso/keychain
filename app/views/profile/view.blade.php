@@ -24,21 +24,24 @@
 		<div class="container-fluid">
 			<ul class="nav navbar-nav">
 				<li>
-					<a href="{{ url('profile/edit/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile">
+					<a href="{{ url('profile/edit/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile"
+					   @if ($preview == 'edit') data-auto="true" @endif>
 						<span class="glyphicon glyphicon-pencil"></span>
 						{{ Lang::get('profile.edit_profile') }}
 					</a>
 				</li>
 
 				<li>
-					<a href="{{ url('profile/emails/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile">
+					<a href="{{ url('profile/emails/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile"
+					   @if ($preview == 'emails') data-auto="true" @endif>
 						<span class="glyphicon glyphicon-envelope"></span>
 						{{ Lang::get('profile.manage_email_addresses') }}
 					</a>
 				</li>
 
 				<li>
-					<a href="{{ url('profile/security/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile">
+					<a href="{{ url('profile/security/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile"
+					   @if ($preview == 'security') data-auto="true" @endif>
 						<span class="glyphicon glyphicon-lock"></span>
 						{{ Lang::get('profile.security_settings') }}
 					</a>

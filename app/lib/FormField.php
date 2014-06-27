@@ -24,7 +24,6 @@ use Flags;
 use Lang;
 use UserField;
 use Utilities;
-use Session;
 
 use stdClass;
 
@@ -48,7 +47,7 @@ class FormField {
 	 */
 	public static function show($user)
 	{
-		if ( ! Session::has('user.field.data'))
+		return Cache::remember("user.field.data.{$user->id}", 43200, function() use ($user)
 		{
 			$userFields = UserField::where('user_id', $user->id)->with('field')->get();
 
@@ -71,14 +70,8 @@ class FormField {
 				}
 			}
 
-			Session::put('user.fields.view', $fields);
-		}
-		else
-		{
-			$fields = Session::get('user.field.data');
-		}
-
-		return $fields;
+			return $fields;
+		});
 	}
 
 	/**

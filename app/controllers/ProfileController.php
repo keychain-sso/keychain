@@ -69,6 +69,7 @@ class ProfileController extends BaseController {
 			'emails'      => $emails,
 			'fields'      => FormField::show($user),
 			'memberships' => $memberships,
+			'preview'     => Session::get('user.profile.preview'),
 		);
 
 		return View::make('profile/view', $data);
@@ -83,16 +84,25 @@ class ProfileController extends BaseController {
 	 */
 	public function getEdit($hash)
 	{
-		$user = User::where('hash', $hash)->firstOrFail();
+		if (Request::ajax())
+		{
+			$user = User::where('hash', $hash)->firstOrFail();
 
-		// Assign the view data
-		$data = array(
-			'user'      => $user,
-			'fields'    => FormField::edit($user),
-			'timezones' => Utilities::timezones(),
-		);
+			// Assign the view data
+			$data = array(
+				'user'      => $user,
+				'fields'    => FormField::edit($user),
+				'timezones' => Utilities::timezones(),
+			);
 
-		return View::make('profile/edit', $data);
+			return View::make('profile/edit', $data);
+		}
+		else
+		{
+			Session::flash('user.profile.preview', 'edit');
+
+			return Redirect::to("profile/view/{$hash}");
+		}
 	}
 
 	/**
