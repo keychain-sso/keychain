@@ -217,11 +217,6 @@ class FormField {
 					$rules .= 'date';
 					break;
 
-				case FieldTypes::SSHKEY:
-
-					// TODO: SSH key validation logic here
-					break;
-
 			}
 
 			// Validate field data
@@ -324,17 +319,6 @@ class FormField {
 					if ( ! empty($value))
 					{
 						$value = date('Y-m-d', strtotime($value));
-					}
-
-					break;
-
-				// Generate a SSH key fingerprint
-				case FieldTypes::SSHKEY:
-
-					if ( ! empty($value))
-					{
-						$content = explode(' ', $value, 3);
-						$value = join(':', str_split(md5(base64_decode($content[1])), 2));
 					}
 
 					break;

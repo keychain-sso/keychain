@@ -211,7 +211,6 @@ class Setup extends Migration {
 			array('name' => 'CheckBox'),
 			array('name' => 'Dropdown'),
 			array('name' => 'DatePicker'),
-			array('name' => 'SSHKey'),
 		));
 
 		// Insert the user status values
@@ -256,16 +255,6 @@ class Setup extends Migration {
 			'type'         => FieldTypes::TEXTAREA,
 			'category'     => FieldCategories::CONTACT,
 			'order'        => 1,
-		));
-
-		// Add a SSH key field
-		DB::table('fields')->insert(array(
-			'name'         => 'SSH key',
-			'machine_name' => 'ssh_key',
-			'type'         => FieldTypes::SSHKEY,
-			'category'     => FieldCategories::OTHER,
-			'order'        => 1,
-			'required'     => 1,
 		));
 
 		// Add a dev username field
@@ -324,42 +313,31 @@ class Setup extends Migration {
 			'value'    => "2400 Hudson Dr. #200\nAustin TX 75234\nUnited States",
 		));
 
-		// Add the admin's SSH key!
-		DB::table('user_fields')->insert(array(
-			'user_id'  => 1,
-			'field_id' => 2,
-			'value'    => 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCbIEIZZ1TOwy4e'.
-			              'Jyk5XK5chARjnGJnfvJUbDBrDuyYqPsAgX/uoHWV/T8XN80cwpTc'.
-			              'LalfS2lYsBrEy75w4o2vfto6VCIFKG2w5anABC0BVB52DBUGXp1x'.
-			              '1gGU4RZ3VNdQAmeMaJijzoCpkRb6+uD9pw2wrlnmSiNINdBXYmC2'.
-			              'fw== phpseclib-generated-key',
-		));
-
 		// Add the admin's dev username
 		DB::table('user_fields')->insert(array(
 			'user_id'  => 1,
-			'field_id' => 3,
+			'field_id' => 2,
 			'value'    => 'johndoe',
 		));
 
 		// Set the admin's honoritic
 		DB::table('user_fields')->insert(array(
 			'user_id'  => 1,
-			'field_id' => 4,
+			'field_id' => 3,
 			'value'    => 'Mr.',
 		));
 
 		// Set the admin's beverage preference
 		DB::table('user_fields')->insert(array(
 			'user_id'  => 1,
-			'field_id' => 5,
+			'field_id' => 4,
 			'value'    => 'I like coffee',
 		));
 
 		// Set the admin's linux user field
 		DB::table('user_fields')->insert(array(
 			'user_id'  => 1,
-			'field_id' => 6,
+			'field_id' => 5,
 			'value'    => '2004-04-02',
 		));
 
@@ -491,24 +469,6 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 6,
-			'access'       => 'u_field_edit',
-		));
-
-		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
-			'subject_id'   => 2,
-			'subject_type' => ACLTypes::GROUP,
-			'field_id'     => 7,
-			'access'       => 'u_field_view',
-		));
-
-		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
-			'subject_id'   => 2,
-			'subject_type' => ACLTypes::GROUP,
-			'field_id'     => 7,
 			'access'       => 'u_field_edit',
 		));
 

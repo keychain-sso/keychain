@@ -14,7 +14,7 @@ return array(
 	"settings"               => "Settings",
 	"edit_profile"           => "Edit profile",
 	"manage_email_addresses" => "Manage email addresses",
-	"manage_keys"            => "Manage SSH keys",
+	"manage_ssh_keys"        => "Manage SSH keys",
 	"security_settings"      => "Security settings",
 	"basic_info"             => "Basic information",
 	"contact_info"           => "Contact information",

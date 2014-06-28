@@ -67,7 +67,6 @@ class FieldTypes {
 	const CHECKBOX = 4;
 	const DROPDOWN = 5;
 	const DATEPICKER = 6;
-	const SSHKEY = 7;
 
 }
 

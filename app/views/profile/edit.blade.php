@@ -22,6 +22,12 @@
 				</li>
 
 				<li>
+					<a href="{{ url('profile/sshkeys/'.$user->hash) }}" title="{{ Lang::get('profile.manage_ssh_keys') }}" data-toggle="tooltip">
+						<span class="glyphicon glyphicon-briefcase"></span>
+					</a>
+				</li>
+
+				<li>
 					<a href="{{ url('profile/security/'.$user->hash) }}" title="{{ Lang::get('profile.security_settings') }}" data-toggle="tooltip">
 						<span class="glyphicon glyphicon-lock"></span>
 					</a>

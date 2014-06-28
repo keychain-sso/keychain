@@ -39,6 +39,13 @@
 					</li>
 
 					<li>
+						<a href="{{ url('profile/sshkeys/'.$user->hash) }}">
+							<span class="glyphicon glyphicon-briefcase"></span>
+							{{ Lang::get('profile.manage_ssh_keys') }}
+						</a>
+					</li>
+
+					<li>
 						<a href="{{ url('profile/security/'.$user->hash) }}">
 							<span class="glyphicon glyphicon-lock"></span>
 							{{ Lang::get('profile.security_settings') }}
