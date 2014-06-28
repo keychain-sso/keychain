@@ -6,7 +6,7 @@
 	}}
 
 	{{
-		Form::textarea($name, $value, array(
+		Form::textarea($machine_name, $value, array(
 			'class'    => 'form-control',
 			'rows'     => 6,
 			'disabled' => $disabled,

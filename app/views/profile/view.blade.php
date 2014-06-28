@@ -20,35 +20,34 @@
 		<p>{{ $user->title }}</p>
 	</div>
 
-	<nav class="navbar navbar-default" role="navigation">
-		<div class="container-fluid">
-			<ul class="nav navbar-nav">
-				<li>
-					<a href="{{ url('profile/edit/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile"
-					   @if ($preview == 'edit') data-auto="true" @endif>
-						<span class="glyphicon glyphicon-pencil"></span>
-						{{ Lang::get('profile.edit_profile') }}
-					</a>
-				</li>
+	@if (Access::check('u_profile_edit', $user))
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="{{ url('profile/edit/'.$user->hash) }}">
+							<span class="glyphicon glyphicon-pencil"></span>
+							{{ Lang::get('profile.edit_profile') }}
+						</a>
+					</li>
 
-				<li>
-					<a href="{{ url('profile/emails/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile"
-					   @if ($preview == 'emails') data-auto="true" @endif>
-						<span class="glyphicon glyphicon-envelope"></span>
-						{{ Lang::get('profile.manage_email_addresses') }}
-					</a>
-				</li>
+					<li>
+						<a href="{{ url('profile/emails/'.$user->hash) }}">
+							<span class="glyphicon glyphicon-envelope"></span>
+							{{ Lang::get('profile.manage_email_addresses') }}
+						</a>
+					</li>
 
-				<li>
-					<a href="{{ url('profile/security/'.$user->hash) }}" data-nav="ajax-modal" data-target="#modal-profile"
-					   @if ($preview == 'security') data-auto="true" @endif>
-						<span class="glyphicon glyphicon-lock"></span>
-						{{ Lang::get('profile.security_settings') }}
-					</a>
-				</li>
-			</ul>
-		</div>
-	</nav>
+					<li>
+						<a href="{{ url('profile/security/'.$user->hash) }}">
+							<span class="glyphicon glyphicon-lock"></span>
+							{{ Lang::get('profile.security_settings') }}
+						</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	@endif
 
 
 	<div class="row">
@@ -85,7 +84,7 @@
 						<p class="list-group-item-text">{{ $user->timezone }}</p>
 					</li>
 
-					@foreach ($fields->{FieldCategories::BASIC} as $field)
+					@foreach ($fieldView->{FieldCategories::BASIC} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
 							<p class="list-group-item-text">{{ $field->value }}</p>
@@ -124,7 +123,7 @@
 						</li>
 					@endif
 
-					@foreach ($fields->{FieldCategories::CONTACT} as $field)
+					@foreach ($fieldView->{FieldCategories::CONTACT} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
 							<p class="list-group-item-text">{{ $field->value }}</p>
@@ -163,7 +162,7 @@
 		</div>
 	</div>
 
-	@if ( ! empty($fields->{FieldCategories::OTHER}))
+	@if ( ! empty($fieldView->{FieldCategories::OTHER}))
 		<div class="row">
 			<div class="col-md-12">
 				<div class="panel panel-default">
@@ -172,7 +171,7 @@
 					</div>
 
 					<ul class="list-group">
-						@foreach ($fields->{FieldCategories::OTHER} as $field)
+						@foreach ($fieldView->{FieldCategories::OTHER} as $field)
 							<li class="list-group-item">
 								<h4 class="list-group-item-heading">{{ $field->name }}</h4>
 								<p class="list-group-item-text">{{ $field->value }}</p>
@@ -184,17 +183,13 @@
 		</div>
 	@endif
 
-	<div id="modal-profile" class="modal modal-editor">
-		<div class="modal-dialog">
-			<div class="modal-content"></div>
+	@if ($modal !== false)
+		<div id="modal-profile" class="modal modal-editor">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					@include("profile.{$modal}")
+				</div>
+			</div>
 		</div>
-	</div>
-
-	<div id="modal-loader" class="hide">
-		@include('common.ajax.loader')
-	</div>
-
-	<div id="modal-error" class="hide">
-		@include('common.ajax.error')
-	</div>
+	@endif
 @stop

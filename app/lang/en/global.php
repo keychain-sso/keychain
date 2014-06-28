@@ -20,6 +20,7 @@ return array(
 	"male"              => "Male",
 	"female"            => "Female",
 	"other"             => "Other",
+	"title"             => "Title",
 	"date_of_birth"     => "Date of birth",
 	"timezone"          => "Timezone",
 	"primary_email"     => "Primary e-mail address",

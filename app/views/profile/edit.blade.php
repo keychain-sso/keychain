@@ -10,27 +10,27 @@
 		<div class="container-fluid">
 			<ul class="nav nav-icons text-center">
 				<li class="active">
-					<a title="{{ Lang::get('profile.edit_profile') }}" data-toggle="tooltip" data-nav="ajax-modal" data-target="#modal-profile">
+					<a title="{{ Lang::get('profile.edit_profile') }}" data-toggle="tooltip">
 						<span class="glyphicon glyphicon-pencil"></span>
 					</a>
 				</li>
 
 				<li>
-					<a href="{{ url('profile/emails/'.$user->hash) }}" title="{{ Lang::get('profile.manage_email_addresses') }}"
-					   data-toggle="tooltip" data-nav="ajax-modal" data-target="#modal-profile">
+					<a href="{{ url('profile/emails/'.$user->hash) }}" title="{{ Lang::get('profile.manage_email_addresses') }}" data-toggle="tooltip">
 						<span class="glyphicon glyphicon-envelope"></span>
 					</a>
 				</li>
 
 				<li>
-					<a href="{{ url('profile/security/'.$user->hash) }}" title="{{ Lang::get('profile.security_settings') }}"
-					   data-toggle="tooltip" data-nav="ajax-modal" data-target="#modal-profile">
+					<a href="{{ url('profile/security/'.$user->hash) }}" title="{{ Lang::get('profile.security_settings') }}" data-toggle="tooltip">
 						<span class="glyphicon glyphicon-lock"></span>
 					</a>
 				</li>
 			</ul>
 		</div>
 	</nav>
+
+	@include('common.alerts')
 
 	<fieldset>
 		<legend>
@@ -61,6 +61,20 @@
 
 			{{
 				Form::text('last_name', $user->last_name, array(
+					'class' => 'form-control',
+				))
+			}}
+		</div>
+
+		<div class="form-group">
+			{{
+				Form::label('title', Lang::get('global.title'), array(
+					'class' => 'control-label'
+				))
+			}}
+
+			{{
+				Form::text('title', $user->title, array(
 					'class' => 'form-control',
 				))
 			}}
@@ -120,32 +134,32 @@
 			}}
 		</div>
 
-		@foreach ($fields->{FieldCategories::BASIC} as $field)
+		@foreach ($fieldEdit->{FieldCategories::BASIC} as $field)
 			{{ $field }}
 		@endforeach
 	</fieldset>
 
-	@if ( ! empty($fields->{FieldCategories::CONTACT}))
+	@if ( ! empty($fieldEdit->{FieldCategories::CONTACT}))
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-phone-alt"></span>
 				{{ Lang::get('profile.contact_info') }}
 			</legend>
 
-			@foreach ($fields->{FieldCategories::CONTACT} as $field)
+			@foreach ($fieldEdit->{FieldCategories::CONTACT} as $field)
 				{{ $field }}
 			@endforeach
 		</fieldset>
 	@endif
 
-	@if ( ! empty($fields->{FieldCategories::OTHER}))
+	@if ( ! empty($fieldEdit->{FieldCategories::OTHER}))
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-th"></span>
 				{{ Lang::get('profile.other_details') }}
 			</legend>
 
-			@foreach ($fields->{FieldCategories::OTHER} as $field)
+			@foreach ($fieldEdit->{FieldCategories::OTHER} as $field)
 				{{ $field }}
 			@endforeach
 		</fieldset>
@@ -157,16 +171,14 @@
 
 	{{
 		Form::submit(Lang::get('global.save'), array(
-			'name'  => '_save',
-			'class' => 'btn btn-primary',
+			'name'     => '_save',
+			'class'    => 'btn btn-primary',
 		))
 	}}
 
 	{{
-		Form::button(Lang::get('global.close'), array(
-			'name'         => '_close',
-			'class'        => 'btn btn-default',
-			'data-dismiss' => 'modal',
+		link_to("profile/view/{$user->hash}", Lang::get('global.close'), array(
+			'class' => 'btn btn-default',
 		))
 	}}
 </div>

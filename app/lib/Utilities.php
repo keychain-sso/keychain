@@ -31,15 +31,25 @@ class Utilities {
 	 *
 	 * @static
 	 * @access public
-	 * @return array
+	 * @param  bool  $csv
+	 * @return array|string
 	 */
-	public static function timezones()
+	public static function timezones($csv = false)
 	{
-		return Cache::rememberForever('system.timezones', function()
+		return Cache::rememberForever("system.timezones.{$csv}", function() use ($csv)
 		{
 			$identifiers = DateTimeZone::listIdentifiers();
 
-			return static::arrayToSelect($identifiers);
+			if ($csv)
+			{
+				$identifiers = implode(',', $identifiers);
+			}
+			else
+			{
+				$identifiers = static::arrayToSelect($identifiers);
+			}
+
+			return $identifiers;
 		});
 	}
 

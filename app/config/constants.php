@@ -1,6 +1,18 @@
 <?php
 
 /**
+ * HTTP status codes
+ */
+class HTTPStatus {
+
+	const OK = 200;
+	const UNAUTHORIZED = 401;
+	const FORBIDDEN = 403;
+	const NOTFOUND = 404;
+
+}
+
+/**
  * A general yes/no flag
  */
 class Flags {
@@ -34,16 +46,6 @@ class ACLTypes {
 }
 
 /**
- * Actions associated with the field parser
- */
-class FieldParserActions {
-
-	const SHOW = 1;
-	const EDIT = 2;
-
-}
-
-/**
  * Categories of profile fields
  */
 class FieldCategories {
@@ -66,6 +68,16 @@ class FieldTypes {
 	const DROPDOWN = 5;
 	const DATEPICKER = 6;
 	const SSHKEY = 7;
+
+}
+
+/**
+ * Holds the field parser indices
+ */
+class FieldParser {
+
+	const OPTIONS = 0;
+	const VALUE = 1;
 
 }
 

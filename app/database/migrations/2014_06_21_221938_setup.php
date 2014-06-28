@@ -98,6 +98,7 @@ class Setup extends Migration {
 			$table->integer('type')->unsigned();
 			$table->integer('category')->unsigned();
 			$table->mediumText('options')->nullable();
+			$table->boolean('required')->default(0);
 			$table->integer('order')->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
@@ -166,7 +167,6 @@ class Setup extends Migration {
 			$table->index(array('subject_id', 'subject_type'));
 			$table->foreign('object_type')->references('id')->on('acl_types')->onDelete('cascade');
 			$table->foreign('subject_type')->references('id')->on('acl_types')->onDelete('cascade');
-			$table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
 		});
 
 		// Create the sessions table
@@ -265,6 +265,7 @@ class Setup extends Migration {
 			'type'         => FieldTypes::SSHKEY,
 			'category'     => FieldCategories::OTHER,
 			'order'        => 1,
+			'required'     => 1,
 		));
 
 		// Add a dev username field
@@ -292,8 +293,9 @@ class Setup extends Migration {
 			'machine_name' => 'beverage_preference',
 			'type'         => FieldTypes::DROPDOWN,
 			'category'     => FieldCategories::OTHER,
-			'options'      => "No preference\nI like tea\nI like coffee",
+			'options'      => "\nI like tea\nI like coffee",
 			'order'        => 2,
+			'required'     => 1,
 		));
 
 		// Add a 'linux user since' field
@@ -347,26 +349,18 @@ class Setup extends Migration {
 			'value'    => 'Mr.',
 		));
 
-		// Set the admin's honoritic
+		// Set the admin's beverage preference
 		DB::table('user_fields')->insert(array(
 			'user_id'  => 1,
 			'field_id' => 5,
 			'value'    => 'I like coffee',
 		));
 
-		// Set the admin's honoritic
+		// Set the admin's linux user field
 		DB::table('user_fields')->insert(array(
 			'user_id'  => 1,
 			'field_id' => 6,
 			'value'    => '2004-04-02',
-		));
-
-
-		// Set the admin's honoritic
-		DB::table('user_fields')->insert(array(
-			'user_id'  => 1,
-			'field_id' => 7,
-			'value'    => 1,
 		));
 
 		// Insert the group entries
@@ -516,6 +510,24 @@ class Setup extends Migration {
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 7,
 			'access'       => 'u_field_edit',
+		));
+
+		// Allow sysadmins to edit all profiles
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'access'       => 'u_profile_edit',
+		));
+
+		// Allow registered users to edit their own profiles
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::SELF,
+			'subject_id'   => 1,
+			'subject_type' => ACLTypes::GROUP,
+			'access'       => 'u_profile_edit',
 		));
 	}
 

@@ -6,7 +6,7 @@
 	}}
 
 	{{
-		Form::text($name, $value, array(
+		Form::text($machine_name, $value, array(
 			'class'    => 'form-control',
 			'disabled' => $disabled,
 		))

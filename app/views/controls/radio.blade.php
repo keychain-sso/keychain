@@ -9,7 +9,7 @@
 		<div class="radio">
 			<label>
 				{{
-					Form::radio("{$name}[]", $value, $option == $value, array(
+					Form::radio($machine_name, $option, $option == $value, array(
 						'disabled' => $disabled,
 					))
 				}}

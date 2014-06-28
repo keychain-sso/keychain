@@ -21,5 +21,6 @@ return array(
 	"group_memberships"      => "Group memberships",
 	"no_memberships"         => "No group memberships",
 	"other_details"          => "Other details",
+	"profile_saved"          => "Profile has been saved successfully",
 
 );

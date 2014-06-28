@@ -105,3 +105,18 @@ Auth::extend('keychain', function()
 {
 	return new Guard(new KeychainUserProvider(), App::make('session.store'));
 });
+
+/*
+|--------------------------------------------------------------------------
+| Blade code tags
+|--------------------------------------------------------------------------
+|
+| Define the custom blade tags to handle code such as assignment.
+|
+*/
+
+Blade::extend(function($value)
+{
+	return preg_replace('/\{\?(.+)\?\}/', '<?php ${1} ?>', $value);
+});
+

@@ -38,18 +38,6 @@ footer {
 .nav-icons li:hover a {
   background: transparent;
 }
-.modal-loader,
-.modal-error {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 500px;
-  font-size: 55px;
-  min-height: 500px;
-  background: rgba(255, 255, 255, 0.35);
-  border-radius: 6px;
-}
 .modal-editor fieldset:not(:first-child) {
   margin-top: 20px;
 }
