@@ -54,6 +54,24 @@ class Utilities {
 	}
 
 	/**
+	 * Generates fingerprints for SSH keys
+	 *
+	 * @static
+	 * @access public
+	 * @param  string  $key
+	 * @return string|null
+	 */
+	public static function fingerprint($key)
+	{
+		$content = explode(' ', $key, 3);
+
+		if (count($content) > 1)
+		{
+			return join(':', str_split(md5(base64_decode($content[1])), 2));
+		}
+	}
+
+	/**
 	 * Transforms a 1D array to a laravel select worthy array
 	 *
 	 * @static

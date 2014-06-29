@@ -63,6 +63,12 @@ class ProfileController extends BaseController {
 		$user = User::where('hash', $hash)->firstOrFail();
 		$data = $this->getProfileData($user);
 
+		// Validate edit rights
+		if ( ! Access::check('u_profile_edit', $user))
+		{
+			App::abort(HTTPStatus::FORBIDDEN);
+		}
+
 		// Merge the profile data with editor data
 		$data = array_merge($data, array(
 			'fieldEdit' => FormField::getEdit($user),
@@ -81,23 +87,153 @@ class ProfileController extends BaseController {
 	 */
 	public function postEdit()
 	{
-		// Fetch the associated user
-		$hash = Input::get('hash');
+		if (Input::has('_save'))
+		{
+			// Fetch the associated user
+			$hash = Input::get('hash');
+			$user = User::where('hash', $hash)->firstOrFail();
+
+			// Validate edit rights
+			if ( ! Access::check('u_profile_edit', $user))
+			{
+				App::abort(HTTPStatus::FORBIDDEN);
+			}
+
+			// Save the form data and show the status
+			$status = FormField::save($user, Input::all());
+
+			if ($status === true)
+			{
+				Session::flash('messages.success', Lang::get('profile.profile_saved'));
+			}
+			else
+			{
+				Session::flash('messages.error', $status);
+			}
+		}
+
+		return Redirect::to(URL::previous())->withInput();
+	}
+
+	/**
+	 * Displays the email management screen for the user
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @param  string  $action
+	 * @return \Illuminate\Support\Facades\View
+	 */
+	public function getEmails($hash, $action = '')
+	{
+		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
+		$data = $this->getProfileData($user);
 
-		// Save the form data and show the status
-		$status = FormField::save($user, Input::all());
-
-		if ($status === true)
+		// Validate edit rights
+		if ( ! Access::check('u_profile_edit', $user))
 		{
-			Session::flash('messages.success', Lang::get('profile.profile_saved'));
+			App::abort(HTTPStatus::FORBIDDEN);
 		}
-		else
+	}
+
+	/**
+	 * Displays the SSH key management screen for the user
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @param  string  $action
+	 * @param  int  $key
+	 * @return \Illuminate\Support\Facades\View|\Illuminate\Support\Facades\Redirect
+	 */
+	public function getKeys($hash, $action = null, $key = 0)
+	{
+		// Fetch the user's profile
+		$user = User::where('hash', $hash)->firstOrFail();
+		$data = $this->getProfileData($user);
+
+		// Validate edit rights
+		if ( ! Access::check('u_profile_edit', $user))
 		{
-			Session::flash('messages.error', $status);
+			App::abort(HTTPStatus::FORBIDDEN);
 		}
 
-		return Redirect::to("profile/edit/{$hash}")->withInput();
+		if (is_null($action))
+		{
+			// Merge the profile data with editor data
+			$data = array_merge($data, array(
+				'keys'  => $user->keys,
+				'modal' => 'keys',
+			));
+
+			return View::make('profile/view', $data);
+		}
+		else if ($action == 'remove')
+		{
+			UserKey::findOrFail($key)->delete();
+
+			Session::flash('messages.success', Lang::get('profile.ssh_key_removed'));
+
+			return Redirect::to(URL::previous());
+		}
+	}
+
+	/**
+	 * Handles SSH key save functionality
+	 *
+	 * @access public
+	 * @return \Illuminate\Support\Facades\Redirect
+	 */
+	public function postKeys()
+	{
+		if (Input::has('_add'))
+		{
+			// Fetch the associated user
+			$hash = Input::get('hash');
+			$user = User::where('hash', $hash)->firstOrFail();
+
+			// Validate edit rights
+			if ( ! Access::check('u_profile_edit', $user))
+			{
+				App::abort(HTTPStatus::FORBIDDEN);
+			}
+
+			// Validate posted fields
+			$validator = Validator::make(Input::all(), array(
+				'title' => 'required|max:30',
+				'key'   => 'required',
+			));
+
+			// Run the validator
+			if ($validator->fails())
+			{
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Generate the fingerprint
+			$key = Input::get('key');
+
+			// Validate the fingerprint
+			if (is_null($fingerprint = Utilities::fingerprint($key)))
+			{
+				Session::flash('messages.error', Lang::get('profile.invalid_key'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Save the SSH key
+			$userKey              = new UserKey;
+			$userKey->user_id     = $user->id;
+			$userKey->title       = Input::get('title');
+			$userKey->key         = $key;
+			$userKey->fingerprint = $fingerprint;
+			$userKey->save();
+
+			Session::flash('messages.success', Lang::get('profile.ssh_key_added'));
+
+			return Redirect::to(URL::previous());
+		}
 	}
 
 	/**
@@ -109,32 +245,35 @@ class ProfileController extends BaseController {
 	 */
 	private function getProfileData($user)
 	{
-		// Parse user's email addresses as primary and other
-		$emails = new stdClass;
-
-		foreach ($user->emails as $addr)
+		return Cache::remember("user.field.data.{$user->id}", 1440, function() use ($user)
 		{
-			if ($addr->primary)
-			{
-				$emails->primary = $addr->email;
-			}
-			else
-			{
-				$emails->other[] = $addr->email;
-			}
-		}
+			// Parse user's email addresses as primary and other
+			$emails = new stdClass;
 
-		// Get user-group data
-		$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
+			foreach ($user->emails as $addr)
+			{
+				if ($addr->primary)
+				{
+					$emails->primary = $addr->email;
+				}
+				else
+				{
+					$emails->other[] = $addr->email;
+				}
+			}
 
-		// Return the user's profile data
-		return array(
-			'user'        => $user,
-			'emails'      => $emails,
-			'fieldView'   => FormField::getView($user),
-			'memberships' => $memberships,
-			'modal'       => false,
-		);
+			// Get user-group data
+			$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
+
+			// Return the user's profile data
+			return array(
+				'user'        => $user,
+				'emails'      => $emails,
+				'fieldView'   => FormField::getView($user),
+				'memberships' => $memberships,
+				'modal'       => false,
+			);
+		});
 	}
 
 }

@@ -51,44 +51,41 @@ class FormField {
 	 */
 	public static function getView($user)
 	{
-		return Cache::remember("user.field.data.{$user->id}", 43200, function() use ($user)
+		$userFields = UserField::where('user_id', $user->id)->get();
+		$userFieldInfo = array();
+		$fieldInfo = static::fieldInfo();
+
+		$fields = new stdClass;
+		$fields->{FieldCategories::BASIC} = array();
+		$fields->{FieldCategories::CONTACT} = array();
+		$fields->{FieldCategories::OTHER} = array();
+
+		// Index user field by field_id
+		foreach ($userFields as $userField)
 		{
-			$userFields = UserField::where('user_id', $user->id)->get();
-			$userFieldInfo = array();
-			$fieldInfo = static::fieldInfo();
+			$userFieldInfo[$userField->field_id] = $userField;
+		}
 
-			$fields = new stdClass;
-			$fields->{FieldCategories::BASIC} = array();
-			$fields->{FieldCategories::CONTACT} = array();
-			$fields->{FieldCategories::OTHER} = array();
-
-			// Index user field by field_id
-			foreach ($userFields as $userField)
+		// Compile custom fields for display
+		foreach ($fieldInfo as $field)
+		{
+			if (Access::check('u_field_view', $user, $field->id))
 			{
-				$userFieldInfo[$userField->field_id] = $userField;
-			}
-
-			// Compile custom fields for display
-			foreach ($fieldInfo as $field)
-			{
-				if (Access::check('u_field_view', $user, $field->id))
+				// Parse the field for display
+				if (isset($userFieldInfo[$field->id]))
 				{
-					// Parse the field for display
-					if (isset($userFieldInfo[$field->id]))
-					{
-						$parsed = static::parse('view', $field, $userFieldInfo[$field->id]->value);
+					$parsed = static::parse('view', $field, $userFieldInfo[$field->id]->value);
 
-						// Assign the field to its own bucket
-						$fields->{$field->category}[$field->order] = (object) array(
-							'name'  => $field->name,
-							'value' => $parsed[FieldParser::VALUE],
-						);
-					}
+					// Assign the field to its own bucket
+					$fields->{$field->category}[$field->order] = (object) array(
+						'name'  => $field->name,
+						'value' => $parsed[FieldParser::VALUE],
+					);
 				}
 			}
+		}
 
-			return $fields;
-		});
+		return $fields;
 	}
 
 	/**
@@ -153,12 +150,6 @@ class FormField {
 	 */
 	public static function save($user, $data)
 	{
-		// First, we validate if the current user has edit rights on this user
-		if ( ! Access::check('u_profile_edit', $user))
-		{
-			App::abort(HTTPStatus::FORBIDDEN);
-		}
-
 		// Purge the profile data cache
 		Cache::forget("user.field.data.{$user->id}");
 

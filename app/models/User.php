@@ -42,6 +42,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	/**
+	 * Relationship with the 'UserKey' model
+	 *
+	 * @access public
+	 * @return Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function keys()
+	{
+		return $this->hasMany('UserKey');
+	}
+
+	/**
 	 * Relationship with the 'UserGroup' model
 	 *
 	 * @access public

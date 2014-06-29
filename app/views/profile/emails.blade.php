@@ -1,6 +1,6 @@
 {{
 	Form::open(array(
-		'action' => 'ProfileController@postEdit',
+		'action' => 'ProfileController@postEmails',
 		'role'   => 'form',
 	))
 }}
@@ -12,14 +12,14 @@
 
 			<div class="text-center">
 				<ul class="nav nav-icons">
-					<li class="active">
-						<a title="{{ Lang::get('profile.edit_profile') }}" data-toggle="tooltip">
+					<li>
+						<a href="{{ url('profile/edit/'.$user->hash) }}" title="{{ Lang::get('profile.edit_profile') }}" data-toggle="tooltip">
 							<span class="glyphicon glyphicon-pencil"></span>
 						</a>
 					</li>
 
-					<li>
-						<a href="{{ url('profile/emails/'.$user->hash) }}" title="{{ Lang::get('profile.manage_email_addresses') }}" data-toggle="tooltip">
+					<li class="active">
+						<a title="{{ Lang::get('profile.manage_email_addresses') }}" data-toggle="tooltip">
 							<span class="glyphicon glyphicon-envelope"></span>
 						</a>
 					</li>
@@ -37,7 +37,7 @@
 					</li>
 				</ul>
 
-				<h3>{{ Lang::get('profile.edit_profile') }}</h3>
+				<h3>{{ Lang::get('profile.manage_email_addresses') }}</h3>
 			</div>
 		</div>
 	</nav>
@@ -66,7 +66,7 @@
 
 		<div class="form-group">
 			{{
-				Form::label('last_name', Lang::get('profile.last_name'), array(
+				Form::label('last_name', Lang::get('profile.first_name'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -111,21 +111,25 @@
 			}}
 		</div>
 
-		<div class="form-group  has-feedback">
+		<div class="form-group">
 			{{
 				Form::label('date_of_birth', Lang::get('profile.date_of_birth'), array(
 					'class' => 'control-label'
 				))
 			}}
 
-			{{
-				Form::text('date_of_birth', date('Y-m-d', strtotime($user->date_of_birth)), array(
-					'class'       => 'form-control',
-					'data-toggle' => 'datepicker',
-				))
-			}}
+			<div class="input-group">
+				{{
+					Form::text('date_of_birth', date('Y-m-d', strtotime($user->date_of_birth)), array(
+						'class'       => 'form-control',
+						'data-toggle' => 'datepicker',
+					))
+				}}
 
-			<span class="glyphicon glyphicon-calendar text-muted form-control-feedback"></span>
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
 		</div>
 
 		<div class="form-group">

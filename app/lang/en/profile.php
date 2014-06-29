@@ -11,6 +11,18 @@ return array(
 	|
 	*/
 
+
+	"gender"                 => "Gender",
+	"male"                   => "Male",
+	"female"                 => "Female",
+	"other"                  => "Other",
+	"title"                  => "Title",
+	"date_of_birth"          => "Date of birth",
+	"timezone"               => "Timezone",
+	"primary_email"          => "Primary e-mail address",
+	"other_email"            => "Other e-mail addresses",
+	"first_name"             => "First name",
+	"last_name"              => "Last name",
 	"settings"               => "Settings",
 	"edit_profile"           => "Edit profile",
 	"manage_email_addresses" => "Manage email addresses",
@@ -21,6 +33,11 @@ return array(
 	"group_memberships"      => "Group memberships",
 	"no_memberships"         => "No group memberships",
 	"other_details"          => "Other details",
-	"profile_saved"          => "Profile has been saved successfully",
+	"profile_saved"          => "Profile has been saved",
+	"add_ssh_key"            => "Add new SSH key",
+	"ssh_keys"               => "SSH keys",
+	"ssh_key_added"          => "SSH key has been added",
+	"ssh_key_removed"        => "SSH key has been removed",
+	"public_key"             => "Public key",
 
 );

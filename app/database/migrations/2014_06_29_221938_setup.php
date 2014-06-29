@@ -75,6 +75,20 @@ class Setup extends Migration {
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
 
+		// Create the keys table
+		Schema::create('user_keys', function( $table )
+		{
+			$table->increments('id');
+			$table->integer('user_id')->unsigned();
+			$table->string('title', 30);
+			$table->mediumText('key');
+			$table->string('fingerprint', 48);
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
+
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+		});
+
 		// Create the field types table
 		Schema::create('field_types', function($table)
 		{
@@ -246,6 +260,51 @@ class Setup extends Migration {
 			'email'    => 'alternate@keychain.sso',
 			'primary'  => Flags::NO,
 			'verified' => Flags::YES,
+		));
+
+		// Insert a DSA key
+		DB::table('user_keys')->insert(array(
+			'user_id'     => 1,
+			'title'       => 'DSA key',
+			'fingerprint' => '54:c6:38:32:20:3d:9d:a1:b7:33:51:dc:aa:67:06:76',
+			'key'         => 'ssh-dss AAAAB3NzaC1kc3MAAACBAMVDh+OGdTuMLDj5fiQ6P6XX'.
+			                 'c6vRTU8IPWW28wGyUdsHtkAxWmlAoa+86P5NnU1zRH6Wp4GYISu/'.
+			                 'NBK9AAYVdxqVeUau3+yZhTOMgKLSXTJ4dRjZgwBU1nqNnNuZs+Xa'.
+			                 'URWBBdIPdRWah9LexvVZ6f4ke5t7d8A+ii0WsumZVOiRAAAAFQDK'.
+			                 '2TMi352pA4JMNVJGVZIi4uT+9wAAAIANTti7ZvazqAvauY08112G'.
+			                 'FX8ukmo6FXaYUt3sbwVGb/x8QkEu2uVSB+o7loDVQNB0+ONbSxQa'.
+			                 'xD7Uo4IXn/tf4fXZ24HMWl4h+rTR8Z90bZeNZqOglO0JehKOYRVK'.
+			                 'WeR/x5+OD9+bq5tLgmTGN6LonZoqNOuJyrp9FNJZhHwVAgAAAIEA'.
+			                 'pA7OeurzH2vGiS2oCJjqB1WlWZ9jlHXNlt9bVrZe3WW8BwRu3Nn+'.
+			                 'yAtmOnqIxAVi02oXXfM6X10uTb4ZmCJhuaoM4Bo1yEToVPzea1Xp'.
+			                 'cnvXCMsa0hHmNBzy1pYtag3wVMMflj0KrwO1FuG78fuViiIC5GHW'.
+			                 'SnTK4Nnti3cWYvI= admin@keychain',
+		));
+
+		// Insert a RSA key
+		DB::table('user_keys')->insert(array(
+			'user_id'     => 1,
+			'title'       => 'RSA key',
+			'fingerprint' => '65:ca:1b:88:12:e2:35:69:5c:2a:63:48:65:db:75:0e',
+			'key'         => 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGSNchtn5ME3xZ'.
+			                 'af+KsxGtH3cgbe5Av9Nz+RogDIkA764IB789+QNJOT5uQMN3nJnG'.
+			                 '25/o6YZ9UQqsQhIMPYC5bTv1ZsUc/WrgJRabOI8hU3JML9C9SJue'.
+			                 'ZIQ1jUF4O7u63eVoTCl8YiITXzmf+Lo1VbqOuEe8k9lpL+E2xzKm'.
+			                 'fs92Lk0XcnXbu741XkYEBHAGl86Das/ZbGzY6Gj5yUv5Eap7vBQH'.
+			                 'ffAx2/cQR1Q4IYQuABGU+xg2T/FLRTl3lL1OIhwDAoL+BdIsInXL'.
+			                 '17Kxz5nokUbNrh/EfFSMnahjLQtz1GOIs/h4GbsIKsBTezs4me6v'.
+			                 'gEmfT2dskW9y0lAX admin@keychain',
+		));
+
+		// Insert an ECDSA key
+		DB::table('user_keys')->insert(array(
+			'user_id'     => 1,
+			'title'       => 'ECDSA key',
+			'fingerprint' => '6d:c9:0b:33:9c:35:1d:d5:92:f9:cc:da:03:24:8d:68',
+			'key'         => 'ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYA'.
+			                 'AAAIbmlzdHAyNTYAAABBBCu97bcm7MlMaYNXC6Llu/plSj+UorvV'.
+			                 'YpXiZ6MoijSXKRnxkgzsuv80FlERaPRayc15fi4mEeDeiwnqi45D'.
+			                 'vag= admin@keychain',
 		));
 
 		// Add an address field
@@ -508,6 +567,7 @@ class Setup extends Migration {
 		Schema::drop('fields');
 		Schema::drop('field_categories');
 		Schema::drop('field_types');
+		Schema::drop('user_keys');
 		Schema::drop('user_emails');
 		Schema::drop('users');
 		Schema::drop('user_status');

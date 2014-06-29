@@ -39,7 +39,7 @@
 					</li>
 
 					<li>
-						<a href="{{ url('profile/sshkeys/'.$user->hash) }}">
+						<a href="{{ url('profile/keys/'.$user->hash) }}">
 							<span class="glyphicon glyphicon-briefcase"></span>
 							{{ Lang::get('profile.manage_ssh_keys') }}
 						</a>
@@ -67,27 +67,27 @@
 				<ul class="list-group">
 					@if ( ! empty($user->gender))
 						<li class="list-group-item">
-							<h4 class="list-group-item-heading">{{ Lang::get('global.gender') }}</h4>
+							<h4 class="list-group-item-heading">{{ Lang::get('profile.gender') }}</h4>
 
 							<p class="list-group-item-text">
 								@if ($user->gender == 'M')
-									{{ Lang::get('global.male') }}
+									{{ Lang::get('profile.male') }}
 								@elseif ($user->gender == 'F')
-									{{ Lang::get('global.female') }}
+									{{ Lang::get('profile.female') }}
 								@else
-									{{ Lang::get('global.other') }}
+									{{ Lang::get('profile.other') }}
 								@endif
 							</p>
 						</li>
 					@endif
 
 					<li class="list-group-item">
-						<h4 class="list-group-item-heading">{{ Lang::get('global.date_of_birth') }}</h4>
+						<h4 class="list-group-item-heading">{{ Lang::get('profile.date_of_birth') }}</h4>
 						<p class="list-group-item-text">{{ date('Y-m-d', strtotime($user->date_of_birth)) }}</p>
 					</li>
 
 					<li class="list-group-item">
-						<h4 class="list-group-item-heading">{{ Lang::get('global.timezone') }}</h4>
+						<h4 class="list-group-item-heading">{{ Lang::get('profile.timezone') }}</h4>
 						<p class="list-group-item-text">{{ $user->timezone }}</p>
 					</li>
 
@@ -109,7 +109,7 @@
 
 				<ul class="list-group">
 					<li class="list-group-item">
-						<h4 class="list-group-item-heading">{{ Lang::get('global.primary_email') }}</h4>
+						<h4 class="list-group-item-heading">{{ Lang::get('profile.primary_email') }}</h4>
 
 						<p class="list-group-item-text">
 							<a href="mailto:{{ $emails->primary }}">{{ $emails->primary }}</a>
@@ -118,7 +118,7 @@
 
 					@if ( ! empty($emails->other))
 						<li class="list-group-item">
-							<h4 class="list-group-item-heading">{{ Lang::get('global.other_email') }}</h4>
+							<h4 class="list-group-item-heading">{{ Lang::get('profile.other_email') }}</h4>
 
 							<ul class="list-group-item-text list-unstyled">
 								@foreach ($emails->other as $email)
