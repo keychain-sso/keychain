@@ -39,5 +39,6 @@ return array(
 	"ssh_key_added"          => "SSH key has been added",
 	"ssh_key_removed"        => "SSH key has been removed",
 	"public_key"             => "Public key",
+	"invalid_key"            => "You entered an invalid SSH key",
 
 );
