@@ -62,11 +62,11 @@ class Setup extends Migration {
 		});
 
 		// Create the emails table
-		Schema::create('user_emails', function( $table )
+		Schema::create('user_emails', function($table)
 		{
 			$table->increments('id');
-			$table->integer('user_id')->unsigned();
-			$table->string('email', 80)->index();
+			$table->integer('user_id')->unsigned()->index();
+			$table->string('address', 80)->index();
 			$table->boolean('primary');
 			$table->boolean('verified')->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
@@ -76,10 +76,10 @@ class Setup extends Migration {
 		});
 
 		// Create the keys table
-		Schema::create('user_keys', function( $table )
+		Schema::create('user_keys', function($table)
 		{
 			$table->increments('id');
-			$table->integer('user_id')->unsigned();
+			$table->integer('user_id')->unsigned()->index();
 			$table->string('title', 30);
 			$table->mediumText('key');
 			$table->string('fingerprint', 48);
@@ -122,7 +122,7 @@ class Setup extends Migration {
 		});
 
 		// Create the groups table
-		Schema::create('groups', function( $table )
+		Schema::create('groups', function($table)
 		{
 			$table->increments('id');
 			$table->string('name', 80)->index();
@@ -191,15 +191,25 @@ class Setup extends Migration {
 			$table->integer('last_activity');
 		});
 
-		// Create the token holder
-		Schema::create('tokens', function( $table )
+		// Create the token types table
+		Schema::create('token_types', function($table)
 		{
 			$table->increments('id');
-			$table->string('token', 20)->index();
-			$table->integer('permits_id');
-			$table->string('permits_type', 20);
+			$table->string('name', 80);
+		});
+
+		// Create the token holder
+		Schema::create('tokens', function($table)
+		{
+			$table->increments('id');
+			$table->string('token', 32)->index();
+			$table->integer('permits_id')->unsigned();
+			$table->integer('permits_type')->unsigned();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
+
+			$table->index(array('permits_id', 'permits_type'));
+			$table->foreign('permits_type')->references('id')->on('token_types')->onDelete('cascade');
 		});
 
 		// Insert ACL types
@@ -234,6 +244,12 @@ class Setup extends Migration {
 			array('name' => 'Blocked'),
 		));
 
+		// Insert token types
+		DB::table('token_types')->insert(array(
+			array('name' => 'Email'),
+			array('name' => 'Password'),
+		));
+
 		// Insert admin user account
 		DB::table('users')->insert(array(
 			'first_name'    => 'John',
@@ -250,14 +266,14 @@ class Setup extends Migration {
 		// Insert admin email addresses
 		DB::table('user_emails')->insert(array(
 			'user_id'  => 1,
-			'email'    => 'admin@keychain.sso',
+			'address'  => 'admin@keychain.sso',
 			'primary'  => Flags::YES,
 			'verified' => Flags::YES,
 		));
 
 		DB::table('user_emails')->insert(array(
 			'user_id'  => 1,
-			'email'    => 'alternate@keychain.sso',
+			'address'  => 'alternate@keychain.sso',
 			'primary'  => Flags::NO,
 			'verified' => Flags::YES,
 		));
@@ -558,6 +574,7 @@ class Setup extends Migration {
 	public function down()
 	{
 		Schema::drop('tokens');
+		Schema::drop('token_types');
 		Schema::drop('sessions');
 		Schema::drop('acl');
 		Schema::drop('acl_types');

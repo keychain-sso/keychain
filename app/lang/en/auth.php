@@ -11,7 +11,7 @@ return array(
 	|
 	*/
 
-	"log_into"          => "Log into %s",
+	"log_into"          => "Log into :site",
 	"login"             => "Login",
 	"remember"          => "Remember me",
 	"login_failed"      => "Incorrect email address and/or password",

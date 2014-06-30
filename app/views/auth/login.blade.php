@@ -12,7 +12,13 @@
 		<div class="row">
 			<div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
 				<fieldset>
-					<legend>{{ sprintf(Lang::get('auth.log_into'), Lang::get('global.keychain')) }}</legend>
+					<legend>
+						{{
+							Lang::get('auth.log_into', array(
+								'site' => Lang::get('global.keychain')
+							))
+						}}
+					</legend>
 
 					@include('common.alerts')
 

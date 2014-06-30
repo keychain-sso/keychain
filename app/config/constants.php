@@ -80,4 +80,14 @@ class FieldParser {
 
 }
 
+/**
+ * Defines types of validation tokens
+ */
+class TokenTypes {
+
+	const EMAIL = 1;
+	const PASSWORD = 2;
+
+}
+
 ?>

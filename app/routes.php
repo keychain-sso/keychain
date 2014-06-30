@@ -19,6 +19,9 @@ Route::get('/', function()
 // User profile route
 Route::controller('profile', 'ProfileController');
 
+// Token validation route
+Route::controller('token', 'TokenController');
+
 // Authentication route
 Route::controller('auth', 'AuthController');
 

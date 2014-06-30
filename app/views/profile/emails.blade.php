@@ -46,144 +46,86 @@
 
 	<fieldset>
 		<legend>
-			<span class="glyphicon glyphicon-user"></span>
-			{{ Lang::get('profile.basic_info') }}
+			<span class="glyphicon glyphicon-envelope"></span>
+			{{ Lang::get('profile.email_addresses') }}
+		</legend>
+
+		<ul class="list-group">
+			<li class="list-group-item">
+				<div class="pull-right">
+					<a class="btn btn-default btn-xs disabled">{{ Lang::get('profile.verified') }}</a>
+
+					<a class="btn btn-xs btn-danger disabled">
+						{{ Lang::get('global.remove') }}
+					</a>
+				</div>
+
+				<span class="glyphicon glyphicon-star text-success" title="{{ Lang::get('profile.primary_email') }}"
+				      data-toggle="tooltip"></span>
+
+				{{ $emails->primary->address }}
+			</li>
+
+			@foreach ($emails->other as $email)
+				<li class="list-group-item">
+					<div class="pull-right">
+						@if ($email->verified)
+							<a class="btn btn-default btn-xs disabled">{{ Lang::get('profile.verified') }}</a>
+						@else
+							<a href="{{ url('profile/emails/'.$user->hash.'/verify/'.$email->id) }}" class="btn btn-xs btn-default">
+								{{ Lang::get('profile.verify') }}
+							</a>
+						@endif
+
+						<a href="{{ url('profile/emails/'.$user->hash.'/remove/'.$email->id) }}" class="btn btn-xs btn-danger">
+							{{ Lang::get('global.remove') }}
+						</a>
+					</div>
+
+					@if ($email->verified)
+						<a href="{{ url('profile/emails/'.$user->hash.'/primary/'.$email->id) }}">
+							<span class="glyphicon glyphicon-star-empty text-muted" title="{{ Lang::get('profile.set_as_primary') }}"
+							      data-toggle="tooltip"></span>
+						</a>
+					@else
+						<span class="glyphicon glyphicon-star-empty text-danger" title="{{ Lang::get('profile.primary_verify') }}"
+						      data-toggle="tooltip"></span>
+					@endif
+
+					{{ $email->address }}
+				</li>
+			@endforeach
+		</ul>
+	</fieldset>
+
+	<fieldset>
+		<legend>
+			<span class="glyphicon glyphicon-export"></span>
+			{{ Lang::get('profile.add_new_email') }}
 		</legend>
 
 		<div class="form-group">
 			{{
-				Form::label('first_name', Lang::get('profile.first_name'), array(
+				Form::label('email', Lang::get('profile.email_address'), array(
 					'class' => 'control-label'
 				))
 			}}
 
 			{{
-				Form::text('first_name', $user->first_name, array(
+				Form::text('email', null, array(
 					'class' => 'form-control',
 				))
 			}}
 		</div>
-
-		<div class="form-group">
-			{{
-				Form::label('last_name', Lang::get('profile.first_name'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::text('last_name', $user->last_name, array(
-					'class' => 'form-control',
-				))
-			}}
-		</div>
-
-		<div class="form-group">
-			{{
-				Form::label('title', Lang::get('profile.title'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::text('title', $user->title, array(
-					'class' => 'form-control',
-				))
-			}}
-		</div>
-
-		<div class="form-group">
-			{{
-				Form::label('gender', Lang::get('profile.gender'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::select('gender', array(
-					null => '',
-					'M'  => Lang::get('profile.male'),
-					'F'  => Lang::get('profile.female'),
-					'O'  => Lang::get('profile.other'),
-				), $user->gender, array(
-					'class' => 'form-control',
-				))
-			}}
-		</div>
-
-		<div class="form-group">
-			{{
-				Form::label('date_of_birth', Lang::get('profile.date_of_birth'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			<div class="input-group">
-				{{
-					Form::text('date_of_birth', date('Y-m-d', strtotime($user->date_of_birth)), array(
-						'class'       => 'form-control',
-						'data-toggle' => 'datepicker',
-					))
-				}}
-
-				<span class="input-group-addon">
-					<span class="glyphicon glyphicon-calendar"></span>
-				</span>
-			</div>
-		</div>
-
-		<div class="form-group">
-			{{
-				Form::label('timezone', Lang::get('profile.timezone'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::select('timezone', $timezones, $user->timezone, array(
-					'class' => 'form-control',
-				))
-			}}
-		</div>
-
-		@foreach ($fieldEdit->{FieldCategories::BASIC} as $field)
-			{{ $field }}
-		@endforeach
 	</fieldset>
-
-	@if ( ! empty($fieldEdit->{FieldCategories::CONTACT}))
-		<fieldset>
-			<legend>
-				<span class="glyphicon glyphicon-phone-alt"></span>
-				{{ Lang::get('profile.contact_info') }}
-			</legend>
-
-			@foreach ($fieldEdit->{FieldCategories::CONTACT} as $field)
-				{{ $field }}
-			@endforeach
-		</fieldset>
-	@endif
-
-	@if ( ! empty($fieldEdit->{FieldCategories::OTHER}))
-		<fieldset>
-			<legend>
-				<span class="glyphicon glyphicon-th"></span>
-				{{ Lang::get('profile.other_details') }}
-			</legend>
-
-			@foreach ($fieldEdit->{FieldCategories::OTHER} as $field)
-				{{ $field }}
-			@endforeach
-		</fieldset>
-	@endif
 </div>
 
 <div class="modal-footer">
 	{{ Form::hidden('hash', $user->hash) }}
 
 	{{
-		Form::submit(Lang::get('global.save'), array(
-			'name'     => '_save',
+		Form::submit(Lang::get('global.add'), array(
+			'name'     => '_add',
 			'class'    => 'btn btn-primary',
 		))
 	}}

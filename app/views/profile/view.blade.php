@@ -112,7 +112,12 @@
 						<h4 class="list-group-item-heading">{{ Lang::get('profile.primary_email') }}</h4>
 
 						<p class="list-group-item-text">
-							<a href="mailto:{{ $emails->primary }}">{{ $emails->primary }}</a>
+							{{ $emails->primary->address }}
+
+							@if ($emails->primary->verified)
+								<span class="glyphicon glyphicon-ok-sign text-muted" title="{{ Lang::get('profile.verified') }}"
+								      data-toggle="tooltip"></span>
+							@endif
 						</p>
 					</li>
 
@@ -123,7 +128,12 @@
 							<ul class="list-group-item-text list-unstyled">
 								@foreach ($emails->other as $email)
 									<li>
-										<a href="mailto:{{ $email }}">{{ $email }}</a>
+										{{ $email->address }}
+
+										@if ($email->verified)
+											<span class="glyphicon glyphicon-ok-sign text-muted" title="{{ Lang::get('profile.verified') }}"
+											      data-toggle="tooltip"></span>
+										@endif
 									</li>
 								@endforeach
 							</ul>

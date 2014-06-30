@@ -121,9 +121,10 @@ class ProfileController extends BaseController {
 	 * @access public
 	 * @param  string  $hash
 	 * @param  string  $action
+	 * @param  int  $email
 	 * @return \Illuminate\Support\Facades\View
 	 */
-	public function getEmails($hash, $action = '')
+	public function getEmails($hash, $action = null, $email = 0)
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
@@ -133,6 +134,113 @@ class ProfileController extends BaseController {
 		if ( ! Access::check('u_profile_edit', $user))
 		{
 			App::abort(HTTPStatus::FORBIDDEN);
+		}
+
+		// Perform the requested action
+		switch ($action)
+		{
+			case 'remove':
+
+				// Check for user_id as well, to avoid injection
+				// Primary emails may not be removed
+				UserEmail::where('id', $email)->where('user_id', $user->id)->where('primary', 0)->delete();
+
+				// Purge the user field cache
+				Cache::forget("user.field.data.{$user->id}");
+
+				// Redirect back to the previous URL
+				Session::flash('messages.success', Lang::get('profile.email_removed'));
+
+				return Redirect::to(URL::previous());
+
+			case 'verify':
+
+				// Send the verification email
+				Verifier::make('email_add', $email);
+
+				// Redirect back to the previous URL
+				Session::flash('messages.success', Lang::get('profile.email_verify'));
+
+				return Redirect::to(URL::previous());
+
+			case 'primary':
+
+				// Check for user_id as well, to avoid injection
+				// Only verified emails can be marked as primary
+				$userEmail = UserEmail::where('id', $email)->where('user_id', $user->id)->where('verified', 1)->firstOrFail();
+				$userEmail->primary = 1;
+				$userEmail->save();
+
+				// Now, mark the previous primary as regular
+				UserEmail::where('user_id', $user->id)->where('id', '<>', $email)->update(array('primary' => 0));
+
+				// Purge the user field cache
+				Cache::forget("user.field.data.{$user->id}");
+
+				// Redirect back to the previous URL
+				return Redirect::to(URL::previous());
+
+			default:
+
+				$data = array_merge($data, array(
+					'modal' => 'emails',
+				));
+
+				return View::make('profile/view', $data);
+		}
+	}
+
+	/**
+	 * Handles email save functionality
+	 *
+	 * @access public
+	 * @return \Illuminate\Support\Facades\Redirect
+	 */
+	public function postEmails()
+	{
+		if (Input::has('_add'))
+		{
+			// Fetch the associated user
+			$hash = Input::get('hash');
+			$user = User::where('hash', $hash)->firstOrFail();
+
+			// Validate edit rights
+			if ( ! Access::check('u_profile_edit', $user))
+			{
+				App::abort(HTTPStatus::FORBIDDEN);
+			}
+
+			// Validate posted fields
+			$validator = Validator::make(Input::all(), array(
+				'email' => 'required|email|max:80|unique:user_emails,address',
+			));
+
+			// Run the validator
+			if ($validator->fails())
+			{
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Save the email address
+			$email = new UserEmail;
+			$email->user_id  = $user->id;
+			$email->address  = Input::get('email');
+			$email->primary  = Flags::NO;
+			$email->verified = Flags::NO;
+			$email->save();
+
+			// Send the verification token
+			Verifier::make('email_add', $email->id);
+
+			// Purge the user field cache
+			Cache::forget("user.field.data.{$user->id}");
+
+			// Redirect back to the previous URL
+			Session::flash('messages.success', Lang::get('profile.email_verify'));
+
+			return Redirect::to(URL::previous());
 		}
 	}
 
@@ -157,23 +265,28 @@ class ProfileController extends BaseController {
 			App::abort(HTTPStatus::FORBIDDEN);
 		}
 
-		if (is_null($action))
+		// Perform the requested action
+		switch ($action)
 		{
-			// Merge the profile data with editor data
-			$data = array_merge($data, array(
-				'keys'  => $user->keys,
-				'modal' => 'keys',
-			));
+			case 'remove':
 
-			return View::make('profile/view', $data);
-		}
-		else if ($action == 'remove')
-		{
-			UserKey::findOrFail($key)->delete();
+				// Also check for user_id to avoid injection
+				UserKey::where('id', $key)->where('user_id', $user->id)->delete();
 
-			Session::flash('messages.success', Lang::get('profile.ssh_key_removed'));
+				// Redirect back to previous URL
+				Session::flash('messages.success', Lang::get('profile.ssh_key_removed'));
 
-			return Redirect::to(URL::previous());
+				return Redirect::to(URL::previous());
+
+
+			default:
+
+				$data = array_merge($data, array(
+					'keys'  => $user->keys,
+					'modal' => 'keys',
+				));
+
+				return View::make('profile/view', $data);
 		}
 	}
 
@@ -223,7 +336,7 @@ class ProfileController extends BaseController {
 			}
 
 			// Save the SSH key
-			$userKey              = new UserKey;
+			$userKey = new UserKey;
 			$userKey->user_id     = $user->id;
 			$userKey->title       = Input::get('title');
 			$userKey->key         = $key;
@@ -250,15 +363,15 @@ class ProfileController extends BaseController {
 			// Parse user's email addresses as primary and other
 			$emails = new stdClass;
 
-			foreach ($user->emails as $addr)
+			foreach ($user->emails as $email)
 			{
-				if ($addr->primary)
+				if ($email->primary)
 				{
-					$emails->primary = $addr->email;
+					$emails->primary = $email;
 				}
 				else
 				{
-					$emails->other[] = $addr->email;
+					$emails->other[] = $email;
 				}
 			}
 

@@ -83,7 +83,7 @@ class KeychainUserProvider implements UserProviderInterface {
 	public function retrieveByCredentials(array $credentials)
 	{
 		// First, we fetch a matching verified email address
-		$email = UserEmail::where('email', $credentials['email'])->where('verified', 1)->first();
+		$email = UserEmail::where('address', $credentials['email'])->where('verified', 1)->first();
 
 		// If an email address match is found, return the corresponding user
 		if ($email != null)
