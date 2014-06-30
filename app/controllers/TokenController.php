@@ -23,4 +23,16 @@
  */
 class TokenController extends BaseController {
 
+	/**
+	 * Verifies a specific token
+	 *
+	 * @access public
+	 * @param  string  $type
+	 * @param  string  $token
+	 * @return \Illuminate\Support\Facades\View
+	 */
+	public function getVerify($type, $token)
+	{
+	}
+
 }
