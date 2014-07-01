@@ -14,6 +14,7 @@
  */
 
 use App;
+use Auth;
 use Cache;
 use DateTimeZone;
 use HTTPStatus;
@@ -23,6 +24,7 @@ use Token;
 use TokenTypes;
 use User;
 use UserEmail;
+use View;
 
 /**
  * Verifier class
@@ -104,6 +106,68 @@ class Verifier {
 		{
 			$message->to($to)->subject(Lang::get('email.mail_subject'));
 		});
+	}
+
+	/**
+	 * Validates a token based on its type
+	 *
+	 * @static
+	 * @access public
+	 * @param  string  $type
+	 * @param  string  $hash
+	 * @return bool
+	 */
+	public static function check($type, $hash)
+	{
+		// Perform validation based on token type
+		switch ($type)
+		{
+			case 'email':
+
+				// Fetch the token
+				$token = Token::where('permits_type', TokenTypes::EMAIL)->where('token', $hash)->firstOrFail();
+
+				// Verify the associated email
+				$email = UserEmail::findOrFail($token->permits_id);
+				$email->verified = 1;
+				$email->save();
+
+				// Clear the user cache
+				Cache::forget("user.field.data.{$email->user_id}");
+
+				// Delete the token
+				$token->delete();
+
+				// Show a success notice
+				$data = array(
+					'type'    => 'success',
+					'message' => Lang::get('global.email_verified'),
+				);
+
+				if (Auth::check())
+				{
+					$data['return'] = link_to('profile', Lang::get('global.return_profile'));
+				}
+				else
+				{
+					$data['return'] = link_to('auth/login', Lang::get('global.return_login'));
+				}
+
+				return View::make('common/notice', $data);
+
+			case 'password':
+
+				// Fetch the token
+				$token = Token::where('permits_type', TokenTypes::PASSWORD)->where('token', $hash)->firstOrFail();
+
+				// Set the session flag to indicate successful validation
+				Session::set('security.token.validated', true);
+
+				// Delete the token
+				$token->delete();
+
+				return Redirect::to('auth/reset');
+		}
 	}
 
 }

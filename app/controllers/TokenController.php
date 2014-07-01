@@ -28,11 +28,12 @@ class TokenController extends BaseController {
 	 *
 	 * @access public
 	 * @param  string  $type
-	 * @param  string  $token
+	 * @param  string  $hash
 	 * @return \Illuminate\Support\Facades\View
 	 */
-	public function getVerify($type, $token)
+	public function getVerify($type, $hash)
 	{
+		return Verifier::check($type, $hash);
 	}
 
 }

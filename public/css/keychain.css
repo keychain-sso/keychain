@@ -14,6 +14,13 @@
 footer {
   margin: 20px;
 }
+.jumbotron .text-xl {
+  font-size: 110px;
+  margin-bottom: 20px;
+}
+.jumbotron small {
+  font-size: 100%;
+}
 .navbar-modal {
   margin: -15px -15px 15px -15px;
   border-radius: 6px 6px 0 0;

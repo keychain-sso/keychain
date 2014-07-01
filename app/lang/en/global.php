@@ -22,5 +22,8 @@ return array(
 	"yes"               => "Yes",
 	"no"                => "No",
 	"remove"            => "Remove",
+	"email_verified"    => "Your email address has been verified",
+	"return_profile"    => "Click here to return to your profile",
+	"return_login"      => "Click here to go to the login screen",
 
 );
