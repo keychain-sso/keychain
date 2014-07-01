@@ -47,7 +47,13 @@ class ProfileController extends BaseController {
 		$user = User::where('hash', $hash)->firstOrFail();
 		$data = $this->getProfileData($user);
 
-		return View::make('profile/view', $data);
+		// Set the page title
+		$title = Lang::get('profile.viewing_profile', array(
+			'first_name' => $user->first_name,
+			'last_name'  => $user->last_name,
+		));
+
+		return View::make('profile/view', $title, $data);
 	}
 
 	/**
@@ -64,10 +70,7 @@ class ProfileController extends BaseController {
 		$data = $this->getProfileData($user);
 
 		// Validate edit rights
-		if ( ! Access::check('u_profile_edit', $user))
-		{
-			App::abort(HTTPStatus::FORBIDDEN);
-		}
+		Access::restrict('user.edit', $user);
 
 		// Merge the profile data with editor data
 		$data = array_merge($data, array(
@@ -76,7 +79,7 @@ class ProfileController extends BaseController {
 			'modal'     => 'edit',
 		));
 
-		return View::make('profile/view', $data);
+		return View::make('profile/view', 'profile.edit_profile', $data);
 	}
 
 	/**
@@ -94,10 +97,7 @@ class ProfileController extends BaseController {
 			$user = User::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			if ( ! Access::check('u_profile_edit', $user))
-			{
-				App::abort(HTTPStatus::FORBIDDEN);
-			}
+			Access::restrict('user.edit', $user);
 
 			// Save the form data and show the status
 			$status = FormField::save($user, Input::all());
@@ -131,10 +131,7 @@ class ProfileController extends BaseController {
 		$data = $this->getProfileData($user);
 
 		// Validate edit rights
-		if ( ! Access::check('u_profile_edit', $user))
-		{
-			App::abort(HTTPStatus::FORBIDDEN);
-		}
+		Access::restrict('user.edit', $user);
 
 		// Perform the requested action
 		switch ($action)
@@ -145,8 +142,8 @@ class ProfileController extends BaseController {
 				// Primary emails may not be removed
 				UserEmail::where('id', $email)->where('user_id', $user->id)->where('primary', 0)->delete();
 
-				// Purge the user field cache
-				Cache::forget("user.field.data.{$user->id}");
+				// Purge the user field data object
+				Session::forget("user.field.data.{$user->id}");
 
 				// Redirect back to the previous URL
 				Session::flash('messages.success', Lang::get('profile.email_removed'));
@@ -182,11 +179,7 @@ class ProfileController extends BaseController {
 
 			default:
 
-				$data = array_merge($data, array(
-					'modal' => 'emails',
-				));
-
-				return View::make('profile/view', $data);
+				return View::make('profile/view', 'profile.manage_email_addresses', array_merge($data, array('modal' => 'emails')));
 		}
 	}
 
@@ -205,10 +198,7 @@ class ProfileController extends BaseController {
 			$user = User::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			if ( ! Access::check('u_profile_edit', $user))
-			{
-				App::abort(HTTPStatus::FORBIDDEN);
-			}
+			Access::restrict('user.edit', $user);
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
@@ -234,8 +224,8 @@ class ProfileController extends BaseController {
 			// Send the verification token
 			Verifier::make('email_add', $email->id);
 
-			// Purge the user field cache
-			Cache::forget("user.field.data.{$user->id}");
+			// Purge the user field data object
+			Session::forget("user.field.data.{$user->id}");
 
 			// Redirect back to the previous URL
 			Session::flash('messages.success', Lang::get('profile.email_verify'));
@@ -260,10 +250,7 @@ class ProfileController extends BaseController {
 		$data = $this->getProfileData($user);
 
 		// Validate edit rights
-		if ( ! Access::check('u_profile_edit', $user))
-		{
-			App::abort(HTTPStatus::FORBIDDEN);
-		}
+		Access::restrict('user.edit', $user);
 
 		// Perform the requested action
 		switch ($action)
@@ -286,7 +273,7 @@ class ProfileController extends BaseController {
 					'modal' => 'keys',
 				));
 
-				return View::make('profile/view', $data);
+				return View::make('profile/view', 'profile.manage_ssh_keys', $data);
 		}
 	}
 
@@ -305,10 +292,7 @@ class ProfileController extends BaseController {
 			$user = User::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			if ( ! Access::check('u_profile_edit', $user))
-			{
-				App::abort(HTTPStatus::FORBIDDEN);
-			}
+			Access::restrict('user.edit', $user);
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
@@ -350,6 +334,89 @@ class ProfileController extends BaseController {
 	}
 
 	/**
+	 * Shows the security settings screen
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return \Illuminate\Support\Facades\View
+	 */
+	public function getSecurity($hash)
+	{
+		// Fetch the user's profile
+		$user = User::where('hash', $hash)->firstOrFail();
+		$data = $this->getProfileData($user);
+
+		// Validate edit rights
+		Access::restrict('user.edit', $user);
+
+		return View::make('profile/view', 'profile.security_settings', array_merge($data, array('modal' => 'security')));
+	}
+
+	/**
+	 * Handles security settings save functionality
+	 *
+	 * @access public
+	 * @return \Illuminate\Support\Facades\Redirect
+	 */
+	public function postSecurity()
+	{
+		if (Input::has('_save'))
+		{
+			// Fetch the associated user
+			$hash = Input::get('hash');
+			$user = User::where('hash', $hash)->firstOrFail();
+			$manage = Access::check('user.manage', $user);
+
+			// Validate edit rights
+			Access::restrict('user.edit', $user);
+
+			// Define the validation rules
+			$validator = Validator::make(Input::all(), array(
+				'new_password'     => 'min:7',
+				'confirm_password' => 'required_with:new_password|same:new_password',
+				'status'           => 'exists:user_status,id',
+			));
+
+			// Run the validator
+			if ($validator->fails())
+			{
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Check the old password
+			if ( ! $manage && ! Hash::check(Input::get('old_password'), $user->password))
+			{
+				Session::flash('messages.error', Lang::get('profile.old_password_invalid'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Finally, we change the password
+			$user->password = Hash::make(Input::get('new_password'));
+
+			// Check if logged in user has manage rights
+			// If so, update the account settings as well
+			if ($manage)
+			{
+				$user->status = Input::get('status');
+			}
+
+			$user->save();
+
+			// Purge the user field data object
+			Session::forget("user.field.data.{$user->id}");
+
+			// Redirect back to the previous URL
+
+			Session::flash('messages.success', Lang::get('profile.security_saved'));
+
+			return Redirect::to(URL::previous());
+		}
+	}
+
+	/**
 	 * Fetches the user's profile data
 	 *
 	 * @access private
@@ -358,7 +425,7 @@ class ProfileController extends BaseController {
 	 */
 	private function getProfileData($user)
 	{
-		return Cache::remember("user.field.data.{$user->id}", 1440, function() use ($user)
+		if ( ! Session::has("user.field.data.{$user->id}"))
 		{
 			// Parse user's email addresses as primary and other
 			$emails = new stdClass;
@@ -378,15 +445,25 @@ class ProfileController extends BaseController {
 			// Get user-group data
 			$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
 
-			// Return the user's profile data
-			return array(
+			// Build the profile data
+			$profile = array(
 				'user'        => $user,
 				'emails'      => $emails,
 				'fieldView'   => FormField::getView($user),
 				'memberships' => $memberships,
 				'modal'       => false,
 			);
-		});
+
+			// Cache the user's profile data to session
+			Session::put("user.field.data.{$user->id}", $profile);
+		}
+		else
+		{
+			// Get the profile data from session
+			$profile = Session::get("user.field.data.{$user->id}");
+		}
+
+		return $profile;
 	}
 
 }

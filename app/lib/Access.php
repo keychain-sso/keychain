@@ -15,6 +15,7 @@
 
 use ACL;
 use ACLTypes;
+use App;
 use Session;
 
 /**
@@ -144,6 +145,23 @@ class Access {
 
 		// No access!
 		return false;
+	}
+
+	/**
+	 * Restricts access to a resource if an ACL query fails
+	 *
+	 * @static
+	 * @access public
+	 * @param  string  $flag
+	 * @param  int  $object
+	 * @param  int  $field
+	 */
+	public static function restrict($flag, $object, $field = 0)
+	{
+		if ( ! static::check($flag, $object, $field))
+		{
+			App::abort(HTTPStatus::FORBIDDEN);
+		}
 	}
 
 }

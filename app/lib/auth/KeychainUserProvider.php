@@ -17,6 +17,7 @@ use Config;
 use Hash;
 use User;
 use UserEmail;
+use UserStatus;
 
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\UserProviderInterface;
@@ -88,7 +89,13 @@ class KeychainUserProvider implements UserProviderInterface {
 		// If an email address match is found, return the corresponding user
 		if ($email != null)
 		{
-			return $email->user;
+			$user = $email->user;
+
+			// Only active users can log in
+			if ($user->status == UserStatus::ACTIVE)
+			{
+				return $user;
+			}
 		}
 	}
 

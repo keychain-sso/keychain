@@ -5,8 +5,9 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{{ Lang::get('global.keychain') }}</title>
+	<title>{{ $title }}</title>
 
+	<link href="{{ asset('img/favicon.ico') }}" rel="icon" />
 	<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
 	<link href="{{ asset('css/keychain.css') }}" rel="stylesheet" />
 	<link href="{{ asset('css/datepicker.css') }}" rel="stylesheet" />
@@ -25,11 +26,18 @@
 				<a class="navbar-brand" href="{{ url() }}">{{ Lang::get('global.keychain') }}</a>
 			</div>
 
-			<div class="collapse navbar-collapse navbar-ex1-collapse">
-				<ul class="nav navbar-nav navbar-right">
-					<!-- Add navigation links here -->
-				</ul>
-			</div>
+			@if (Auth::check())
+				<div class="collapse navbar-collapse navbar-ex1-collapse">
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<a href="{{ url('auth/logout') }}">
+								<span class="glyphicon glyphicon-off"></span>
+								{{ Lang::get('global.logout') }}
+							</a>
+						</li>
+					</ul>
+				</div>
+			@endif
 		</div>
 	</nav>
 

@@ -14,6 +14,7 @@
  */
 
 use Config;
+use Lang;
 use Session;
 
 /**
@@ -30,9 +31,10 @@ class View extends \Illuminate\Support\Facades\View {
 	 * Cache for default view data
 	 *
 	 * @static
+	 * @access protected
 	 * @var array
 	 */
-	private static $viewDefaults = NULL;
+	protected static $defaults = null;
 
 	/**
 	 * Returns default variables for a view
@@ -43,9 +45,9 @@ class View extends \Illuminate\Support\Facades\View {
 	 */
 	public static function defaults()
 	{
-		if (is_null(static::$viewDefaults))
+		if (is_null(static::$defaults))
 		{
-			static::$viewDefaults = array(
+			static::$defaults = array(
 				'error'     => Session::get('messages.error'),
 				'success'   => Session::get('messages.success'),
 				'global'    => Session::get('messages.global'),
@@ -53,20 +55,25 @@ class View extends \Illuminate\Support\Facades\View {
 			);
 		}
 
-		return static::$viewDefaults;
+		return static::$defaults;
 	}
 
 	/**
-	 * This abstraction over the base method injects the skin name
+	 * This abstraction over the base method injects the page title
 	 * and default view data.
 	 *
+	 * @static
+	 * @access public
 	 * @param  string  $view
+	 * @param  string  $title
 	 * @param  array  $data
 	 * @param  bool  $inject
 	 * @return \Illuminate\View\View
 	 */
-	public static function make($view, $data = array(), $inject = true)
+	public static function make($view, $title = null, $data = array())
 	{
+		$data['title'] = is_null($title) ? Lang::get('global.keychain') : Lang::get($title);
+
 		return parent::make($view, $data, static::defaults());
 	}
 

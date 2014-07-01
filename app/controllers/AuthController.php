@@ -31,7 +31,7 @@ class AuthController extends BaseController {
 	 */
 	public function getLogin()
 	{
-		return View::make('auth/login');
+		return View::make('auth/login', 'auth.login');
 	}
 
 	/**
@@ -76,6 +76,19 @@ class AuthController extends BaseController {
 		}
 
 		return Redirect::to('auth/login')->withInput();
+	}
+
+	/**
+	 * Handles user logout
+	 *
+	 * @access public
+	 * @return \Illuminate\Support\Facades\Redirect
+	 */
+	public function getLogout()
+	{
+		Auth::logout();
+
+		return Redirect::to('auth/login');
 	}
 
 }

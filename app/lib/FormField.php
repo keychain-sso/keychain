@@ -24,6 +24,7 @@ use FieldTypes;
 use Flags;
 use HTTPStatus;
 use Lang;
+use Session;
 use UserField;
 use Utilities;
 use Validator;
@@ -68,7 +69,7 @@ class FormField {
 		// Compile custom fields for display
 		foreach ($fieldInfo as $field)
 		{
-			if (Access::check('u_field_view', $user, $field->id))
+			if (Access::check('field.view', $user, $field->id))
 			{
 				// Parse the field for display
 				if (isset($userFieldInfo[$field->id]))
@@ -117,7 +118,7 @@ class FormField {
 		// Compile user field controls
 		foreach ($fieldInfo as $field)
 		{
-			if (Access::check('u_field_edit', $user, $field->id))
+			if (Access::check('field.edit', $user, $field->id))
 			{
 				// Parse the field for display
 				$value = isset($userFieldInfo[$field->id]) ? $userFieldInfo[$field->id]->value : null;
@@ -128,10 +129,10 @@ class FormField {
 					'machine_name' => "custom_{$field->machine_name}",
 					'value'        => $parsed[FieldParser::VALUE],
 					'options'      => $parsed[FieldParser::OPTIONS],
-					'disabled'     => Access::check('u_field_edit', $user, $field->id) ? null : 'disabled',
+					'disabled'     => Access::check('field.edit', $user, $field->id) ? null : 'disabled',
 				);
 
-				$fields->{$field->category}[$field->order] = View::make("controls/{$fieldTypes[$field->type]}", $data)->render();
+				$fields->{$field->category}[$field->order] = View::make("controls/{$fieldTypes[$field->type]}", null, $data)->render();
 			}
 		}
 
@@ -149,8 +150,8 @@ class FormField {
 	 */
 	public static function save($user, $data)
 	{
-		// Purge the profile data cache
-		Cache::forget("user.field.data.{$user->id}");
+		// Purge the profile data session object
+		Session::forget("user.field.data.{$user->id}");
 
 		// Validate basic fields
 		$validator = Validator::make($data, array(
@@ -185,10 +186,7 @@ class FormField {
 			$value = isset($data['custom_'.$field->machine_name]) ? $data['custom_'.$field->machine_name] : '';
 
 			// Validate if user can edit this field
-			if ( ! Access::check('u_field_edit', $user, $field->id))
-			{
-				App::abort(HTTPStatus::FORBIDDEN);
-			}
+			Access::restrict('field.edit', $user, $field->id);
 
 			// Set the initial rule
 			$rules = $field->required ? 'required|' : '';

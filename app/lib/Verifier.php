@@ -15,11 +15,11 @@
 
 use App;
 use Auth;
-use Cache;
 use DateTimeZone;
 use HTTPStatus;
 use Lang;
 use Mail;
+use Session;
 use Token;
 use TokenTypes;
 use User;
@@ -128,12 +128,10 @@ class Verifier {
 				$token = Token::where('permits_type', TokenTypes::EMAIL)->where('token', $hash)->firstOrFail();
 
 				// Verify the associated email
-				$email = UserEmail::findOrFail($token->permits_id);
-				$email->verified = 1;
-				$email->save();
+				$email = UserEmail::where($token->permits_id)->update(array('verified' => 1));
 
-				// Clear the user cache
-				Cache::forget("user.field.data.{$email->user_id}");
+				// Clear the user profile session object
+				Session::forget("user.field.data.{$email->user_id}");
 
 				// Delete the token
 				$token->delete();
@@ -153,7 +151,7 @@ class Verifier {
 					$data['return'] = link_to('auth/login', Lang::get('global.return_login'));
 				}
 
-				return View::make('common/notice', $data);
+				return View::make('common/notice', 'global.information', $data);
 
 			case 'password':
 

@@ -20,7 +20,7 @@
 		<p>{{ $user->title }}</p>
 	</div>
 
-	@if (Access::check('u_profile_edit', $user))
+	@if (Access::check('user.edit', $user))
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="container-fluid">
 				<ul class="nav navbar-nav">

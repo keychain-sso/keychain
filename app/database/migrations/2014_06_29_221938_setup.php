@@ -445,7 +445,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 1,
-			'access'       => 'u_field_view',
+			'access'       => 'field.view',
 		));
 
 		DB::table('acl')->insert(array(
@@ -454,7 +454,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 1,
-			'access'       => 'u_field_edit',
+			'access'       => 'field.edit',
 		));
 
 		DB::table('acl')->insert(array(
@@ -463,7 +463,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 2,
-			'access'       => 'u_field_view',
+			'access'       => 'field.view',
 		));
 
 		DB::table('acl')->insert(array(
@@ -472,7 +472,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 2,
-			'access'       => 'u_field_edit',
+			'access'       => 'field.edit',
 		));
 
 		DB::table('acl')->insert(array(
@@ -481,7 +481,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 3,
-			'access'       => 'u_field_view',
+			'access'       => 'field.view',
 		));
 
 		DB::table('acl')->insert(array(
@@ -490,7 +490,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 3,
-			'access'       => 'u_field_edit',
+			'access'       => 'field.edit',
 		));
 
 		DB::table('acl')->insert(array(
@@ -499,7 +499,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 4,
-			'access'       => 'u_field_view',
+			'access'       => 'field.view',
 		));
 
 		DB::table('acl')->insert(array(
@@ -508,7 +508,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 4,
-			'access'       => 'u_field_edit',
+			'access'       => 'field.edit',
 		));
 
 		DB::table('acl')->insert(array(
@@ -517,7 +517,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 5,
-			'access'       => 'u_field_view',
+			'access'       => 'field.view',
 		));
 
 		DB::table('acl')->insert(array(
@@ -526,7 +526,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 5,
-			'access'       => 'u_field_edit',
+			'access'       => 'field.edit',
 		));
 
 		DB::table('acl')->insert(array(
@@ -535,7 +535,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 6,
-			'access'       => 'u_field_view',
+			'access'       => 'field.view',
 		));
 
 		DB::table('acl')->insert(array(
@@ -544,7 +544,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 6,
-			'access'       => 'u_field_edit',
+			'access'       => 'field.edit',
 		));
 
 		// Allow sysadmins to edit all profiles
@@ -553,7 +553,25 @@ class Setup extends Migration {
 			'object_type'  => ACLTypes::ALL,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => 'u_profile_edit',
+			'access'       => 'user.edit',
+		));
+
+		// Allow sysadmins to administrate all users
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'access'       => 'user.manage',
+		));
+
+		// Allow sysadmins to administrate all groups
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'access'       => 'group.manage',
 		));
 
 		// Allow registered users to edit their own profiles
@@ -562,7 +580,7 @@ class Setup extends Migration {
 			'object_type'  => ACLTypes::SELF,
 			'subject_id'   => 1,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => 'u_profile_edit',
+			'access'       => 'user.edit',
 		));
 	}
 
