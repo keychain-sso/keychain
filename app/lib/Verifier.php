@@ -75,7 +75,7 @@ class Verifier {
 
 				// Resolve the user and email address
 				$user = User::find($id);
-				$to = UserEmail::where('user_id', $id)->firstOrFail()->address;
+				$to = UserEmail::where('user_id', $id)->where('primary', 1)->firstOrFail()->address;
 				break;
 
 			default:
