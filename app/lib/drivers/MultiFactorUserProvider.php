@@ -1,4 +1,4 @@
-<?php namespace Keychain\Auth;
+<?php namespace Keychain\Drivers;
 
 /**
  * Keychain
@@ -25,14 +25,14 @@ use Illuminate\Database\Connection;
 use Illuminate\Hashing\HasherInterface;
 
 /**
- * KeychainUserProvider class
+ * MultiFactorUserProvider class
  *
  * Handles primary and multi-factor authentication for users
  *
  * @package     Keychain
  * @subpackage  Drivers
  */
-class KeychainUserProvider implements UserProviderInterface {
+class MultiFactorUserProvider implements UserProviderInterface {
 
 	/**
 	 * Retrieve a user by their unique identifier.

@@ -94,16 +94,16 @@ require app_path().'/config/constants.php';
 
 /*
 |--------------------------------------------------------------------------
-| Keychain Authentication Driver
+| Multi-Factor Authentication Driver
 |--------------------------------------------------------------------------
 |
 | Handles primary and multi-factor authentication for users.
 |
 */
 
-Auth::extend('keychain', function()
+Auth::extend('multifactor', function()
 {
-	return new Guard(new KeychainUserProvider(), App::make('session.store'));
+	return new Guard(new MultiFactorUserProvider(), App::make('session.store'));
 });
 
 /*

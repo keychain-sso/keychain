@@ -1,4 +1,4 @@
-<?php namespace Keychain;
+<?php namespace Keychain\Components;
 
 /**
  * Keychain
@@ -37,7 +37,7 @@ use stdClass;
  * Provides functionalities around user fields
  *
  * @package     Keychain
- * @subpackage  Libraries
+ * @subpackage  Components
  */
 class FormField {
 

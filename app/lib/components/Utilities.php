@@ -1,4 +1,4 @@
-<?php namespace Keychain;
+<?php namespace Keychain\Components;
 
 /**
  * Keychain
@@ -22,7 +22,7 @@ use DateTimeZone;
  * Provider helper functionalities across the board
  *
  * @package     Keychain
- * @subpackage  Libraries
+ * @subpackage  Components
  */
 class Utilities {
 

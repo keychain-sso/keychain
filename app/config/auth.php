@@ -11,11 +11,11 @@ return array(
 	| This driver manages the retrieval and authentication of the users
 	| attempting to get access to protected areas of your application.
 	|
-	| Supported: "database", "eloquent", "keychain"
+	| Supported: "database", "eloquent", "multifactor"
 	|
 	*/
 
-	'driver' => 'keychain',
+	'driver' => 'multifactor',
 
 	/*
 	|--------------------------------------------------------------------------

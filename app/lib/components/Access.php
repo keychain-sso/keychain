@@ -1,4 +1,4 @@
-<?php namespace Keychain;
+<?php namespace Keychain\Components;
 
 /**
  * Keychain
@@ -25,7 +25,7 @@ use Session;
  * the application
  *
  * @package     Keychain
- * @subpackage  Libraries
+ * @subpackage  Components
  */
 class Access {
 

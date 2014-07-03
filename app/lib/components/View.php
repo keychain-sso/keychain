@@ -1,4 +1,4 @@
-<?php namespace Keychain;
+<?php namespace Keychain\Components;
 
 /**
  * Keychain
@@ -23,7 +23,7 @@ use Session;
  * Abstraction over \Illuminate\Support\Facades\View
  *
  * @package     Keychain
- * @subpackage  Libraries
+ * @subpackage  Components
  */
 class View extends \Illuminate\Support\Facades\View {
 

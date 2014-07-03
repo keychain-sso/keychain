@@ -1,4 +1,4 @@
-<?php namespace Keychain;
+<?php namespace Keychain\Components;
 
 /**
  * Keychain
@@ -32,7 +32,7 @@ use View;
  * Verification service that uses tokens to validate specific fields
  *
  * @package     Keychain
- * @subpackage  Libraries
+ * @subpackage  Components
  */
 class Verifier {
 
