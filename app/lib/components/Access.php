@@ -16,7 +16,7 @@
 use ACL;
 use ACLTypes;
 use App;
-use Session;
+use Cache;
 
 /**
  * Access class
@@ -47,7 +47,7 @@ class Access {
 		$subjectGroups = Auth::groups();
 
 		// Fetch all privileges tied to the subject and store them in the session
-		if ( ! Session::has('security.acl'))
+		$acl = Cache::remember("acl.{$subjectUser->id}", 60, function()
 		{
 			$acl = array();
 
@@ -89,13 +89,8 @@ class Access {
 				}
 			}
 
-			// Finally, save the ACL flagset to the session
-			Session::put('security.acl', $acl);
-		}
-		else
-		{
-			$acl = Session::get('security.acl');
-		}
+			return $acl;
+		});
 
 		// Get the type of the object
 		$type = get_class($object);

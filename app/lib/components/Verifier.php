@@ -15,6 +15,7 @@
 
 use App;
 use Auth;
+use Cache;
 use DateTimeZone;
 use HTTPStatus;
 use Lang;
@@ -130,8 +131,8 @@ class Verifier {
 				// Verify the associated email
 				$email = UserEmail::where($token->permits_id)->update(array('verified' => 1));
 
-				// Clear the user profile session object
-				Session::forget("user.field.data.{$email->user_id}");
+				// Purge the user field data cache
+				Cache::tags("fields.{$user->id}")->flush();
 
 				// Delete the token
 				$token->delete();

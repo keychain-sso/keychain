@@ -142,8 +142,8 @@ class ProfileController extends BaseController {
 				// Primary emails may not be removed
 				UserEmail::where('id', $email)->where('user_id', $user->id)->where('primary', 0)->delete();
 
-				// Purge the user field data object
-				Session::forget("user.field.data.{$user->id}");
+				// Purge the user field data cache
+				Cache::tags("fields.{$user->id}")->flush();
 
 				// Redirect back to the previous URL
 				Session::flash('messages.success', Lang::get('profile.email_removed'));
@@ -224,8 +224,8 @@ class ProfileController extends BaseController {
 			// Send the verification token
 			Verifier::make('email_add', $email->id);
 
-			// Purge the user field data object
-			Session::forget("user.field.data.{$user->id}");
+			// Purge the user field data cache
+			Cache::tags("fields.{$user->id}")->flush();
 
 			// Redirect back to the previous URL
 			Session::flash('messages.success', Lang::get('profile.email_verify'));
@@ -405,11 +405,10 @@ class ProfileController extends BaseController {
 
 			$user->save();
 
-			// Purge the user field data object
-			Session::forget("user.field.data.{$user->id}");
+			// Purge the user field data cache
+			Cache::tags("fields.{$user->id}")->flush();
 
 			// Redirect back to the previous URL
-
 			Session::flash('messages.success', Lang::get('profile.security_saved'));
 
 			return Redirect::to(URL::previous());
@@ -425,7 +424,7 @@ class ProfileController extends BaseController {
 	 */
 	private function getProfileData($user)
 	{
-		if ( ! Session::has("user.field.data.{$user->id}"))
+		return Cache::tags("fields.{$user->id}")->remember(Auth::user()->id, 60, function() use ($user)
 		{
 			// Parse user's email addresses as primary and other
 			$emails = new stdClass;
@@ -454,16 +453,8 @@ class ProfileController extends BaseController {
 				'modal'       => false,
 			);
 
-			// Cache the user's profile data to session
-			Session::put("user.field.data.{$user->id}", $profile);
-		}
-		else
-		{
-			// Get the profile data from session
-			$profile = Session::get("user.field.data.{$user->id}");
-		}
-
-		return $profile;
+			return $profile;
+		});
 	}
 
 }
