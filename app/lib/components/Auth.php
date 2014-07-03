@@ -42,4 +42,18 @@ class Auth extends \Illuminate\Support\Facades\Auth {
 		return Session::get('security.groups');
 	}
 
+	/**
+	 * Log the user out of the application.
+	 *
+	 * @static
+	 * @access public
+	 * @return void
+	 */
+	public static function logout()
+	{
+		parent::logout();
+
+		Session::flush();
+	}
+
 }

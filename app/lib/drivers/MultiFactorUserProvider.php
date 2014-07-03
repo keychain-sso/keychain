@@ -15,8 +15,10 @@
 
 use Config;
 use Hash;
+use Session;
 use User;
 use UserEmail;
+use UserSession;
 use UserStatus;
 
 use Illuminate\Auth\UserInterface;
@@ -43,7 +45,12 @@ class MultiFactorUserProvider implements UserProviderInterface {
 	 */
 	public function retrieveById($identifier)
 	{
-		return User::find($identifier);
+		$user = User::find($identifier);
+
+		if (UserSession::where('id', Session::getId())->count() == 1)
+		{
+			return $user;
+		}
 	}
 
 	/**
@@ -56,7 +63,12 @@ class MultiFactorUserProvider implements UserProviderInterface {
 	 */
 	public function retrieveByToken($identifier, $token)
 	{
-		return User::where('id', $identifier)->where('remember_token', $token)->first();
+		$user = User::where('id', $identifier)->where('remember_token', $token)->first();
+
+		if (UserSession::where('id', Session::getId())->count() == 1)
+		{
+			return $user;
+		}
 	}
 
 	/**

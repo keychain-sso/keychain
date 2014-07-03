@@ -162,7 +162,7 @@ class Setup extends Migration {
 		Schema::create('user_sessions', function($table)
 		{
 			$table->string('id')->unique()->index();
-			$table->integer('user_id')->unsigned()->index()->nullable();
+			$table->integer('user_id')->unsigned()->index();
 			$table->text('payload');
 			$table->timestamp('updated_at');
 		});

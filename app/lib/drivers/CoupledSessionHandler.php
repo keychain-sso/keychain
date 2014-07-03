@@ -84,6 +84,7 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 		$session = array(
 			'id'         => $sessionId,
 			'payload'    => $data,
+			'user_id'    => 0,
 			'updated_at' => time(),
 		);
 
