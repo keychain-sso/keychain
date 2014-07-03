@@ -19,9 +19,11 @@
 				<div class="pull-right">
 					<a class="btn btn-default btn-xs disabled">{{ Lang::get('profile.verified') }}</a>
 
-					<a class="btn btn-xs btn-danger disabled">
-						{{ Lang::get('global.remove') }}
-					</a>
+					<div title="{{ Lang::get('profile.primary_cant_remove') }}" data-toggle="tooltip">
+						<a class="btn btn-xs btn-danger disabled">
+							{{ Lang::get('global.remove') }}
+						</a>
+					</div>
 				</div>
 
 				<span class="glyphicon glyphicon-star text-success" title="{{ Lang::get('profile.primary_email') }}"

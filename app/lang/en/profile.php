@@ -42,6 +42,7 @@ return array(
 	"verified"               => "Verified",
 	"set_as_primary"         => "Set as primary",
 	"primary_verify"         => "Please verify before setting as primary",
+	"primary_cant_remove"    => "Cannot remove a primary email address",
 	"primary_email"          => "Primary email",
 	"email_removed"          => "Email address has been removed",
 	"email_verify"           => "A verification mail has been sent to this email address",
