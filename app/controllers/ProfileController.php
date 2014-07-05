@@ -357,7 +357,10 @@ class ProfileController extends BaseController {
 			case 'end':
 
 				// Kill the specified session
-				UserSession::where('id', $session)->delete();
+				if ($session != Session::getId())
+				{
+					UserSession::where('id', $session)->delete();
+				}
 
 				// Redirect back to the previous URL
 				Session::flash('messages.success', Lang::get('profile.session_ended'));
@@ -367,7 +370,7 @@ class ProfileController extends BaseController {
 			default:
 
 				$data = array_merge($data, array(
-					'sessions' => UserSession::where('user_id', $user->id)->orderBy('updated_at', 'desc')->get(),
+					'sessions' => UserSession::where('user_id', $user->id)->get(),
 					'modal'    => 'security',
 				));
 
