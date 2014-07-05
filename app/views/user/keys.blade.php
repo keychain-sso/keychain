@@ -1,23 +1,23 @@
 {{
 	Form::open(array(
-		'action' => 'ProfileController@postKeys',
+		'action' => 'UserController@postKeys',
 		'role'   => 'form',
 	))
 }}
 
 <div class="modal-body">
-	@include('profile.header')
+	@include('user.header')
 
 	<fieldset>
 		<legend>
 			<span class="glyphicon glyphicon-briefcase"></span>
-			{{ Lang::get('profile.ssh_keys') }}
+			{{ Lang::get('user.ssh_keys') }}
 		</legend>
 
 		<ul class="list-group">
 			@foreach ($keys as $key)
 				<li class="list-group-item">
-					<a href="{{ url('profile/keys/'.$user->hash.'/remove/'.$key->id) }}" class="btn btn-xs btn-danger pull-right">
+					<a href="{{ url('user/keys/'.$user->hash.'/remove/'.$key->id) }}" class="btn btn-xs btn-danger pull-right">
 						{{ Lang::get('global.remove') }}
 					</a>
 
@@ -31,12 +31,12 @@
 	<fieldset>
 		<legend>
 			<span class="glyphicon glyphicon-export"></span>
-			{{ Lang::get('profile.add_ssh_key') }}
+			{{ Lang::get('user.add_ssh_key') }}
 		</legend>
 
 		<div class="form-group">
 			{{
-				Form::label('title', Lang::get('profile.title'), array(
+				Form::label('title', Lang::get('user.title'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -50,7 +50,7 @@
 
 		<div class="form-group">
 			{{
-				Form::label('key', Lang::get('profile.public_key'), array(
+				Form::label('key', Lang::get('user.public_key'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -75,7 +75,7 @@
 	}}
 
 	{{
-		link_to("profile/view/{$user->hash}", Lang::get('global.close'), array(
+		link_to("user/view/{$user->hash}", Lang::get('global.close'), array(
 			'class' => 'btn btn-default',
 		))
 	}}

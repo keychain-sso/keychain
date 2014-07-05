@@ -569,7 +569,7 @@ class Setup extends Migration {
 			'access'       => 'field.edit',
 		));
 
-		// Allow sysadmins to edit all profiles
+		// Allow sysadmins to edit all users
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
 			'object_type'  => ACLTypes::ALL,

@@ -14,14 +14,14 @@
  */
 
 /**
- * ProfileController class
+ * UserController class
  *
  * Handles display and actions on the user's profile
  *
  * @package     Keychain
  * @subpackage  Controllers
  */
-class ProfileController extends BaseController {
+class UserController extends BaseController {
 
 	/**
 	 * Redirects to the logged in user's profile
@@ -31,7 +31,7 @@ class ProfileController extends BaseController {
 	 */
 	public function getIndex()
 	{
-		return Redirect::to('profile/view/'.Auth::user()->hash);
+		return Redirect::to('user/view/'.Auth::user()->hash);
 	}
 
 	/**
@@ -45,15 +45,15 @@ class ProfileController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getProfileData($user);
+		$data = $this->getUserData($user);
 
 		// Set the page title
-		$title = Lang::get('profile.viewing_profile', array(
+		$title = Lang::get('user.viewing_profile', array(
 			'first_name' => $user->first_name,
 			'last_name'  => $user->last_name,
 		));
 
-		return View::make('profile/view', $title, $data);
+		return View::make('user/view', $title, $data);
 	}
 
 	/**
@@ -67,19 +67,19 @@ class ProfileController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getProfileData($user);
+		$data = $this->getUserData($user);
 
 		// Validate edit rights
 		Access::restrict('user.edit', $user);
 
-		// Merge the profile data with editor data
+		// Merge the user data with editor data
 		$data = array_merge($data, array(
 			'fieldEdit' => FormField::getEdit($user),
 			'timezones' => Utilities::timezones(),
 			'modal'     => 'edit',
 		));
 
-		return View::make('profile/view', 'profile.edit_profile', $data);
+		return View::make('user/view', 'user.edit_profile', $data);
 	}
 
 	/**
@@ -104,7 +104,7 @@ class ProfileController extends BaseController {
 
 			if ($status === true)
 			{
-				Session::flash('messages.success', Lang::get('profile.profile_saved'));
+				Session::flash('messages.success', Lang::get('user.profile_saved'));
 			}
 			else
 			{
@@ -128,7 +128,7 @@ class ProfileController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getProfileData($user);
+		$data = $this->getUserData($user);
 
 		// Validate edit rights
 		Access::restrict('user.edit', $user);
@@ -146,7 +146,7 @@ class ProfileController extends BaseController {
 				Cache::tags("fields.{$user->id}")->flush();
 
 				// Redirect back to the previous URL
-				Session::flash('messages.success', Lang::get('profile.email_removed'));
+				Session::flash('messages.success', Lang::get('user.email_removed'));
 
 				return Redirect::to(URL::previous());
 
@@ -156,7 +156,7 @@ class ProfileController extends BaseController {
 				Verifier::make('email_add', $email);
 
 				// Redirect back to the previous URL
-				Session::flash('messages.success', Lang::get('profile.email_verify'));
+				Session::flash('messages.success', Lang::get('user.email_verify'));
 
 				return Redirect::to(URL::previous());
 
@@ -179,7 +179,7 @@ class ProfileController extends BaseController {
 
 			default:
 
-				return View::make('profile/view', 'profile.manage_email_addresses', array_merge($data, array('modal' => 'emails')));
+				return View::make('user/view', 'user.manage_email_addresses', array_merge($data, array('modal' => 'emails')));
 		}
 	}
 
@@ -228,7 +228,7 @@ class ProfileController extends BaseController {
 			Cache::tags("fields.{$user->id}")->flush();
 
 			// Redirect back to the previous URL
-			Session::flash('messages.success', Lang::get('profile.email_verify'));
+			Session::flash('messages.success', Lang::get('user.email_verify'));
 
 			return Redirect::to(URL::previous());
 		}
@@ -247,7 +247,7 @@ class ProfileController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getProfileData($user);
+		$data = $this->getUserData($user);
 
 		// Validate edit rights
 		Access::restrict('user.edit', $user);
@@ -261,7 +261,7 @@ class ProfileController extends BaseController {
 				UserKey::where('id', $key)->where('user_id', $user->id)->delete();
 
 				// Redirect back to previous URL
-				Session::flash('messages.success', Lang::get('profile.ssh_key_removed'));
+				Session::flash('messages.success', Lang::get('user.ssh_key_removed'));
 
 				return Redirect::to(URL::previous());
 
@@ -273,7 +273,7 @@ class ProfileController extends BaseController {
 					'modal' => 'keys',
 				));
 
-				return View::make('profile/view', 'profile.manage_ssh_keys', $data);
+				return View::make('user/view', 'user.manage_ssh_keys', $data);
 		}
 	}
 
@@ -314,7 +314,7 @@ class ProfileController extends BaseController {
 			// Validate the fingerprint
 			if (is_null($fingerprint = Utilities::fingerprint($key)))
 			{
-				Session::flash('messages.error', Lang::get('profile.invalid_key'));
+				Session::flash('messages.error', Lang::get('user.invalid_key'));
 
 				return Redirect::to(URL::previous())->withInput();
 			}
@@ -327,7 +327,7 @@ class ProfileController extends BaseController {
 			$userKey->fingerprint = $fingerprint;
 			$userKey->save();
 
-			Session::flash('messages.success', Lang::get('profile.ssh_key_added'));
+			Session::flash('messages.success', Lang::get('user.ssh_key_added'));
 
 			return Redirect::to(URL::previous());
 		}
@@ -345,7 +345,7 @@ class ProfileController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getProfileData($user);
+		$data = $this->getUserData($user);
 
 		// Validate edit rights
 		Access::restrict('user.edit', $user);
@@ -362,7 +362,7 @@ class ProfileController extends BaseController {
 				Auth::refresh(Session::get('security.remember'));
 
 				// Redirect back to the previous URL
-				Session::flash('messages.success', Lang::get('profile.sessions_killed'));
+				Session::flash('messages.success', Lang::get('user.sessions_killed'));
 
 				return Redirect::to(URL::previous());
 
@@ -373,7 +373,7 @@ class ProfileController extends BaseController {
 					'modal'    => 'security',
 				));
 
-				return View::make('profile/view', 'profile.security_settings', $data);
+				return View::make('user/view', 'user.security_settings', $data);
 		}
 	}
 
@@ -413,7 +413,7 @@ class ProfileController extends BaseController {
 			// Check the old password
 			if ( ! $manage && ! Hash::check(Input::get('old_password'), $user->password))
 			{
-				Session::flash('messages.error', Lang::get('profile.old_password_invalid'));
+				Session::flash('messages.error', Lang::get('user.old_password_invalid'));
 
 				return Redirect::to(URL::previous())->withInput();
 			}
@@ -434,7 +434,7 @@ class ProfileController extends BaseController {
 			Cache::tags("fields.{$user->id}")->flush();
 
 			// Redirect back to the previous URL
-			Session::flash('messages.success', Lang::get('profile.security_saved'));
+			Session::flash('messages.success', Lang::get('user.security_saved'));
 
 			return Redirect::to(URL::previous());
 		}
@@ -447,7 +447,7 @@ class ProfileController extends BaseController {
 	 * @param  User  $user
 	 * @return array
 	 */
-	private function getProfileData($user)
+	private function getUserData($user)
 	{
 		return Cache::tags("fields.{$user->id}")->remember(Auth::id(), 60, function() use ($user)
 		{
@@ -469,8 +469,8 @@ class ProfileController extends BaseController {
 			// Get user-group data
 			$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
 
-			// Build the profile data
-			$profile = array(
+			// Build the user data
+			$data = array(
 				'user'        => $user,
 				'emails'      => $emails,
 				'fieldView'   => FormField::getView($user),
@@ -478,7 +478,7 @@ class ProfileController extends BaseController {
 				'modal'       => false,
 			);
 
-			return $profile;
+			return $data;
 		});
 	}
 

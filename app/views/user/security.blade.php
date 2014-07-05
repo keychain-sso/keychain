@@ -1,23 +1,23 @@
 {{
 	Form::open(array(
-		'action' => 'ProfileController@postSecurity',
+		'action' => 'UserController@postSecurity',
 		'role'   => 'form',
 	))
 }}
 
 <div class="modal-body">
-	@include('profile.header')
+	@include('user.header')
 
 	<fieldset>
 		<legend>
 			<span class="glyphicon glyphicon-lock"></span>
-			{{ Lang::get('profile.change_password') }}
+			{{ Lang::get('user.change_password') }}
 		</legend>
 
 		@if ( ! Access::check('user.manage', $user))
 			<div class="form-group">
 				{{
-					Form::label('old_password', Lang::get('profile.old_password'), array(
+					Form::label('old_password', Lang::get('user.old_password'), array(
 						'class' => 'control-label'
 					))
 				}}
@@ -32,7 +32,7 @@
 
 		<div class="form-group">
 			{{
-				Form::label('new_password', Lang::get('profile.new_password'), array(
+				Form::label('new_password', Lang::get('user.new_password'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -46,7 +46,7 @@
 
 		<div class="form-group">
 			{{
-				Form::label('confirm_password', Lang::get('profile.confirm_new_password'), array(
+				Form::label('confirm_password', Lang::get('user.confirm_new_password'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -62,7 +62,7 @@
 	<fieldset>
 		<legend>
 			<span class="glyphicon glyphicon-tasks"></span>
-			{{ Lang::get('profile.active_sessions') }}
+			{{ Lang::get('user.active_sessions') }}
 		</legend>
 
 		<ul class="list-group">
@@ -81,7 +81,7 @@
 					@if ($session->id == Session::getId())
 						<span class="pull-right">
 							<span class="glyphicon glyphicon-flag text-success"></span>
-							<small class="text-muted">{{ Lang::get('profile.current_session') }}</small>
+							<small class="text-muted">{{ Lang::get('user.current_session') }}</small>
 						</span>
 					@endif
 
@@ -89,7 +89,7 @@
 
 					<p class="list-group-item-text">
 						{{
-							Lang::get('profile.last_active', array(
+							Lang::get('user.last_active', array(
 								'time' => date('Y-m-d h:i a', strtotime($session->updated_at)),
 							))
 						}}
@@ -98,8 +98,8 @@
 			@endforeach
 		</ul>
 
-		<a href="{{ url('profile/security/'.$user->hash.'/killall') }}" class="btn btn-default">
-			{{ Lang::get('profile.kill_other_sessions') }}
+		<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
+			{{ Lang::get('user.kill_other_sessions') }}
 		</a>
 	</fieldset>
 
@@ -107,12 +107,12 @@
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-cog"></span>
-				{{ Lang::get('profile.account_settings') }}
+				{{ Lang::get('user.account_settings') }}
 			</legend>
 
 			<div class="form-group">
 				{{
-					Form::label('status', Lang::get('profile.profile_status'), array(
+					Form::label('status', Lang::get('user.profile_status'), array(
 						'class' => 'control-label'
 					))
 				}}
@@ -120,21 +120,21 @@
 				<div class="radio">
 					<label>
 						{{ Form::radio('status', UserStatus::INACTIVE, $user->status == UserStatus::INACTIVE) }}
-						{{ Lang::get('profile.inactive') }}
+						{{ Lang::get('user.inactive') }}
 					</label>
 				</div>
 
 				<div class="radio">
 					<label>
 						{{ Form::radio('status', UserStatus::ACTIVE, $user->status == UserStatus::ACTIVE) }}
-						{{ Lang::get('profile.active') }}
+						{{ Lang::get('user.active') }}
 					</label>
 				</div>
 
 				<div class="radio">
 					<label>
 						{{ Form::radio('status', UserStatus::BLOCKED, $user->status == UserStatus::BLOCKED) }}
-						{{ Lang::get('profile.blocked') }}
+						{{ Lang::get('user.blocked') }}
 					</label>
 				</div>
 			</div>
@@ -153,7 +153,7 @@
 	}}
 
 	{{
-		link_to("profile/view/{$user->hash}", Lang::get('global.close'), array(
+		link_to("user/view/{$user->hash}", Lang::get('global.close'), array(
 			'class' => 'btn btn-default',
 		))
 	}}

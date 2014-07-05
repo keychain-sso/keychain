@@ -4,7 +4,7 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
-	| Profile Language Lines
+	| User Language Lines
 	|--------------------------------------------------------------------------
 	|
 	| The following are localized texts that are used on the user profile

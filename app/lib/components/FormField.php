@@ -150,7 +150,7 @@ class FormField {
 	 */
 	public static function save($user, $data)
 	{
-		// Purge the profile data session cache
+		// Purge the user profile data session cache
 		Cache::tags("fields.{$user->id}")->flush();
 
 		// Validate basic fields

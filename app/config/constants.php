@@ -46,7 +46,7 @@ class ACLTypes {
 }
 
 /**
- * Categories of profile fields
+ * Categories of user profile fields
  */
 class FieldCategories {
 
@@ -57,7 +57,7 @@ class FieldCategories {
 }
 
 /**
- * Types of profile fields
+ * Types of user profile fields
  */
 class FieldTypes {
 

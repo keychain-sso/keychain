@@ -13,11 +13,11 @@
 // The user profile is the homepage
 Route::get('/', function()
 {
-	return Redirect::to('profile');
+	return Redirect::to('user');
 });
 
 // User profile route
-Route::controller('profile', 'ProfileController');
+Route::controller('user', 'UserController');
 
 // Token validation route
 Route::controller('token', 'TokenController');

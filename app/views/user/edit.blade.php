@@ -1,22 +1,22 @@
 {{
 	Form::open(array(
-		'action' => 'ProfileController@postEdit',
+		'action' => 'UserController@postEdit',
 		'role'   => 'form',
 	))
 }}
 
 <div class="modal-body">
-	@include('profile.header')
+	@include('user.header')
 
 	<fieldset>
 		<legend>
 			<span class="glyphicon glyphicon-user"></span>
-			{{ Lang::get('profile.basic_info') }}
+			{{ Lang::get('user.basic_info') }}
 		</legend>
 
 		<div class="form-group">
 			{{
-				Form::label('first_name', Lang::get('profile.first_name'), array(
+				Form::label('first_name', Lang::get('user.first_name'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -30,7 +30,7 @@
 
 		<div class="form-group">
 			{{
-				Form::label('last_name', Lang::get('profile.last_name'), array(
+				Form::label('last_name', Lang::get('user.last_name'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -44,7 +44,7 @@
 
 		<div class="form-group">
 			{{
-				Form::label('title', Lang::get('profile.title'), array(
+				Form::label('title', Lang::get('user.title'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -58,7 +58,7 @@
 
 		<div class="form-group">
 			{{
-				Form::label('gender', Lang::get('profile.gender'), array(
+				Form::label('gender', Lang::get('user.gender'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -66,9 +66,9 @@
 			{{
 				Form::select('gender', array(
 					null => '',
-					'M'  => Lang::get('profile.male'),
-					'F'  => Lang::get('profile.female'),
-					'O'  => Lang::get('profile.other'),
+					'M'  => Lang::get('user.male'),
+					'F'  => Lang::get('user.female'),
+					'O'  => Lang::get('user.other'),
 				), $user->gender, array(
 					'class' => 'form-control',
 				))
@@ -77,7 +77,7 @@
 
 		<div class="form-group  has-feedback">
 			{{
-				Form::label('date_of_birth', Lang::get('profile.date_of_birth'), array(
+				Form::label('date_of_birth', Lang::get('user.date_of_birth'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -94,7 +94,7 @@
 
 		<div class="form-group">
 			{{
-				Form::label('timezone', Lang::get('profile.timezone'), array(
+				Form::label('timezone', Lang::get('user.timezone'), array(
 					'class' => 'control-label'
 				))
 			}}
@@ -115,7 +115,7 @@
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-phone-alt"></span>
-				{{ Lang::get('profile.contact_info') }}
+				{{ Lang::get('user.contact_info') }}
 			</legend>
 
 			@foreach ($fieldEdit->{FieldCategories::CONTACT} as $field)
@@ -128,7 +128,7 @@
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-th"></span>
-				{{ Lang::get('profile.other_details') }}
+				{{ Lang::get('user.other_details') }}
 			</legend>
 
 			@foreach ($fieldEdit->{FieldCategories::OTHER} as $field)
@@ -149,7 +149,7 @@
 	}}
 
 	{{
-		link_to("profile/view/{$user->hash}", Lang::get('global.close'), array(
+		link_to("user/view/{$user->hash}", Lang::get('global.close'), array(
 			'class' => 'btn btn-default',
 		))
 	}}

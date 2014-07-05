@@ -26,18 +26,25 @@
 				<a class="navbar-brand" href="{{ url() }}">{{ Lang::get('global.keychain') }}</a>
 			</div>
 
-			@if (Auth::check())
-				<div class="collapse navbar-collapse navbar-ex1-collapse">
-					<ul class="nav navbar-nav navbar-right">
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a href="{{ url('group/list') }}>">
+							<span class="glyphicon glyphicon-th-large"></span>
+							{{ Lang::get('global.groups') }}
+						</a>
+					</li>
+
+					@if (Auth::check())
 						<li>
 							<a href="{{ url('auth/logout') }}">
 								<span class="glyphicon glyphicon-log-out"></span>
 								{{ Lang::get('global.logout') }}
 							</a>
 						</li>
-					</ul>
-				</div>
-			@endif
+					@endif
+				</ul>
+			</div>
 		</div>
 	</nav>
 

@@ -145,7 +145,7 @@ class Verifier {
 
 				if (Auth::check())
 				{
-					$data['return'] = link_to('profile', Lang::get('global.return_profile'));
+					$data['return'] = link_to('user', Lang::get('global.return_profile'));
 				}
 				else
 				{
