@@ -59,6 +59,49 @@
 		</div>
 	</fieldset>
 
+	<fieldset>
+		<legend>
+			<span class="glyphicon glyphicon-tasks"></span>
+			{{ Lang::get('profile.active_sessions') }}
+		</legend>
+
+		<ul class="list-group">
+			@foreach ($sessions as $session)
+				<li class="list-group-item">
+					@if ($session->device_type == DeviceTypes::MOBILE)
+						{? $asset = 'img/mobile.png' ?}
+					@elseif ($session->device_type == DeviceTypes::TABLET)
+						{? $asset = 'img/tablet.png' ?}
+					@else
+						{? $asset = 'img/computer.png' ?}
+					@endif
+
+					<img src="{{ asset($asset) }}" class="list-group-icon pull-left" alt="" />
+
+					@if ($session->id == Session::getId())
+						<a class="btn btn-default btn-xs pull-right disabled">
+							{{ Lang::get('profile.current_session') }}
+						</a>
+					@else
+						<a href="{{ url('profile/security/'.$user->hash.'/end/'.$session->id) }}" class="btn btn-danger btn-xs pull-right">
+							{{ Lang::get('profile.end_session') }}
+						</a>
+					@endif
+
+					<h4 class="list-group-item-heading">{{ $session->ip_address }}</h4>
+
+					<small class="list-group-item-text text-muted">
+						{{
+							Lang::get('profile.last_active', array(
+								'time' => date('Y-m-d H:i:s e', strtotime($session->updated_at)),
+							))
+						}}
+					</small>
+				</li>
+			@endforeach
+		</ul>
+	</fieldset>
+
 	@if (Access::check('user.manage', $user))
 		<fieldset>
 			<legend>

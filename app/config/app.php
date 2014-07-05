@@ -123,6 +123,9 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
+		// Jenssegers
+		'Jenssegers\Agent\AgentServiceProvider',
+
 		// Keychain
 		'Keychain\Services\SecurityServiceProvider',
 
@@ -193,17 +196,18 @@ return array(
 		'URL'                     => 'Illuminate\Support\Facades\URL',
 		'Validator'               => 'Illuminate\Support\Facades\Validator',
 
-		// Keychain components
+		// Jenssegers
+		'Agent'                   => 'Jenssegers\Agent\Facades\Agent',
+
+		// Keychain
 		'Access'                  => 'Keychain\Components\Access',
 		'Auth'                    => 'Keychain\Components\Auth',
+		'CoupledSessionHandler'   => 'Keychain\Drivers\CoupledSessionHandler',
 		'FormField'               => 'Keychain\Components\FormField',
+		'MultiFactorUserProvider' => 'Keychain\Drivers\MultiFactorUserProvider',
 		'Utilities'               => 'Keychain\Components\Utilities',
 		'Verifier'                => 'Keychain\Components\Verifier',
 		'View'                    => 'Keychain\Components\View',
-
-		// Keychain drivers
-		'CoupledSessionHandler'   => 'Keychain\Drivers\CoupledSessionHandler',
-		'MultiFactorUserProvider' => 'Keychain\Drivers\MultiFactorUserProvider',
 
 	),
 

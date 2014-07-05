@@ -62,6 +62,11 @@ return array(
 	"active"                 => "Active",
 	"blocked"                => "Blocked",
 	"old_password_invalid"   => "Old password is invalid",
+	"active_sessions"        => "Active sessions",
+	"end_session"            => "End session",
+	"current_session"        => "Current session",
+	"last_active"            => "Last active: :time",
+	"session_ended"          => "Selected session has been ended",
 	"security_saved"         => "Security settings saved",
 
 );

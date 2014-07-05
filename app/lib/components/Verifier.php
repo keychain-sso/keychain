@@ -103,7 +103,7 @@ class Verifier {
 		);
 
 		// Finally, we send the email
-		Mail::queue('emails/default', $data, function($message) use ($to)
+		Mail::queue('emails/verify', $data, function($message) use ($to)
 		{
 			$message->to($to)->subject(Lang::get('email.mail_subject'));
 		});

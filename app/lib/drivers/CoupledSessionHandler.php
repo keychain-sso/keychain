@@ -13,8 +13,11 @@
  * @filesource
  */
 
+use Agent;
 use Auth;
 use DB;
+use DeviceTypes;
+use Request;
 use SessionHandlerInterface;
 
 /**
@@ -85,7 +88,8 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 			'id'         => $sessionId,
 			'payload'    => $data,
 			'user_id'    => 0,
-			'updated_at' => time(),
+			'ip_address' => Request::getClientIp(),
+			'updated_at' => date('Y-m-d H:i:s e'),
 		);
 
 		// If user is logged in, set the user_id as well
@@ -94,15 +98,31 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 			$session['user_id'] = Auth::user()->id;
 		}
 
-		// Insert the session data
+		// Save the session data
 		$instance = DB::table('user_sessions')->where('id', $sessionId);
 
 		if ($instance->count() == 0)
 		{
+			// Insert the device type
+			if (Agent::isMobile())
+			{
+				$session['device_type'] = DeviceTypes::MOBILE;
+			}
+			else if (Agent::isTablet())
+			{
+				$session['device_type'] = DeviceTypes::TABLET;
+			}
+			else
+			{
+				$session['device_type'] = DeviceTypes::COMPUTER;
+			}
+
+			// Insert the session record
 			DB::table('user_sessions')->insert($session);
 		}
 		else
 		{
+			// Update the exsting session record
 			$instance->update($session);
 		}
 	}

@@ -31,7 +31,7 @@
 					<ul class="nav navbar-nav navbar-right">
 						<li>
 							<a href="{{ url('auth/logout') }}">
-								<span class="glyphicon glyphicon-off"></span>
+								<span class="glyphicon glyphicon-log-out"></span>
 								{{ Lang::get('global.logout') }}
 							</a>
 						</li>

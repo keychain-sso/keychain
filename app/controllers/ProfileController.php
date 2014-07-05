@@ -338,9 +338,11 @@ class ProfileController extends BaseController {
 	 *
 	 * @access public
 	 * @param  string  $hash
+	 * @param  string  $action
+	 * @param  string  $session
 	 * @return \Illuminate\Support\Facades\View
 	 */
-	public function getSecurity($hash)
+	public function getSecurity($hash, $action = null, $session = null)
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
@@ -349,7 +351,28 @@ class ProfileController extends BaseController {
 		// Validate edit rights
 		Access::restrict('user.edit', $user);
 
-		return View::make('profile/view', 'profile.security_settings', array_merge($data, array('modal' => 'security')));
+		// Perform the requested action
+		switch ($action)
+		{
+			case 'end':
+
+				// Kill the specified session
+				UserSession::where('id', $session)->delete();
+
+				// Redirect back to the previous URL
+				Session::flash('messages.success', Lang::get('profile.session_ended'));
+
+				return Redirect::to(URL::previous());
+
+			default:
+
+				$data = array_merge($data, array(
+					'sessions' => UserSession::where('user_id', $user->id)->orderBy('updated_at', 'desc')->get(),
+					'modal'    => 'security',
+				));
+
+				return View::make('profile/view', 'profile.security_settings', $data);
+		}
 	}
 
 	/**

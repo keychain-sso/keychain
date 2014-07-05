@@ -89,6 +89,26 @@ class Setup extends Migration {
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
 
+		// Create the device types table
+		Schema::create('device_types', function($table)
+		{
+			$table->increments('id');
+			$table->string('name', 80)->unique();
+		});
+
+		// Create the sessions table
+		Schema::create('user_sessions', function($table)
+		{
+			$table->string('id')->unique()->index();
+			$table->integer('user_id')->unsigned()->index();
+			$table->text('payload');
+			$table->string('ip_address', 45);
+			$table->integer('device_type')->unsigned();
+			$table->timestamp('updated_at');
+
+			$table->foreign('device_type')->references('id')->on('device_types')->onDelete('cascade');
+		});
+
 		// Create the field types table
 		Schema::create('field_types', function($table)
 		{
@@ -156,15 +176,6 @@ class Setup extends Migration {
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
-		});
-
-		// Create the sessions table
-		Schema::create('user_sessions', function($table)
-		{
-			$table->string('id')->unique()->index();
-			$table->integer('user_id')->unsigned()->index();
-			$table->text('payload');
-			$table->timestamp('updated_at');
 		});
 
 		// Create the ACL subject types table
@@ -249,6 +260,13 @@ class Setup extends Migration {
 		DB::table('token_types')->insert(array(
 			array('name' => 'Email'),
 			array('name' => 'Password'),
+		));
+
+		// Insert device types
+		DB::table('device_types')->insert(array(
+			array('name' => 'Computer'),
+			array('name' => 'Mobile'),
+			array('name' => 'Tablet'),
 		));
 
 		// Insert admin user account
@@ -602,7 +620,8 @@ class Setup extends Migration {
 		Schema::drop('fields');
 		Schema::drop('field_categories');
 		Schema::drop('field_types');
-		Schema::drop('user_session');
+		Schema::drop('user_sessions');
+		Schema::drop('device_types');
 		Schema::drop('user_keys');
 		Schema::drop('user_emails');
 		Schema::drop('users');

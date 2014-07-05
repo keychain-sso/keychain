@@ -24,6 +24,9 @@ footer {
 .pull-right div {
   display: inline-table;
 }
+.list-group-icon {
+  margin-right: 15px;
+}
 .navbar-modal {
   margin: -15px -15px 15px -15px;
   border-radius: 6px 6px 0 0;
