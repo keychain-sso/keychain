@@ -339,10 +339,9 @@ class ProfileController extends BaseController {
 	 * @access public
 	 * @param  string  $hash
 	 * @param  string  $action
-	 * @param  string  $session
 	 * @return \Illuminate\Support\Facades\View
 	 */
-	public function getSecurity($hash, $action = null, $session = null)
+	public function getSecurity($hash, $action = null)
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
@@ -354,23 +353,23 @@ class ProfileController extends BaseController {
 		// Perform the requested action
 		switch ($action)
 		{
-			case 'end':
+			case 'killall':
 
 				// Kill the specified session
-				if ($session != Session::getId())
-				{
-					UserSession::where('id', $session)->update(array('killed' => 1));
-				}
+				UserSession::where('id', '<>', Session::getId())->where('user_id', $user->id)->delete();
+
+				// Re-authenticate the current session to regenerate the remember token
+				Auth::refresh(Session::get('security.remember'));
 
 				// Redirect back to the previous URL
-				Session::flash('messages.success', Lang::get('profile.session_ended'));
+				Session::flash('messages.success', Lang::get('profile.sessions_killed'));
 
 				return Redirect::to(URL::previous());
 
 			default:
 
 				$data = array_merge($data, array(
-					'sessions' => UserSession::where('user_id', $user->id)->where('killed', 0)->get(),
+					'sessions' => UserSession::where('user_id', $user->id)->get(),
 					'modal'    => 'security',
 				));
 

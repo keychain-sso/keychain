@@ -13,7 +13,9 @@
  * @filesource
  */
 
+use Config;
 use Cookie;
+use Guard;
 use Session;
 use User;
 
@@ -42,6 +44,22 @@ class Auth extends \Illuminate\Support\Facades\Auth {
 		}
 
 		return Session::get('security.groups');
+	}
+
+	/**
+	 * Re-authenticate the current user
+	 *
+	 * @static
+	 * @access public
+	 * @param  bool  $remember
+	 * @return void
+	 */
+	public static function refresh($remember = false)
+	{
+		$user = parent::user();
+
+		parent::logout();
+		parent::login($user, $remember);
 	}
 
 	/**

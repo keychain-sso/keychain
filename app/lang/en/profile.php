@@ -63,10 +63,10 @@ return array(
 	"blocked"                => "Blocked",
 	"old_password_invalid"   => "Old password is invalid",
 	"active_sessions"        => "Active sessions",
-	"end_session"            => "End session",
+	"kill_other_sessions"    => "Kill all other sessions",
 	"current_session"        => "Current session",
 	"last_active"            => "Last active: :time",
-	"session_ended"          => "Selected session has been ended",
+	"sessions_killed"        => "All other sessions have been terminated",
 	"security_saved"         => "Security settings saved",
 
 );

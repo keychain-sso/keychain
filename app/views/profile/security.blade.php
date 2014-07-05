@@ -79,27 +79,28 @@
 					<img src="{{ asset($asset) }}" class="list-group-icon pull-left" alt="" />
 
 					@if ($session->id == Session::getId())
-						<a class="btn btn-default btn-xs pull-right disabled">
-							{{ Lang::get('profile.current_session') }}
-						</a>
-					@else
-						<a href="{{ url('profile/security/'.$user->hash.'/end/'.$session->id) }}" class="btn btn-danger btn-xs pull-right">
-							{{ Lang::get('profile.end_session') }}
-						</a>
+						<span class="pull-right">
+							<span class="glyphicon glyphicon-flag text-success"></span>
+							<small class="text-muted">{{ Lang::get('profile.current_session') }}</small>
+						</span>
 					@endif
 
 					<h4 class="list-group-item-heading">{{ $session->ip_address }}</h4>
 
-					<small class="list-group-item-text text-muted">
+					<p class="list-group-item-text">
 						{{
 							Lang::get('profile.last_active', array(
-								'time' => date('Y-m-d H:i:s e', strtotime($session->updated_at)),
+								'time' => date('Y-m-d h:i a', strtotime($session->updated_at)),
 							))
 						}}
-					</small>
+					</p>
 				</li>
 			@endforeach
 		</ul>
+
+		<a href="{{ url('profile/security/'.$user->hash.'/killall') }}" class="btn btn-default">
+			{{ Lang::get('profile.kill_other_sessions') }}
+		</a>
 	</fieldset>
 
 	@if (Access::check('user.manage', $user))

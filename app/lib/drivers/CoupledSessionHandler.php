@@ -21,6 +21,8 @@ use DeviceTypes;
 use Request;
 use SessionHandlerInterface;
 
+use Illuminate\Session\ExistenceAwareInterface;
+
 /**
  * CoupledSessionHandler class
  *
@@ -29,7 +31,7 @@ use SessionHandlerInterface;
  * @package     Keychain
  * @subpackage  Drivers
  */
-class CoupledSessionHandler implements SessionHandlerInterface {
+class CoupledSessionHandler implements SessionHandlerInterface, ExistenceAwareInterface {
 
 	/**
 	 * Indicates if a session key exists
@@ -73,11 +75,11 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 		$session = DB::table('user_sessions')->where('id', $sessionId)->first();
 
 		// If data was returned, we return the payload
-		if ($session != null)
+		if (isset($session->payload))
 		{
 			$this->exists = true;
 
-			return $session->payload;
+			return base64_decode($session->payload);
 		}
 	}
 
@@ -94,10 +96,10 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 		// Build the payload
 		$session = array(
 			'id'         => $sessionId,
-			'payload'    => $data,
+			'payload'    => base64_encode($data),
 			'user_id'    => 0,
 			'ip_address' => Request::getClientIp(),
-			'updated_at' => date('Y-m-d H:i:s e'),
+			'updated_at' => date('Y-m-d h:i:s a'),
 		);
 
 		// If user is logged in, set the user_id as well
@@ -107,8 +109,6 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 		}
 
 		// Save the session data
-		$instance = DB::table('user_sessions')->where('id', $sessionId);
-
 		if ( ! $this->exists)
 		{
 			// Insert the device type
@@ -134,7 +134,7 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 		else
 		{
 			// Update the exsting session record
-			$instance->update($session);
+			DB::table('user_sessions')->where('id', $sessionId)->update($session);
 		}
 	}
 
@@ -159,9 +159,23 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 	 */
 	public function gc($lifetime)
 	{
-		$threshold = date('Y-m-d H:i:s e', time() - $lifetime * 60);
+		$threshold = date('Y-m-d h:i:s a', time() - $lifetime * 60);
 
 		DB::table('user_sessions')->where('updated_at', '<', $threshold)->delete();
+	}
+
+	/**
+	 * Set the existence state for the session.
+	 *
+	 * @access public
+	 * @param  bool  $value
+	 * @return SessionHandlerInterface
+	 */
+	public function setExists($value)
+	{
+		$this->exists = $value;
+
+		return $this;
 	}
 
 }

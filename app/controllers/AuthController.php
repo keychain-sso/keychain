@@ -58,6 +58,9 @@ class AuthController extends BaseController {
 				'password' => Input::get('password')
 			), $remember);
 
+			// Save the remember token to session
+			Session::put('security.remember', $remember);
+
 			if ($success)
 			{
 				// Auth successful, redirect to the requested page

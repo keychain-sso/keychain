@@ -107,7 +107,6 @@ class Setup extends Migration {
 			$table->text('payload');
 			$table->string('ip_address', 45);
 			$table->integer('device_type')->unsigned();
-			$table->boolean('killed')->default(0);
 			$table->timestamp('updated_at');
 
 			$table->foreign('device_type')->references('id')->on('device_types')->onDelete('cascade');
