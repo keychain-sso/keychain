@@ -13,7 +13,9 @@
  * @filesource
  */
 
+use Cookie;
 use Session;
+use User;
 
 /**
  * Auth class

@@ -29,4 +29,4 @@ Route::controller('auth', 'AuthController');
 Route::when('*', 'auth');
 
 // CSRF protection for all forms
-Route::when('*', 'csrf', array('post'));
+//Route::when('*', 'csrf', array('post'));

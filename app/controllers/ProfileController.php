@@ -359,7 +359,7 @@ class ProfileController extends BaseController {
 				// Kill the specified session
 				if ($session != Session::getId())
 				{
-					UserSession::where('id', $session)->delete();
+					UserSession::where('id', $session)->update(array('killed' => 1));
 				}
 
 				// Redirect back to the previous URL
@@ -370,7 +370,7 @@ class ProfileController extends BaseController {
 			default:
 
 				$data = array_merge($data, array(
-					'sessions' => UserSession::where('user_id', $user->id)->get(),
+					'sessions' => UserSession::where('user_id', $user->id)->where('killed', 0)->get(),
 					'modal'    => 'security',
 				));
 
@@ -450,7 +450,7 @@ class ProfileController extends BaseController {
 	 */
 	private function getProfileData($user)
 	{
-		return Cache::tags("fields.{$user->id}")->remember(Auth::user()->id, 60, function() use ($user)
+		return Cache::tags("fields.{$user->id}")->remember(Auth::id(), 60, function() use ($user)
 		{
 			// Parse user's email addresses as primary and other
 			$emails = new stdClass;

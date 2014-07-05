@@ -15,6 +15,7 @@
 
 use Agent;
 use Auth;
+use Config;
 use DB;
 use DeviceTypes;
 use Request;
@@ -31,6 +32,11 @@ use SessionHandlerInterface;
 class CoupledSessionHandler implements SessionHandlerInterface {
 
 	/**
+	 * Indicates if a session key exists
+	 */
+	protected $exists = false;
+
+	/**
 	 * Implementation of SessionHandlerInterface::open
 	 *
 	 * @access public
@@ -40,7 +46,7 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 	 */
 	public function open($savePath, $sessionName)
 	{
-		// This method is a stub
+		return true;
 	}
 
 	/**
@@ -51,7 +57,7 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 	 */
 	public function close()
 	{
-		// This method is a stub
+		return true;
 	}
 
 	/**
@@ -69,6 +75,8 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 		// If data was returned, we return the payload
 		if ($session != null)
 		{
+			$this->exists = true;
+
 			return $session->payload;
 		}
 	}
@@ -95,13 +103,13 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 		// If user is logged in, set the user_id as well
 		if (Auth::check())
 		{
-			$session['user_id'] = Auth::user()->id;
+			$session['user_id'] = Auth::id();
 		}
 
 		// Save the session data
 		$instance = DB::table('user_sessions')->where('id', $sessionId);
 
-		if ($instance->count() == 0)
+		if ( ! $this->exists)
 		{
 			// Insert the device type
 			if (Agent::isMobile())
@@ -119,6 +127,9 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 
 			// Insert the session record
 			DB::table('user_sessions')->insert($session);
+
+			// Purge stale sessions
+			$this->gc(Config::get('session.lifetime'));
 		}
 		else
 		{
@@ -148,7 +159,9 @@ class CoupledSessionHandler implements SessionHandlerInterface {
 	 */
 	public function gc($lifetime)
 	{
-		DB::table('user_sessions')->where('updated_at', '<', time() - $lifetime)->delete();
+		$threshold = date('Y-m-d H:i:s e', time() - $lifetime * 60);
+
+		DB::table('user_sessions')->where('updated_at', '<', $threshold)->delete();
 	}
 
 }
