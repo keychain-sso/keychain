@@ -13,11 +13,14 @@
 // The user profile is the homepage
 Route::get('/', function()
 {
-	return Redirect::to('user');
+	return Redirect::to('user/view/'.Auth::user()->hash);
 });
 
 // User profile route
 Route::controller('user', 'UserController');
+
+// User group route
+Route::controller('group', 'GroupController');
 
 // Token validation route
 Route::controller('token', 'TokenController');
@@ -29,4 +32,4 @@ Route::controller('auth', 'AuthController');
 Route::when('*', 'auth');
 
 // CSRF protection for all forms
-//Route::when('*', 'csrf', array('post'));
+Route::when('*', 'csrf', array('post'));

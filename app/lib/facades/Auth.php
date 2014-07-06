@@ -1,4 +1,4 @@
-<?php namespace Keychain\Components;
+<?php namespace Keychain\Facades;
 
 /**
  * Keychain
@@ -25,7 +25,7 @@ use User;
  * Abstraction over \Illuminate\Support\Facades\Auth
  *
  * @package     Keychain
- * @subpackage  Components
+ * @subpackage  Facades
  */
 class Auth extends \Illuminate\Support\Facades\Auth {
 

@@ -144,14 +144,38 @@ class Setup extends Migration {
 			$table->foreign('category')->references('id')->on('field_categories')->onDelete('cascade');
 		});
 
+		// Create the group types table
+		Schema::create('group_types', function($table)
+		{
+			$table->increments('id');
+			$table->string('name', 80)->unique();
+		});
+
 		// Create the groups table
 		Schema::create('groups', function($table)
 		{
 			$table->increments('id');
 			$table->string('name', 80)->unique()->index();
 			$table->mediumText('description');
+			$table->integer('type')->unsigned();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
+
+			$table->foreign('type')->references('id')->on('group_types')->onDelete('cascade');
+		});
+
+		// Create the group requests table
+		Schema::create('group_requests', function($table)
+		{
+			$table->increments('id');
+			$table->integer('user_id')->unsigned()->index();
+			$table->integer('group_id')->unsigned()->index();
+			$table->mediumText('justification');
+			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('updated_at');
+
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
 		});
 
 		// Create the mapping between users and fields
@@ -270,6 +294,13 @@ class Setup extends Migration {
 			array('name' => 'Computer'),
 			array('name' => 'Mobile'),
 			array('name' => 'Tablet'),
+		));
+
+		// Insert group types
+		DB::table('group_types')->insert(array(
+			array('name' => 'Open'),
+			array('name' => 'Request'),
+			array('name' => 'Closed'),
 		));
 
 		// Insert admin user account
@@ -442,11 +473,13 @@ class Setup extends Migration {
 		DB::table('groups')->insert(array(
 			'name'        => 'Registered users',
 			'description' => 'All registered users on the website.',
+			'type'        => GroupTypes::CLOSED,
 		));
 
 		DB::table('groups')->insert(array(
 			'name'        => 'Sysadmins',
 			'description' => 'System administrators with full control over the website.',
+			'type'        => GroupTypes::CLOSED,
 		));
 
 		// Link the admin user to the sysadmin group
@@ -619,7 +652,9 @@ class Setup extends Migration {
 		Schema::drop('acl_types');
 		Schema::drop('user_groups');
 		Schema::drop('user_fields');
+		Schema::drop('group_requests');
 		Schema::drop('groups');
+		Schema::drop('group_types');
 		Schema::drop('fields');
 		Schema::drop('field_categories');
 		Schema::drop('field_types');

@@ -101,4 +101,26 @@ class DeviceTypes {
 
 }
 
+/**
+ * Defines types of notices
+ */
+class NoticeTypes {
+
+	const SUCCESS = 1;
+	const ERROR = 2;
+	const INFORMATION = 3;
+
+}
+
+/**
+ * Types of user groups
+ */
+class GroupTypes {
+
+	const OPEN = 1;
+	const REQUEST = 2;
+	const CLOSED = 3;
+
+}
+
 ?>

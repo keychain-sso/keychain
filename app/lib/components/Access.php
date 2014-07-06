@@ -18,6 +18,8 @@ use ACLTypes;
 use App;
 use Cache;
 
+use Keychain\Facades\Auth;
+
 /**
  * Access class
  *

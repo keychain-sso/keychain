@@ -1,4 +1,4 @@
-<?php namespace Keychain\Components;
+<?php namespace Keychain\Facades;
 
 /**
  * Keychain
@@ -23,7 +23,7 @@ use Session;
  * Abstraction over \Illuminate\Support\Facades\View
  *
  * @package     Keychain
- * @subpackage  Components
+ * @subpackage  Facades
  */
 class View extends \Illuminate\Support\Facades\View {
 
@@ -52,6 +52,7 @@ class View extends \Illuminate\Support\Facades\View {
 				'success'   => Session::get('messages.success'),
 				'global'    => Session::get('messages.global'),
 				'appconfig' => Config::get('app'),
+				'title'     => null,
 			);
 		}
 
@@ -67,12 +68,11 @@ class View extends \Illuminate\Support\Facades\View {
 	 * @param  string  $view
 	 * @param  string  $title
 	 * @param  array  $data
-	 * @param  bool  $inject
 	 * @return \Illuminate\View\View
 	 */
 	public static function make($view, $title = null, $data = array())
 	{
-		$data['title'] = is_null($title) ? Lang::get('global.keychain') : Lang::get($title);
+		$data['title'] = Lang::get($title);
 
 		return parent::make($view, $data, static::defaults());
 	}

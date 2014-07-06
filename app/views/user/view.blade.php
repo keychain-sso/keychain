@@ -94,7 +94,7 @@
 					@foreach ($fieldView->{FieldCategories::BASIC} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{ $field->value }}</p>
+							<p class="list-group-item-text">{{{ $field->value }}}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -143,7 +143,7 @@
 					@foreach ($fieldView->{FieldCategories::CONTACT} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{ $field->value }}</p>
+							<p class="list-group-item-text">{{{ $field->value }}}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -161,9 +161,7 @@
 						@foreach ($memberships as $membership)
 							<li class="list-group-item">
 								<p class="list-group-item-text">
-									<span class="glyphicon glyphicon-user"></span>
-
-									<a href="{{ url('group/'.$membership->group->id) }}">
+									<a href="{{ url('group/view/'.$membership->group->id) }}">
 										{{ $membership->group->name }}
 									</a>
 								</p>
@@ -191,7 +189,7 @@
 						@foreach ($fieldView->{FieldCategories::OTHER} as $field)
 							<li class="list-group-item">
 								<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-								<p class="list-group-item-text">{{ $field->value }}</p>
+								<p class="list-group-item-text">{{{ $field->value }}}</p>
 							</li>
 						@endforeach
 					</ul>

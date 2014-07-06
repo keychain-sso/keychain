@@ -4,6 +4,18 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Site Title
+	|--------------------------------------------------------------------------
+	|
+	| This is the name of the site that will be displayed across the
+	| application.
+	|
+	*/
+
+	'title' => 'Keychain',
+
+	/*
+	|--------------------------------------------------------------------------
 	| Application Debug Mode
 	|--------------------------------------------------------------------------
 	|
@@ -163,7 +175,6 @@ return array(
 		'Blade'                   => 'Illuminate\Support\Facades\Blade',
 		'Cache'                   => 'Illuminate\Support\Facades\Cache',
 		'ClassLoader'             => 'Illuminate\Support\ClassLoader',
-		'Config'                  => 'Illuminate\Support\Facades\Config',
 		'Controller'              => 'Illuminate\Routing\Controller',
 		'Cookie'                  => 'Illuminate\Support\Facades\Cookie',
 		'Crypt'                   => 'Illuminate\Support\Facades\Crypt',
@@ -185,7 +196,6 @@ return array(
 		'Redirect'                => 'Illuminate\Support\Facades\Redirect',
 		'Redis'                   => 'Illuminate\Support\Facades\Redis',
 		'Request'                 => 'Illuminate\Support\Facades\Request',
-		'Response'                => 'Illuminate\Support\Facades\Response',
 		'Route'                   => 'Illuminate\Support\Facades\Route',
 		'Schema'                  => 'Illuminate\Support\Facades\Schema',
 		'Seeder'                  => 'Illuminate\Database\Seeder',
@@ -201,13 +211,15 @@ return array(
 
 		// Keychain
 		'Access'                  => 'Keychain\Components\Access',
-		'Auth'                    => 'Keychain\Components\Auth',
+		'Auth'                    => 'Keychain\Facades\Auth',
+		'Config'                  => 'Keychain\Facades\Config',
 		'CoupledSessionHandler'   => 'Keychain\Drivers\CoupledSessionHandler',
 		'FormField'               => 'Keychain\Components\FormField',
 		'MultiFactorUserProvider' => 'Keychain\Drivers\MultiFactorUserProvider',
+		'Response'                => 'Keychain\Facades\Response',
 		'Utilities'               => 'Keychain\Components\Utilities',
 		'Verifier'                => 'Keychain\Components\Verifier',
-		'View'                    => 'Keychain\Components\View',
+		'View'                    => 'Keychain\Facades\View',
 
 	),
 

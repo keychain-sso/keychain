@@ -4,11 +4,11 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="jumbotron text-center">
-				@if ($type == 'success')
+				@if ($type == NoticeTypes::SUCCESS)
 					<span class="glyphicon glyphicon-ok-sign text-xl text-success"></span>
-				@elseif ($type == 'danger')
+				@elseif ($type == NoticeTypes::ERROR)
 					<span class="glyphicon glyphicon-remove-sign text-xl text-danger"></span>
-				@elseif ($type == 'info')
+				@elseif ($type == NoticeTypes::INFORMATION)
 					<span class="glyphicon glyphicon-info-sign text-xl text-info"></span>
 				@endif
 

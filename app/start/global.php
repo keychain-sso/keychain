@@ -120,3 +120,57 @@ Blade::extend(function($value)
 	return preg_replace('/\{\?(.+)\?\}/', '<?php ${1} ?>', $value);
 });
 
+/*
+|--------------------------------------------------------------------------
+| Handle application errors
+|--------------------------------------------------------------------------
+|
+| Shows custom screens for app errors. This is mainly done to show a
+| friendly error message and to throw errors with ease from the view.
+|
+*/
+
+App::error(function($exception, $code)
+{
+	// Get the exception instance
+	$type = get_class($exception);
+
+	// Set code based on exception
+	switch ($type)
+	{
+		case 'Illuminate\Session\TokenMismatchException':
+
+			$code = 403;
+
+			break;
+
+		case 'Illuminate\Database\Eloquent\ModelNotFoundException':
+		case 'InvalidArgumentException':
+
+			$code = 404;
+
+			break;
+	}
+
+	// Show an error page
+	if ( ! Config::get('app.debug'))
+	{
+		// Log the exception details
+		Log::error($exception);
+
+		// Check if the language file has a friendly text for the error
+		// If not, fall back to generic verbiage
+		$key = Lang::has("errors.{$code}") ? $code : 'default';
+
+		// Build the view data
+		$data = array(
+			'type'    => NoticeTypes::ERROR,
+			'title'   => Lang::get('global.error'),
+			'message' => Lang::get("errors.{$key}"),
+		);
+
+		// Return the notice to the user
+		return Response::view('common/notice', $data, $code);
+	}
+});
+

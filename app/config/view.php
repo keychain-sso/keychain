@@ -28,4 +28,16 @@ return array(
 
 	'pagination' => 'pagination::slider-3',
 
+	/*
+	|--------------------------------------------------------------------------
+	| List Length
+	|--------------------------------------------------------------------------
+	|
+	| This dictates the maximum number of items that will be displayed on
+	| one page.
+	|
+	*/
+
+	'list_length' => 15,
+
 );

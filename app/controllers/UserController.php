@@ -24,17 +24,6 @@
 class UserController extends BaseController {
 
 	/**
-	 * Redirects to the logged in user's profile
-	 *
-	 * @access public
-	 * @return \Illuminate\Support\Facades\Redirect
-	 */
-	public function getIndex()
-	{
-		return Redirect::to('user/view/'.Auth::user()->hash);
-	}
-
-	/**
 	 * Displays a specific user's profile
 	 *
 	 * @access public

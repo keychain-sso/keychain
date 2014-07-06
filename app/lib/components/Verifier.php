@@ -139,13 +139,13 @@ class Verifier {
 
 				// Show a success notice
 				$data = array(
-					'type'    => 'success',
+					'type'    => NoticeTypes::SUCCESS,
 					'message' => Lang::get('global.email_verified'),
 				);
 
 				if (Auth::check())
 				{
-					$data['return'] = link_to('user', Lang::get('global.return_profile'));
+					$data['return'] = link_to('/', Lang::get('global.return_profile'));
 				}
 				else
 				{

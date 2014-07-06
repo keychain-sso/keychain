@@ -23,13 +23,20 @@
 					<span class="icon-bar"></span>
 				</button>
 
-				<a class="navbar-brand" href="{{ url() }}">{{ Lang::get('global.keychain') }}</a>
+				<a class="navbar-brand" href="{{ url() }}">{{ Config::get('app.title') }}</a>
 			</div>
 
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav navbar-right">
 					<li>
-						<a href="{{ url('group/list') }}>">
+						<a href="{{ url('user/list') }}">
+							<span class="glyphicon glyphicon-user"></span>
+							{{ Lang::get('global.users') }}
+						</a>
+					</li>
+
+					<li>
+						<a href="{{ url('group/list') }}">
 							<span class="glyphicon glyphicon-th-large"></span>
 							{{ Lang::get('global.groups') }}
 						</a>

@@ -15,7 +15,7 @@
 					<legend>
 						{{
 							Lang::get('auth.log_into', array(
-								'site' => Lang::get('global.keychain')
+								'site' => Config::get('app.title'),
 							))
 						}}
 					</legend>
