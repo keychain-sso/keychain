@@ -13,7 +13,6 @@
  * @filesource
  */
 
-use Config;
 use Lang;
 use Session;
 
