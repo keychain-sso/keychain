@@ -500,7 +500,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 1,
-			'access'       => 'field.view',
+			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
@@ -509,7 +509,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 1,
-			'access'       => 'field.edit',
+			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
@@ -518,7 +518,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 2,
-			'access'       => 'field.view',
+			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
@@ -527,7 +527,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 2,
-			'access'       => 'field.edit',
+			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
@@ -536,7 +536,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 3,
-			'access'       => 'field.view',
+			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
@@ -545,7 +545,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 3,
-			'access'       => 'field.edit',
+			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
@@ -554,7 +554,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 4,
-			'access'       => 'field.view',
+			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
@@ -563,7 +563,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 4,
-			'access'       => 'field.edit',
+			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
@@ -572,7 +572,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 5,
-			'access'       => 'field.view',
+			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
@@ -581,7 +581,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 5,
-			'access'       => 'field.edit',
+			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
@@ -590,7 +590,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 6,
-			'access'       => 'field.view',
+			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
@@ -599,7 +599,7 @@ class Setup extends Migration {
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'field_id'     => 6,
-			'access'       => 'field.edit',
+			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		// Allow sysadmins to edit all users
@@ -608,16 +608,16 @@ class Setup extends Migration {
 			'object_type'  => ACLTypes::ALL,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => 'user.edit',
+			'access'       => Permissions::USER_EDIT,
 		));
 
-		// Allow sysadmins to administrate all users
+		// Allow sysadmins to change user status for everyone
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
 			'object_type'  => ACLTypes::ALL,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => 'user.manage',
+			'access'       => Permissions::USER_STATUS,
 		));
 
 		// Allow sysadmins to administrate all groups
@@ -626,7 +626,7 @@ class Setup extends Migration {
 			'object_type'  => ACLTypes::ALL,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => 'group.manage',
+			'access'       => Permissions::GROUP_EDIT,
 		));
 
 		// Allow registered users to edit their own profiles
@@ -635,7 +635,7 @@ class Setup extends Migration {
 			'object_type'  => ACLTypes::SELF,
 			'subject_id'   => 1,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => 'user.edit',
+			'access'       => Permissions::USER_EDIT,
 		));
 	}
 

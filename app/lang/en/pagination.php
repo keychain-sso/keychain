@@ -13,7 +13,8 @@ return array(
 	|
 	*/
 
-	'previous' => '&laquo; Previous',
-	'next'     => 'Next &raquo;',
+	"previous" => "&laquo; Previous",
+	"next"     => "Next &raquo;",
+	"range"    => "Showing :from to :to of :total items",
 
 );

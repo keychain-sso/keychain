@@ -24,12 +24,13 @@ use FieldTypes;
 use Flags;
 use HTTPStatus;
 use Lang;
+use Permissions;
+use stdClass;
 use Session;
 use UserField;
 use Utilities;
 use Validator;
-
-use stdClass;
+use View;
 
 /**
  * FormField class
@@ -69,7 +70,7 @@ class FormField {
 		// Compile custom fields for display
 		foreach ($fieldInfo as $field)
 		{
-			if (Access::check('field.view', $user, $field->id))
+			if (Access::check(Permissions::FIELD_VIEW, $user, $field->id))
 			{
 				// Parse the field for display
 				if (isset($userFieldInfo[$field->id]))
@@ -118,7 +119,7 @@ class FormField {
 		// Compile user field controls
 		foreach ($fieldInfo as $field)
 		{
-			if (Access::check('field.edit', $user, $field->id))
+			if (Access::check(Permissions::FIELD_EDIT, $user, $field->id))
 			{
 				// Parse the field for display
 				$value = isset($userFieldInfo[$field->id]) ? $userFieldInfo[$field->id]->value : null;
@@ -129,7 +130,7 @@ class FormField {
 					'machine_name' => "custom_{$field->machine_name}",
 					'value'        => $parsed[FieldParser::VALUE],
 					'options'      => $parsed[FieldParser::OPTIONS],
-					'disabled'     => Access::check('field.edit', $user, $field->id) ? null : 'disabled',
+					'disabled'     => Access::check(Permissions::FIELD_EDIT, $user, $field->id) ? null : 'disabled',
 				);
 
 				$fields->{$field->category}[$field->order] = View::make("controls/{$fieldTypes[$field->type]}", null, $data)->render();
@@ -186,7 +187,7 @@ class FormField {
 			$value = isset($data['custom_'.$field->machine_name]) ? $data['custom_'.$field->machine_name] : '';
 
 			// Validate if user can edit this field
-			Access::restrict('field.edit', $user, $field->id);
+			Access::restrict(Permissions::FIELD_EDIT, $user, $field->id);
 
 			// Set the initial rule
 			$rules = $field->required ? 'required|' : '';

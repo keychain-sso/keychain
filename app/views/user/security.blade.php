@@ -14,7 +14,7 @@
 			{{ Lang::get('user.change_password') }}
 		</legend>
 
-		@if ( ! Access::check('user.manage', $user))
+		@if (Auth::id() == $user->id)
 			<div class="form-group">
 				{{
 					Form::label('old_password', Lang::get('user.old_password'), array(
@@ -103,7 +103,7 @@
 		</a>
 	</fieldset>
 
-	@if (Access::check('user.manage', $user))
+	@if (Access::check(Permissions::USER_STATUS, $user))
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-cog"></span>

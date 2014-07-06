@@ -34,10 +34,22 @@
 					</li>
 				@endforeach
 			</ul>
+		</div>
+	</div>
 
-			<div class="text-center">
-				{{ $groups->links() }}
-			</div>
+	<div class="row">
+		<div class="col-sm-6 visible-sm visible-md visible-lg text-muted">
+			{{
+				Lang::get('pagination.range', array(
+					'from'  => $groups->getFrom(),
+					'to'    => $groups->getTo(),
+					'total' => $groups->getTotal(),
+				))
+			}}
+		</div>
+
+		<div class="col-sm-6 text-right">
+			{{ $groups->links() }}
 		</div>
 	</div>
 @stop

@@ -59,7 +59,7 @@ class UserController extends BaseController {
 		$data = $this->getUserData($user);
 
 		// Validate edit rights
-		Access::restrict('user.edit', $user);
+		Access::restrict(Permissions::USER_EDIT, $user);
 
 		// Merge the user data with editor data
 		$data = array_merge($data, array(
@@ -86,7 +86,7 @@ class UserController extends BaseController {
 			$user = User::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			Access::restrict('user.edit', $user);
+			Access::restrict(Permissions::USER_EDIT, $user);
 
 			// Save the form data and show the status
 			$status = FormField::save($user, Input::all());
@@ -120,7 +120,7 @@ class UserController extends BaseController {
 		$data = $this->getUserData($user);
 
 		// Validate edit rights
-		Access::restrict('user.edit', $user);
+		Access::restrict(Permissions::USER_EDIT, $user);
 
 		// Perform the requested action
 		switch ($action)
@@ -187,7 +187,7 @@ class UserController extends BaseController {
 			$user = User::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			Access::restrict('user.edit', $user);
+			Access::restrict(Permissions::USER_EDIT, $user);
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
@@ -239,7 +239,7 @@ class UserController extends BaseController {
 		$data = $this->getUserData($user);
 
 		// Validate edit rights
-		Access::restrict('user.edit', $user);
+		Access::restrict(Permissions::USER_EDIT, $user);
 
 		// Perform the requested action
 		switch ($action)
@@ -281,7 +281,7 @@ class UserController extends BaseController {
 			$user = User::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			Access::restrict('user.edit', $user);
+			Access::restrict(Permissions::USER_EDIT, $user);
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
@@ -337,7 +337,7 @@ class UserController extends BaseController {
 		$data = $this->getUserData($user);
 
 		// Validate edit rights
-		Access::restrict('user.edit', $user);
+		Access::restrict(Permissions::USER_EDIT, $user);
 
 		// Perform the requested action
 		switch ($action)
@@ -379,10 +379,10 @@ class UserController extends BaseController {
 			// Fetch the associated user
 			$hash = Input::get('hash');
 			$user = User::where('hash', $hash)->firstOrFail();
-			$manage = Access::check('user.manage', $user);
+			$manage = Access::check(Permissions::USER_STATUS, $user);
 
 			// Validate edit rights
-			Access::restrict('user.edit', $user);
+			Access::restrict(Permissions::USER_EDIT, $user);
 
 			// Define the validation rules
 			$validator = Validator::make(Input::all(), array(
