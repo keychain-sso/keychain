@@ -332,6 +332,27 @@ class Setup extends Migration {
 			'verified' => Flags::YES,
 		));
 
+		// Insert another user account
+		DB::table('users')->insert(array(
+			'first_name'    => 'Jane',
+			'last_name'     => 'Doe',
+			'gender'        => 'F',
+			'date_of_birth' => '1982-03-01',
+			'timezone'      => 'America/Chicago',
+			'password'      => Hash::make('password'),
+			'title'         => 'Web designer',
+			'hash'          => str_random(8),
+			'status'        => UserStatus::ACTIVE,
+		));
+
+		// Insert second user's email addresses
+		DB::table('user_emails')->insert(array(
+			'user_id'  => 2,
+			'address'  => 'second@keychain.sso',
+			'primary'  => Flags::YES,
+			'verified' => Flags::YES,
+		));
+
 		// Insert a DSA key
 		DB::table('user_keys')->insert(array(
 			'user_id'     => 1,
@@ -491,9 +512,16 @@ class Setup extends Migration {
 			'group_id' => 1,
 		));
 
+		// Link admin to registered users group
 		DB::table('user_groups')->insert(array(
 			'user_id'  => 1,
 			'group_id' => 2,
+		));
+
+		// Link second user to registered users groups
+		DB::table('user_groups')->insert(array(
+			'user_id'  => 2,
+			'group_id' => 1,
 		));
 
 		// Give sysadmins access to everything

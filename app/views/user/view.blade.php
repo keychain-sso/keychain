@@ -3,20 +3,16 @@
 @section('body')
 	<div class="text-center">
 		@if ( ! empty($user->avatar))
-			{{
-				HTML::image(asset('uploads/avatars'.$user->avatar), null, array(
-					'class' => 'img-circle img-thumbnail',
-				))
-			}}
+			<img src="{{ asset('uploads/avatars'.$user->avatar) }}" class="img-circle img-thumbnail" alt="" />
 		@else
-			{{
-				HTML::image(asset('img/default-avatar.png'), null, array(
-					'class' => 'img-circle img-thumbnail',
-				))
-			}}
+			<img src="{{ asset('img/default-avatar.png') }}" class="img-circle img-thumbnail" alt="" />
 		@endif
 
-		<h1>{{ sprintf('%s %s', $user->first_name, $user->last_name) }}</h1>
+		<h1>
+			{{ $user->first_name }}
+			{{ $user->last_name }}
+		</h1>
+
 		<p>{{ $user->title }}</p>
 	</div>
 

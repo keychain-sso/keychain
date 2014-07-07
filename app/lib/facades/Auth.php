@@ -51,15 +51,20 @@ class Auth extends \Illuminate\Support\Facades\Auth {
 	 *
 	 * @static
 	 * @access public
-	 * @param  bool  $remember
+	 * @param  User  $user
 	 * @return void
 	 */
-	public static function refresh($remember = false)
+	public static function refreshRememberToken($user)
 	{
-		$user = parent::user();
+		$token = str_random(60);
 
-		parent::logout();
-		parent::login($user, $remember);
+		$user->remember_token = $token;
+		$user->save();
+
+		if ($user->id == parent::id())
+		{
+			Cookie::forever(parent::getRecallerName(), $token);
+		}
 	}
 
 	/**

@@ -344,11 +344,19 @@ class UserController extends BaseController {
 		{
 			case 'killall':
 
-				// Kill the specified session
-				UserSession::where('id', '<>', Session::getId())->where('user_id', $user->id)->delete();
+				// Fetch all sessions for user
+				$sessions = UserSession::where('user_id', $user->id);
 
-				// Re-authenticate the current session to regenerate the remember token
-				Auth::refresh(Session::get('security.remember'));
+				// If user is viewing their own profile, don't kill their own session
+				if ($user->id == Auth::id())
+				{
+					$sessions->where('id', '<>', Session::getId());
+				}
+
+				$sessions->delete();
+
+				// Regerate the remember token for this user
+				Auth::refreshRememberToken($user);
 
 				// Redirect back to the previous URL
 				Session::flash('messages.success', Lang::get('user.sessions_killed'));
@@ -408,7 +416,10 @@ class UserController extends BaseController {
 			}
 
 			// Finally, we change the password
-			$user->password = Hash::make(Input::get('new_password'));
+			if (Input::has('new_password'))
+			{
+				$user->password = Hash::make(Input::get('new_password'));
+			}
 
 			// Check if logged in user has manage rights
 			// If so, update the account settings as well

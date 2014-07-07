@@ -96,13 +96,27 @@
 					</p>
 				</li>
 			@endforeach
+
+			@if (count($sessions) == 0)
+				<li class="list-group-item">
+					{{ Lang::get('user.no_active_sessions') }}
+				</li>
+			@endif
 		</ul>
 
-		<div class="form-group">
-			<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
-				{{ Lang::get('user.kill_other_sessions') }}
-			</a>
-		</div>
+		@if ($user->id == Auth::id() && count($sessions) > 1)
+			<div class="form-group">
+				<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
+					{{ Lang::get('user.kill_other_sessions') }}
+				</a>
+			</div>
+		@elseif ($user->id != Auth::id() && count($sessions) > 0)
+			<div class="form-group">
+				<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
+					{{ Lang::get('user.kill_all_sessions') }}
+				</a>
+			</div>
+		@endif
 	</fieldset>
 
 	@if (Access::check(Permissions::USER_STATUS, $user) && $user->id != Auth::id())
@@ -154,11 +168,9 @@
 		))
 	}}
 
-	{{
-		link_to("user/view/{$user->hash}", Lang::get('global.close'), array(
-			'class' => 'btn btn-default',
-		))
-	}}
+	<a href="{{ url('user/view/'.$user->hash) }}" class="btn btn-default">
+		{{ Lang::get('global.close') }}
+	</a>
 </div>
 
 {{ Form::close() }}

@@ -45,7 +45,7 @@ class MultiFactorUserProvider implements UserProviderInterface {
 	 */
 	public function retrieveById($identifier)
 	{
-		$user = User::find($identifier);
+		$user = User::where('id', $identifier)->where('status', UserStatus::ACTIVE)->first();
 
 		if (UserSession::where('id', Session::getId())->count() == 1)
 		{
@@ -65,7 +65,7 @@ class MultiFactorUserProvider implements UserProviderInterface {
 	{
 		Session::put('security.remember', true);
 
-		return User::where('id', $identifier)->where('remember_token', $token)->first();
+		return User::where('id', $identifier)->where('remember_token', $token)->where('status', UserStatus::ACTIVE)->first();
 	}
 
 	/**

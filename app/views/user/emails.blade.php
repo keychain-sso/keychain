@@ -96,11 +96,9 @@
 		))
 	}}
 
-	{{
-		link_to("user/view/{$user->hash}", Lang::get('global.close'), array(
-			'class' => 'btn btn-default',
-		))
-	}}
+	<a href="{{ url('user/view/'.$user->hash) }}" class="btn btn-default">
+		{{ Lang::get('global.close') }}
+	</a>
 </div>
 
 {{ Form::close() }}

@@ -17,6 +17,9 @@ footer {
 .pagination {
   margin: 0;
 }
+.thumbnail {
+  margin-bottom: 5px;
+}
 .jumbotron .text-xl {
   font-size: 110px;
   margin-bottom: 20px;
@@ -26,6 +29,13 @@ footer {
 }
 .pull-right div {
   display: inline-table;
+}
+.inlay {
+  float: left;
+  position: absolute;
+  left: 25px;
+  top: 5px;
+  margin: 0;
 }
 .list-group-icon {
   margin-right: 15px;
