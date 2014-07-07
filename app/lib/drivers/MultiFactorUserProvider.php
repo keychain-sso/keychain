@@ -63,6 +63,8 @@ class MultiFactorUserProvider implements UserProviderInterface {
 	 */
 	public function retrieveByToken($identifier, $token)
 	{
+		Session::put('security.remember', true);
+
 		return User::where('id', $identifier)->where('remember_token', $token)->first();
 	}
 
@@ -76,7 +78,7 @@ class MultiFactorUserProvider implements UserProviderInterface {
 	 */
 	public function updateRememberToken(UserInterface $user, $token)
 	{
-		$user->setAttribute('remember_token', $token);
+		$user->remember_token = $token;
 		$user->save();
 	}
 

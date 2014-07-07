@@ -132,6 +132,13 @@ class Access {
 
 			case 'Group':
 
+				// Does the subject have access to all groups?
+				if (isset($acl[ACLTypes::ALL.".{$field}.{$flag}"]))
+				{
+					return true;
+				}
+
+				// Does the subject have access directly to the group?
 				if (isset($acl["{$object->id}.".ACLTypes::GROUP.".{$field}.{$flag}"]))
 				{
 					return true;

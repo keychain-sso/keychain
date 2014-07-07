@@ -3,10 +3,12 @@
 @section('body')
 	<div class="row">
 		<div class="col-sm-12">
-			<h2>
-				<span class="glyphicon glyphicon-th-large"></span>
-				{{ Lang::get('global.groups') }}
-			</h2>
+			<div class="page-header">
+				<h2>
+					<span class="glyphicon glyphicon-th-large"></span>
+					{{ Lang::get('global.groups') }}
+				</h2>
+			</div>
 
 			<ul class="list-group">
 				@foreach ($groups as $group)
@@ -22,7 +24,7 @@
 						</small>
 
 						<h4 class="list-group-item-heading">
-							<a href="{{ url('group/view/'.$group->id) }}">{{ $group->name }}</a>
+							<a href="{{ url('group/view/'.$group->hash) }}">{{ $group->name }}</a>
 
 							@if (isset($membership[$group->id]))
 								<span class="glyphicon glyphicon-link text-success" title="{{ Lang::get('group.member_of_group') }}"

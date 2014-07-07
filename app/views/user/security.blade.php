@@ -98,12 +98,14 @@
 			@endforeach
 		</ul>
 
-		<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
-			{{ Lang::get('user.kill_other_sessions') }}
-		</a>
+		<div class="form-group">
+			<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
+				{{ Lang::get('user.kill_other_sessions') }}
+			</a>
+		</div>
 	</fieldset>
 
-	@if (Access::check(Permissions::USER_STATUS, $user))
+	@if (Access::check(Permissions::USER_STATUS, $user) && $user->id != Auth::id())
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-cog"></span>

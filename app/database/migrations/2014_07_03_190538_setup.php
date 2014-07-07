@@ -57,7 +57,7 @@ class Setup extends Migration {
 			$table->string('avatar', 15)->nullable();
 			$table->string('title', 80)->nullable();
 			$table->integer('status')->unsigned()->index();
-			$table->string('hash', 8)->index();
+			$table->string('hash', 8)->unique()->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
 
@@ -158,6 +158,7 @@ class Setup extends Migration {
 			$table->string('name', 80)->unique()->index();
 			$table->mediumText('description');
 			$table->integer('type')->unsigned();
+			$table->string('hash', 8)->unique()->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
 
@@ -474,12 +475,14 @@ class Setup extends Migration {
 			'name'        => 'Registered users',
 			'description' => 'All registered users on the website.',
 			'type'        => GroupTypes::CLOSED,
+			'hash'        => str_random(8),
 		));
 
 		DB::table('groups')->insert(array(
 			'name'        => 'Sysadmins',
 			'description' => 'System administrators with full control over the website.',
 			'type'        => GroupTypes::CLOSED,
+			'hash'        => str_random(8),
 		));
 
 		// Link the admin user to the sysadmin group

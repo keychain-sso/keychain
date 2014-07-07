@@ -161,7 +161,7 @@
 						@foreach ($memberships as $membership)
 							<li class="list-group-item">
 								<p class="list-group-item-text">
-									<a href="{{ url('group/view/'.$membership->group->id) }}">
+									<a href="{{ url('group/view/'.$membership->group->hash) }}">
 										{{ $membership->group->name }}
 									</a>
 								</p>
