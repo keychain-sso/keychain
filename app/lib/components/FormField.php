@@ -14,6 +14,7 @@
  */
 
 use App;
+use Auth;
 use Cache;
 use Field;
 use FieldCategories;
@@ -52,41 +53,44 @@ class FormField {
 	 */
 	public static function getView($user)
 	{
-		$userFields = UserField::where('user_id', $user->id)->get();
-		$userFieldInfo = array();
-		$fieldInfo = static::fieldInfo();
-
-		$fields = new stdClass;
-		$fields->{FieldCategories::BASIC} = array();
-		$fields->{FieldCategories::CONTACT} = array();
-		$fields->{FieldCategories::OTHER} = array();
-
-		// Index user field by field_id
-		foreach ($userFields as $userField)
+		return Cache::tags("fields.{$user->id}")->remember(Auth::id(), 60, function() use ($user)
 		{
-			$userFieldInfo[$userField->field_id] = $userField;
-		}
+			$userFields = UserField::where('user_id', $user->id)->get();
+			$userFieldInfo = array();
+			$fieldInfo = static::fieldInfo();
 
-		// Compile custom fields for display
-		foreach ($fieldInfo as $field)
-		{
-			if (Access::check(Permissions::FIELD_VIEW, $user, $field->id))
+			$fields = new stdClass;
+			$fields->{FieldCategories::BASIC} = array();
+			$fields->{FieldCategories::CONTACT} = array();
+			$fields->{FieldCategories::OTHER} = array();
+
+			// Index user field by field_id
+			foreach ($userFields as $userField)
 			{
-				// Parse the field for display
-				if (isset($userFieldInfo[$field->id]))
-				{
-					$parsed = static::parse('view', $field, $userFieldInfo[$field->id]->value);
+				$userFieldInfo[$userField->field_id] = $userField;
+			}
 
-					// Assign the field to its own bucket
-					$fields->{$field->category}[$field->order] = (object) array(
-						'name'  => $field->name,
-						'value' => $parsed[FieldParser::VALUE],
-					);
+			// Compile custom fields for display
+			foreach ($fieldInfo as $field)
+			{
+				if (Access::check(Permissions::FIELD_VIEW, $user, $field->id))
+				{
+					// Parse the field for display
+					if (isset($userFieldInfo[$field->id]))
+					{
+						$parsed = static::parse('view', $field, $userFieldInfo[$field->id]->value);
+
+						// Assign the field to its own bucket
+						$fields->{$field->category}[$field->order] = (object) array(
+							'name'  => $field->name,
+							'value' => $parsed[FieldParser::VALUE],
+						);
+					}
 				}
 			}
-		}
 
-		return $fields;
+			return $fields;
+		});
 	}
 
 	/**

@@ -34,10 +34,22 @@ return array(
 	|--------------------------------------------------------------------------
 	|
 	| This dictates the maximum number of items that will be displayed on
-	| one page.
+	| one page for a list layout.
 	|
 	*/
 
 	'list_length' => 15,
+
+	/*
+	|--------------------------------------------------------------------------
+	| Icon Length
+	|--------------------------------------------------------------------------
+	|
+	| This dictates the maximum number of icons that will be displayed on
+	| one page for icon layout.
+	|
+	*/
+
+	'icon_length' => 24,
 
 );

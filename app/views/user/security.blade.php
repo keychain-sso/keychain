@@ -14,7 +14,7 @@
 			{{ Lang::get('user.change_password') }}
 		</legend>
 
-		@if (Auth::id() == $user->id)
+		@if ($user->id == $auth->id)
 			<div class="form-group">
 				{{
 					Form::label('old_password', Lang::get('user.old_password'), array(
@@ -104,13 +104,13 @@
 			@endif
 		</ul>
 
-		@if ($user->id == Auth::id() && count($sessions) > 1)
+		@if ($user->id == $auth->id && count($sessions) > 1)
 			<div class="form-group">
 				<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
 					{{ Lang::get('user.kill_other_sessions') }}
 				</a>
 			</div>
-		@elseif ($user->id != Auth::id() && count($sessions) > 0)
+		@elseif ($user->id != $auth->id && count($sessions) > 0)
 			<div class="form-group">
 				<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
 					{{ Lang::get('user.kill_all_sessions') }}
@@ -119,7 +119,7 @@
 		@endif
 	</fieldset>
 
-	@if (Access::check(Permissions::USER_STATUS, $user) && $user->id != Auth::id())
+	@if ($manager && $user->id != $auth->id)
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-cog"></span>

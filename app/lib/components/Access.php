@@ -17,6 +17,7 @@ use ACL;
 use ACLTypes;
 use App;
 use Cache;
+use HTTPStatus;
 
 use Keychain\Facades\Auth;
 

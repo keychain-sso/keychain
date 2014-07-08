@@ -51,11 +51,13 @@ class DeviceTypes {
  */
 class Permissions {
 
+	const ACL_MANAGE = 'acl_manage';
 	const FIELD_VIEW = 'field_view';
 	const FIELD_EDIT = 'field_edit';
 	const USER_EDIT = 'user_edit';
-	const USER_STATUS = 'user_status';
+	const USER_MANAGE = 'user_manage';
 	const GROUP_EDIT = 'group_edit';
+	const GROUP_MANAGE = 'group_manage';
 
 }
 

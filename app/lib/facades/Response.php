@@ -32,7 +32,7 @@ class Response extends \Illuminate\Support\Facades\Response {
 	 * @param  array  $data
 	 * @param  int  $status
 	 * @param  array  $headers
-	 * @return \Illuminate\View\View
+	 * @return View
 	 */
 	public static function view($view, $data = array(), $status = 200, array $headers = array())
 	{

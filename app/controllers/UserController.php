@@ -28,7 +28,7 @@ class UserController extends BaseController {
 	 *
 	 * @access public
 	 * @param  string  $hash
-	 * @return \Illuminate\Support\Facades\View
+	 * @return View
 	 */
 	public function getView($hash)
 	{
@@ -50,7 +50,7 @@ class UserController extends BaseController {
 	 *
 	 * @access public
 	 * @param  string  $hash
-	 * @return \Illuminate\Support\Facades\View
+	 * @return View
 	 */
 	public function getEdit($hash)
 	{
@@ -65,7 +65,7 @@ class UserController extends BaseController {
 		$data = array_merge($data, array(
 			'fieldEdit' => FormField::getEdit($user),
 			'timezones' => Utilities::timezones(),
-			'modal'     => 'edit',
+			'modal'     => 'editor',
 		));
 
 		return View::make('user/view', 'user.edit_profile', $data);
@@ -75,7 +75,7 @@ class UserController extends BaseController {
 	 * Handles profile save functionality
 	 *
 	 * @access public
-	 * @return \Illuminate\Support\Facades\Redirect
+	 * @return Redirect
 	 */
 	public function postEdit()
 	{
@@ -111,7 +111,7 @@ class UserController extends BaseController {
 	 * @param  string  $hash
 	 * @param  string  $action
 	 * @param  int  $email
-	 * @return \Illuminate\Support\Facades\View
+	 * @return View
 	 */
 	public function getEmails($hash, $action = null, $email = 0)
 	{
@@ -176,7 +176,7 @@ class UserController extends BaseController {
 	 * Handles email save functionality
 	 *
 	 * @access public
-	 * @return \Illuminate\Support\Facades\Redirect
+	 * @return Redirect
 	 */
 	public function postEmails()
 	{
@@ -230,7 +230,7 @@ class UserController extends BaseController {
 	 * @param  string  $hash
 	 * @param  string  $action
 	 * @param  int  $key
-	 * @return \Illuminate\Support\Facades\View|\Illuminate\Support\Facades\Redirect
+	 * @return View|Redirect
 	 */
 	public function getKeys($hash, $action = null, $key = 0)
 	{
@@ -270,7 +270,7 @@ class UserController extends BaseController {
 	 * Handles SSH key save functionality
 	 *
 	 * @access public
-	 * @return \Illuminate\Support\Facades\Redirect
+	 * @return Redirect
 	 */
 	public function postKeys()
 	{
@@ -328,7 +328,7 @@ class UserController extends BaseController {
 	 * @access public
 	 * @param  string  $hash
 	 * @param  string  $action
-	 * @return \Illuminate\Support\Facades\View
+	 * @return View
 	 */
 	public function getSecurity($hash, $action = null)
 	{
@@ -378,7 +378,7 @@ class UserController extends BaseController {
 	 * Handles security settings save functionality
 	 *
 	 * @access public
-	 * @return \Illuminate\Support\Facades\Redirect
+	 * @return Redirect
 	 */
 	public function postSecurity()
 	{
@@ -387,7 +387,7 @@ class UserController extends BaseController {
 			// Fetch the associated user
 			$hash = Input::get('hash');
 			$user = User::where('hash', $hash)->firstOrFail();
-			$manage = Access::check(Permissions::USER_STATUS, $user);
+			$manage = Access::check(Permissions::USER_MANAGE, $user);
 
 			// Validate edit rights
 			Access::restrict(Permissions::USER_EDIT, $user);
@@ -396,7 +396,7 @@ class UserController extends BaseController {
 			$validator = Validator::make(Input::all(), array(
 				'new_password'     => 'min:7',
 				'confirm_password' => 'required_with:new_password|same:new_password',
-				'status'           => 'exists:user_status,id',
+				'status'           => 'required|exists:user_status,id',
 			));
 
 			// Run the validator
@@ -423,7 +423,7 @@ class UserController extends BaseController {
 
 			// Check if logged in user has manage rights
 			// If so, update the account settings as well
-			if ($manage)
+			if ($manage && $user->id != Auth::id())
 			{
 				$user->status = Input::get('status');
 			}
@@ -449,37 +449,38 @@ class UserController extends BaseController {
 	 */
 	private function getUserData($user)
 	{
-		return Cache::tags("fields.{$user->id}")->remember(Auth::id(), 60, function() use ($user)
+		// Parse user's email addresses as primary and other
+		$emails = new stdClass;
+
+		foreach ($user->emails as $email)
 		{
-			// Parse user's email addresses as primary and other
-			$emails = new stdClass;
-
-			foreach ($user->emails as $email)
+			if ($email->primary)
 			{
-				if ($email->primary)
-				{
-					$emails->primary = $email;
-				}
-				else
-				{
-					$emails->other[] = $email;
-				}
+				$emails->primary = $email;
 			}
+			else
+			{
+				$emails->other[] = $email;
+			}
+		}
 
-			// Get user-group data
-			$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
+		// Get user-group data
+		$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
 
-			// Build the user data
-			$data = array(
-				'user'        => $user,
-				'emails'      => $emails,
-				'fieldView'   => FormField::getView($user),
-				'memberships' => $memberships,
-				'modal'       => false,
-			);
+		// Get user permissions
+		$editor = Access::check(Permissions::USER_EDIT, $user);
+		$manager = Access::check(Permissions::USER_MANAGE, $user);
 
-			return $data;
-		});
+		// Build the user data
+		return array(
+			'user'        => $user,
+			'emails'      => $emails,
+			'fieldView'   => FormField::getView($user),
+			'memberships' => $memberships,
+			'editor'      => $editor,
+			'manager'     => $manager,
+			'modal'       => false,
+		);
 	}
 
 }

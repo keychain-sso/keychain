@@ -27,7 +27,7 @@ class AuthController extends BaseController {
 	 * Displays the login page
 	 *
 	 * @access public
-	 * @return \Illuminate\Support\Facades\View
+	 * @return View
 	 */
 	public function getLogin()
 	{
@@ -38,7 +38,7 @@ class AuthController extends BaseController {
 	 * Handles POST events for the login screen
 	 *
 	 * @access public
-	 * @return \Illuminate\Support\Facades\Redirect
+	 * @return Redirect
 	 */
 	public function postLogin()
 	{
@@ -85,7 +85,7 @@ class AuthController extends BaseController {
 	 * Handles user logout
 	 *
 	 * @access public
-	 * @return \Illuminate\Support\Facades\Redirect
+	 * @return Redirect
 	 */
 	public function getLogout()
 	{

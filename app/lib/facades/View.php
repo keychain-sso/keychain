@@ -51,6 +51,7 @@ class View extends \Illuminate\Support\Facades\View {
 				'success'   => Session::get('messages.success'),
 				'global'    => Session::get('messages.global'),
 				'appconfig' => Config::get('app'),
+				'auth'      => Auth::user(),
 				'title'     => null,
 			);
 		}
@@ -67,7 +68,7 @@ class View extends \Illuminate\Support\Facades\View {
 	 * @param  string  $view
 	 * @param  string  $title
 	 * @param  array  $data
-	 * @return \Illuminate\View\View
+	 * @return View
 	 */
 	public static function make($view, $title = null, $data = array())
 	{

@@ -27,7 +27,7 @@ class GroupController extends BaseController {
 	 * Displays the group list
 	 *
 	 * @access public
-	 * @return \Illuminate\Support\Facades\View
+	 * @return View
 	 */
 	public function getList()
 	{
@@ -56,20 +56,228 @@ class GroupController extends BaseController {
 	 *
 	 * @access public
 	 * @param  string  $hash
-	 * @return \Illuminate\Support\Facades\View
+	 * @return View
 	 */
 	public function getView($hash)
 	{
-		$length = Config::get('view.list_length');
+		// Get the group information
 		$group = Group::where('hash', $hash)->firstOrFail();
+		$data = $this->getGroupData($group);
+
+		return View::make('group/view', 'group.members', $data);
+	}
+
+	/**
+	 * Handles post events for the view group page
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postView()
+	{
+		if (Input::has('_remove'))
+		{
+			// Fetch the associated group
+			$hash = Input::get('hash');
+			$group = Group::where('hash', $hash)->firstOrFail();
+
+			// Validate edit rights
+			Access::restrict(Permissions::GROUP_EDIT, $group);
+
+			// Check if users were selected
+			if (Input::has('users'))
+			{
+				$users = Input::get('users');
+				$users = is_array($users) ? $users : array($users);
+
+				// Populate a list of user_ids to delete
+				$users = User::whereIn('hash', $users)->get();
+				$userIds = array();
+
+				foreach ($users as $user)
+				{
+					// Queue the user ID
+					$userIds[] = $user->id;
+
+					// Clear the ACL cache for this user
+					Cache::tags("acl.{$user->id}")->flush();
+				}
+
+				// Remove these users from the group
+				UserGroup::whereIn('user_id', $userIds)->where('group_id', $group->id)->delete();
+
+				Session::flash('messages.success', Lang::get('group.users_removed'));
+			}
+			else
+			{
+				Session::flash('messages.error', Lang::get('group.users_not_selected'));
+			}
+
+			return Redirect::to(URL::previous());
+		}
+	}
+
+	/**
+	 * Opens the group details editor
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return View
+	 */
+	public function getEdit($hash)
+	{
+		// Fetch the group information
+		$group = Group::where('hash', $hash)->firstOrFail();
+		$data = $this->getGroupData($group);
+
+		// Validate edit rights
+		Access::restrict(Permissions::GROUP_EDIT, $group);
+
+		return View::make('group/view', 'group.edit_group', array_merge($data, array('modal' => 'editor')));
+	}
+
+	/**
+	 * Handles post events for the group details editor
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postEdit()
+	{
+		if (Input::has('_save'))
+		{
+			// Fetch the associated group
+			$hash = Input::get('hash');
+			$group = Group::where('hash', $hash)->firstOrFail();
+
+			// Validate edit rights
+			Access::restrict(Permissions::GROUP_EDIT, $group);
+
+			// Validate posted fields
+			$validator = Validator::make(Input::all(), array(
+				'name'        => 'required|alpha_space|max:80',
+				'description' => 'required',
+				'type'        => 'required|exists:group_types,id',
+				'notify'      => 'required|in:0,1',
+			));
+
+			// Run the validator
+			if ($validator->fails())
+			{
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// If group type is being change to open or closed, and there are open requests,
+			// disallow user to change
+			if (Input::get('type') != GroupTypes::REQUEST && GroupRequest::where('group_id', $group->id)->count() > 0)
+			{
+				Session::flash('messages.error', Lang::get('group.open_requests'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Update the group information
+			$group->name        = Input::get('name');
+			$group->description = Input::get('description');
+			$group->type        = Input::get('type');
+			$group->notify      = Input::get('notify');
+			$group->save();
+
+			// Redirect back to the previous URL
+			Session::flash('messages.success', Lang::get('group.info_saved'));
+
+			return Redirect::to(URL::previous());
+		}
+	}
+
+	/**
+	 * Adds the current user to the group
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return Redirect|View
+	 */
+	public function getJoin($hash)
+	{
+		$userId = Auth::id();
+
+		// Get the group details
+		$group = Group::where('hash', $hash)->firstOrFail();
+
+		// Check if user is already a member of this group
+		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
+
+		// Only non-member can join open and request groups
+		if ( ! $member && $group->type != GroupTypes::CLOSED)
+		{
+			// This is an open group (or the user has group_edit rights), add the user right away
+			if (Access::check(Permissions::GROUP_EDIT, $group) || $group->type == GroupTypes::OPEN)
+			{
+				$userGroup           = new UserGroup;
+				$userGroup->user_id  = $userId;
+				$userGroup->group_id = $group->id;
+				$userGroup->save();
+
+				// Clear the ACL cache for current user
+				Cache::tags("acl.{$userId}")->flush();
+
+				// Redirect to previous URL
+				Session::flash('messages.success', Lang::get('group.group_joined'));
+
+				return Redirect::to(URL::previous());
+			}
+
+			// This is a request only group, show the request modal
+			else if ($group->type == GroupTypes::REQUEST)
+			{
+				$data = $this->getGroupData($group);
+
+				return View::make('group/view', 'group.join_group', array_merge($data, array('modal' => 'join')));
+			}
+		}
+		else
+		{
+			App::abort(HTTPStatus::FORBIDDEN);
+		}
+	}
+
+	/**
+	 * Fetches the group's details
+	 *
+	 * @access private
+	 * @param  Group  $group
+	 * @return array
+	 */
+	private function getGroupData($group)
+	{
+		$userId = Auth::id();
+		$length = Config::get('view.icon_length');
+
+		// Get the group members
 		$userGroups = UserGroup::where('group_id', $group->id)->with('user')->paginate($length);
-		$member = UserGroup::where('user_id', Auth::id())->where('group_id', $group->id)->count() == 1;
+
+		// Check if current user is a member
+		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
+
+		// Get pending join requests for the group
+		$requests = GroupRequest::where('group_id', $group->id)->count();
+
+		// Check if current user has a pending join request
+		$pending = GroupRequest::where('user_id', $userId)->where('group_id', $group->id)->count();
 
 		// Determine if the group actions bar should be displayed
 		$actions = false;
 
 		// Display if user can edit the group
-		if ($manager = Access::check(Permissions::GROUP_EDIT, $group))
+		if ($editor = Access::check(Permissions::GROUP_EDIT, $group))
+		{
+			$actions = true;
+		}
+
+		// Display if user can manage the group
+		if ($manager = Access::check(Permissions::GROUP_MANAGE, $group))
 		{
 			$actions = true;
 		}
@@ -86,16 +294,19 @@ class GroupController extends BaseController {
 			$actions = true;
 		}
 
-		// Build the view data
-		$data = array(
+		// Return the group information
+		return array(
 			'group'      => $group,
 			'userGroups' => $userGroups,
 			'member'     => $member,
 			'actions'    => $actions,
+			'editor'     => $editor,
 			'manager'    => $manager,
+			'requests'   => $requests,
+			'pending'    => $pending,
+			'remove'     => count($userGroups) > 0,
+			'modal'      => false,
 		);
-
-		return View::make('group/view', 'group.members', $data);
 	}
 
 }

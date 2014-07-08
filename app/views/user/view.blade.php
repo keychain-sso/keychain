@@ -16,42 +16,54 @@
 		<p>{{ $user->title }}</p>
 	</div>
 
-	@if (Access::check(Permissions::USER_EDIT, $user))
+	@if ($editor || $manager)
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="container-fluid">
-				<ul class="nav navbar-nav">
-					<li>
-						<a href="{{ url('user/edit/'.$user->hash) }}">
-							<span class="glyphicon glyphicon-pencil"></span>
-							{{ Lang::get('user.edit_profile') }}
-						</a>
-					</li>
+				@if ($editor)
+					<ul class="nav navbar-nav">
+						<li>
+							<a href="{{ url('user/edit/'.$user->hash) }}">
+								<span class="glyphicon glyphicon-pencil"></span>
+								{{ Lang::get('user.edit_profile') }}
+							</a>
+						</li>
 
-					<li>
-						<a href="{{ url('user/emails/'.$user->hash) }}">
-							<span class="glyphicon glyphicon-envelope"></span>
-							{{ Lang::get('user.manage_email_addresses') }}
-						</a>
-					</li>
+						<li>
+							<a href="{{ url('user/emails/'.$user->hash) }}">
+								<span class="glyphicon glyphicon-envelope"></span>
+								{{ Lang::get('user.manage_email_addresses') }}
+							</a>
+						</li>
 
-					<li>
-						<a href="{{ url('user/keys/'.$user->hash) }}">
-							<span class="glyphicon glyphicon-briefcase"></span>
-							{{ Lang::get('user.manage_ssh_keys') }}
-						</a>
-					</li>
+						<li>
+							<a href="{{ url('user/keys/'.$user->hash) }}">
+								<span class="glyphicon glyphicon-briefcase"></span>
+								{{ Lang::get('user.manage_ssh_keys') }}
+							</a>
+						</li>
 
-					<li>
-						<a href="{{ url('user/security/'.$user->hash) }}">
-							<span class="glyphicon glyphicon-lock"></span>
-							{{ Lang::get('user.security_settings') }}
-						</a>
-					</li>
-				</ul>
+						<li>
+							<a href="{{ url('user/security/'.$user->hash) }}">
+								<span class="glyphicon glyphicon-lock"></span>
+								{{ Lang::get('user.security_settings') }}
+							</a>
+						</li>
+					</ul>
+				@endif
+
+				@if ($manager)
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<a href="#">
+								<span class="glyphicon glyphicon-wrench"></span>
+								{{ Lang::get('global.manage') }}
+							</a>
+						</li>
+					</ul>
+				@endif
 			</div>
 		</nav>
 	@endif
-
 
 	<div class="row">
 		<div class="col-md-4">
@@ -90,7 +102,7 @@
 					@foreach ($fieldView->{FieldCategories::BASIC} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{{ $field->value }}}</p>
+							<p class="list-group-item-text">{{ $field->value }}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -139,7 +151,7 @@
 					@foreach ($fieldView->{FieldCategories::CONTACT} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{{ $field->value }}}</p>
+							<p class="list-group-item-text">{{ $field->value }}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -185,7 +197,7 @@
 						@foreach ($fieldView->{FieldCategories::OTHER} as $field)
 							<li class="list-group-item">
 								<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-								<p class="list-group-item-text">{{{ $field->value }}}</p>
+								<p class="list-group-item-text">{{ $field->value }}</p>
 							</li>
 						@endforeach
 					</ul>

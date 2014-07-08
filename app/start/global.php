@@ -96,7 +96,7 @@ Auth::extend('multifactor', function()
 
 /*
 |--------------------------------------------------------------------------
-| Blade code tags
+| Blade Code Tags
 |--------------------------------------------------------------------------
 |
 | Define the custom blade tags to handle code such as assignment.
@@ -106,6 +106,20 @@ Auth::extend('multifactor', function()
 Blade::extend(function($value)
 {
 	return preg_replace('/\{\?(.+)\?\}/', '<?php ${1} ?>', $value);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Validator Alpha Space Rule
+|--------------------------------------------------------------------------
+|
+| Defines a custom validation rule to allow alphabets and spaces only.
+|
+*/
+
+Validator::extend('alpha_space', function($attribute, $value)
+{
+	return preg_match('/^[\pL\s]+$/u', $value);
 });
 
 /*

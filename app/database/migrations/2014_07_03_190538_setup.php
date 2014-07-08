@@ -159,6 +159,7 @@ class Setup extends Migration {
 			$table->mediumText('description');
 			$table->integer('type')->unsigned();
 			$table->string('hash', 8)->unique()->index();
+			$table->boolean('notify')->default(0);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
 
@@ -642,16 +643,25 @@ class Setup extends Migration {
 			'access'       => Permissions::USER_EDIT,
 		));
 
-		// Allow sysadmins to change user status for everyone
+		// Allow registered users to edit their own profiles
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::SELF,
+			'subject_id'   => 1,
+			'subject_type' => ACLTypes::GROUP,
+			'access'       => Permissions::USER_EDIT,
+		));
+
+		// Allow sysadmins to manage all users
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
 			'object_type'  => ACLTypes::ALL,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => Permissions::USER_STATUS,
+			'access'       => Permissions::USER_MANAGE,
 		));
 
-		// Allow sysadmins to administrate all groups
+		// Allow sysadmins to edit all groups
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
 			'object_type'  => ACLTypes::ALL,
@@ -660,13 +670,13 @@ class Setup extends Migration {
 			'access'       => Permissions::GROUP_EDIT,
 		));
 
-		// Allow registered users to edit their own profiles
+		// Allow sysadmins to manage all groups
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
-			'object_type'  => ACLTypes::SELF,
-			'subject_id'   => 1,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => Permissions::USER_EDIT,
+			'access'       => Permissions::GROUP_MANAGE,
 		));
 	}
 

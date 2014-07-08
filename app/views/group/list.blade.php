@@ -3,12 +3,10 @@
 @section('body')
 	<div class="row">
 		<div class="col-sm-12">
-			<div class="page-header">
-				<h2>
-					<span class="glyphicon glyphicon-th-large"></span>
-					{{ Lang::get('global.groups') }}
-				</h2>
-			</div>
+			<h2>
+				<span class="glyphicon glyphicon-th-large"></span>
+				{{ Lang::get('global.groups') }}
+			</h2>
 
 			<ul class="list-group">
 				@foreach ($groups as $group)

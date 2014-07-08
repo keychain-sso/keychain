@@ -21,6 +21,12 @@ $(function()
 		placement: 'bottom',
 	});
 
+	// Bootstrap popovers
+	$('[data-toggle=popover]').popover({
+		placement: 'right',
+		trigger: 'hover',
+	});
+
 	// Date picker control
 	$('[data-toggle=datepicker]').datepicker({
 		format: 'yyyy-mm-dd',
