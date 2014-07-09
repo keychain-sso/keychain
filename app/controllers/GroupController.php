@@ -209,11 +209,15 @@ class GroupController extends BaseController {
 		// Check if user is already a member of this group
 		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
 
-		// Only non-member can join open and request groups
-		if ( ! $member && $group->type != GroupTypes::CLOSED)
+		// Does the user have group_edit rights?
+		$editor = Access::check(Permissions::GROUP_EDIT, $group);
+
+		// Only non-member can join open and request-only groups
+		// Users with group_edit rights can join any group
+		if ( ! $member && ($editor || $group->type != GroupTypes::CLOSED))
 		{
 			// This is an open group (or the user has group_edit rights), add the user right away
-			if (Access::check(Permissions::GROUP_EDIT, $group) || $group->type == GroupTypes::OPEN)
+			if ($editor || $group->type == GroupTypes::OPEN)
 			{
 				$userGroup = new UserGroup;
 				$userGroup->user_id = $userId;
@@ -294,6 +298,47 @@ class GroupController extends BaseController {
 			{
 				App::abort(HTTPStatus::FORBIDDEN);
 			}
+		}
+	}
+
+	/**
+	 * Removes the current user from the group
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return Redirect
+	 */
+	public function getLeave($hash)
+	{
+		$userId = Auth::id();
+
+		// Get the group details
+		$group = Group::where('hash', $hash)->firstOrFail();
+
+		// Check if user is already a member of this group
+		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
+
+		// Does the user have group_edit rights?
+		$editor = Access::check(Permissions::GROUP_EDIT, $group);
+
+		// Only members may leave an open group
+		// Users with group_edit rights can leave any type of group
+		if ($member && ($editor || $group->type == GroupTypes::OPEN))
+		{
+			// Remove the user from the group
+			UserGroup::where('user_id', $userId)->where('group_id', $group->id)->delete();
+
+			// Clear the ACL cache for current user
+			Cache::tags("acl.{$userId}")->flush();
+
+			// Redirect to previous URL
+			Session::flash('messages.success', Lang::get('group.group_left'));
+
+			return Redirect::to(URL::previous());
+		}
+		else
+		{
+			App::abort(HTTPStatus::FORBIDDEN);
 		}
 	}
 

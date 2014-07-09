@@ -53,7 +53,7 @@
 									{{ Lang::get('group.leave_group') }}
 								</a>
 							</li>
-						@elseif ($editor || $group->type == GroupTypes::OPEN || $group->type == GroupTypes::REQUEST)
+						@elseif ($editor || $group->type != GroupTypes::CLOSED)
 							<li>
 								<a href="{{ url('group/join/'.$group->hash) }}">
 									<span class="glyphicon glyphicon-link"></span>
@@ -118,13 +118,13 @@
 				@endif
 
 				<div class="text-center">
-					<a href="{{ url('user/view/'.$userGroup->user->hash) }}" class="thumbnail">
+					<span class="thumbnail">
 						@if ( ! empty($userGroup->user->avatar))
 							<img src="{{ asset('uploads/avatars'.$user->avatar) }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif
-					</a>
+					</span>
 
 					<a href="{{ url('user/view/'.$userGroup->user->hash) }}">
 						{{ $userGroup->user->first_name }}
@@ -133,6 +133,14 @@
 				</div>
 			</div>
 		@endforeach
+
+		@if (count($userGroups) == 0)
+			<div class="col-sm-12">
+				<ul class="list-group">
+					<li class="list-group-item">{{ Lang::get('group.no_members') }}</li>
+				</ul>
+			</div>
+		@endif
 	</div>
 
 	@if ($editor && $remove)

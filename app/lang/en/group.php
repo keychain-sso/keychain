@@ -52,5 +52,6 @@ return array(
 	'provide_justification'   => 'Please provide a detailed justification about why you wish to join this group.',
 	'join_request_submitted'  => 'Your request to join this group has been submitted',
 	'membership_withdrawn'    => 'Your membership request has been withdrawn',
+	'no_members'              => 'This group has no members',
 
 );
