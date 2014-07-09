@@ -25,7 +25,7 @@
 							<a href="{{ url('group/view/'.$group->hash) }}">{{ $group->name }}</a>
 
 							@if (isset($membership[$group->id]))
-								<span class="glyphicon glyphicon-link text-success" title="{{ Lang::get('group.member_of_group') }}"
+								<span class="glyphicon glyphicon-link text-primary" title="{{ Lang::get('group.member_of_group') }}"
 								      data-toggle="tooltip"></span>
 							@endif
 						</h4>
