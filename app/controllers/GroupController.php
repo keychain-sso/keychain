@@ -343,6 +343,37 @@ class GroupController extends BaseController {
 	}
 
 	/**
+	 * Withdraws group membership application for the user
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return Redirect
+	 */
+	public function getWithdraw($hash)
+	{
+		$userId = Auth::id();
+
+		// Get the group details
+		$group = Group::where('hash', $hash)->firstOrFail();
+
+		// Membership requests can be removed for request groups only
+		if ($group->type == GroupTypes::REQUEST)
+		{
+			// Delete the membership request
+			GroupRequest::where('user_id', $userId)->where('group_id', $group->id)->delete();
+
+			// Redirect to previous URL
+			Session::flash('messages.success', Lang::get('group.membership_withdrawn'));
+
+			return Redirect::to(URL::previous());
+		}
+		else
+		{
+			App::abort(HTTPStatus::FORBIDDEN);
+		}
+	}
+
+	/**
 	 * Fetches the group's details
 	 *
 	 * @access private
