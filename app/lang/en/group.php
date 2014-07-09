@@ -49,7 +49,7 @@ return array(
 	'already_member'          => 'You are already a member of this group',
 	'group_joined'            => 'You have joined this group',
 	'group_left'              => 'You have left this group',
-	'justification'           => 'Justification',
+	'provide_justification'   => 'Please provide a detailed justification about why you wish to join this group.',
 	'join_request_submitted'  => 'Your request to join this group has been submitted',
 	'membership_withdrawn'    => 'Your membership request has been withdrawn',
 

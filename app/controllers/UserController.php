@@ -204,9 +204,9 @@ class UserController extends BaseController {
 
 			// Save the email address
 			$email = new UserEmail;
-			$email->user_id  = $user->id;
-			$email->address  = Input::get('email');
-			$email->primary  = Flags::NO;
+			$email->user_id = $user->id;
+			$email->address = Input::get('email');
+			$email->primary = Flags::NO;
 			$email->verified = Flags::NO;
 			$email->save();
 
@@ -310,9 +310,9 @@ class UserController extends BaseController {
 
 			// Save the SSH key
 			$userKey = new UserKey;
-			$userKey->user_id     = $user->id;
-			$userKey->title       = Input::get('title');
-			$userKey->key         = $key;
+			$userKey->user_id = $user->id;
+			$userKey->title = Input::get('title');
+			$userKey->key = $key;
 			$userKey->fingerprint = $fingerprint;
 			$userKey->save();
 

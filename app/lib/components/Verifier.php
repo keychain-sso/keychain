@@ -90,8 +90,8 @@ class Verifier {
 
 		// Create the token entry
 		$token = new Token;
-		$token->token        = $hash;
-		$token->permits_id   = $id;
+		$token->token = $hash;
+		$token->permits_id = $id;
 		$token->permits_type = $type;
 		$token->save();
 

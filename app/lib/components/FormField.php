@@ -235,9 +235,9 @@ class FormField {
 			}
 
 			// Save the custom field info
-			$userField->user_id  = $user->id;
+			$userField->user_id = $user->id;
 			$userField->field_id = $field->id;
-			$userField->value    = $value;
+			$userField->value = $value;
 			$userField->save();
 
 		}

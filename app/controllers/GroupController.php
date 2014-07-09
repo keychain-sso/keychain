@@ -215,8 +215,8 @@ class GroupController extends BaseController {
 			// This is an open group (or the user has group_edit rights), add the user right away
 			if (Access::check(Permissions::GROUP_EDIT, $group) || $group->type == GroupTypes::OPEN)
 			{
-				$userGroup           = new UserGroup;
-				$userGroup->user_id  = $userId;
+				$userGroup = new UserGroup;
+				$userGroup->user_id = $userId;
 				$userGroup->group_id = $group->id;
 				$userGroup->save();
 
@@ -240,6 +240,60 @@ class GroupController extends BaseController {
 		else
 		{
 			App::abort(HTTPStatus::FORBIDDEN);
+		}
+	}
+
+	/**
+	 * Handles post events for the join group modal
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postJoin()
+	{
+		if (Input::has('_submit'))
+		{
+			$userId = Auth::id();
+
+			// Fetch the associated group
+			$hash = Input::get('hash');
+			$group = Group::where('hash', $hash)->firstOrFail();
+
+			// Check if user is already a member of this group
+			$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
+
+			// Only a non-member can request access to a request-only group
+			if ( ! $member && $group->type == GroupTypes::REQUEST)
+			{
+				// Validate posted fields
+				$validator = Validator::make(Input::all(), array(
+					'justification' => 'required',
+				));
+
+				// Run the validator
+				if ($validator->fails())
+				{
+					Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+					return Redirect::to(URL::previous())->withInput();
+				}
+
+				// Insert the group request
+				$request = new GroupRequest;
+				$request->user_id = $userId;
+				$request->group_id = $group->id;
+				$request->justification = Input::get('justification');
+				$request->save();
+
+				// Redirect back to the previous URL
+				Session::flash('messages.success', Lang::get('group.join_request_submitted'));
+
+				return Redirect::to("group/view/{$group->hash}");
+			}
+			else
+			{
+				App::abort(HTTPStatus::FORBIDDEN);
+			}
 		}
 	}
 
