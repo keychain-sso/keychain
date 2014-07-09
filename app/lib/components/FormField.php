@@ -255,7 +255,7 @@ class FormField {
 	 */
 	public static function fieldInfo()
 	{
-		return Cache::rememberForever('user.field.info', function()
+		return Cache::rememberForever('field.info', function()
 		{
 			$info = array();
 
@@ -277,7 +277,7 @@ class FormField {
 	 */
 	public static function fieldTypes()
 	{
-		return Cache::rememberForever('user.field.types', function()
+		return Cache::rememberForever('field.types', function()
 		{
 			$types = array();
 
