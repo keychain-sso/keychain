@@ -132,7 +132,7 @@ class UserController extends BaseController {
 				UserEmail::where('id', $email)->where('user_id', $user->id)->where('primary', 0)->delete();
 
 				// Purge the user field data cache
-				Cache::tags("fields.{$user->id}")->flush();
+				Cache::tags("user.{$user->id}.field")->flush();
 
 				// Redirect back to the previous URL
 				Session::flash('messages.success', Lang::get('user.email_removed'));
@@ -160,8 +160,8 @@ class UserController extends BaseController {
 				// Now, mark the previous primary as regular
 				UserEmail::where('user_id', $user->id)->where('id', '<>', $email)->update(array('primary' => 0));
 
-				// Purge the user field cache
-				Cache::forget("user.field.data.{$user->id}");
+				// Purge the user field data cache
+				Cache::tags("user.{$user->id}.field")->flush();
 
 				// Redirect back to the previous URL
 				return Redirect::to(URL::previous());
@@ -214,7 +214,7 @@ class UserController extends BaseController {
 			Verifier::make('email_add', $email->id);
 
 			// Purge the user field data cache
-			Cache::tags("fields.{$user->id}")->flush();
+			Cache::tags("user.{$user->id}.field")->flush();
 
 			// Redirect back to the previous URL
 			Session::flash('messages.success', Lang::get('user.email_verify'));
@@ -431,7 +431,7 @@ class UserController extends BaseController {
 			$user->save();
 
 			// Purge the user field data cache
-			Cache::tags("fields.{$user->id}")->flush();
+			Cache::tags("user.{$user->id}.field")->flush();
 
 			// Redirect back to the previous URL
 			Session::flash('messages.success', Lang::get('user.security_saved'));

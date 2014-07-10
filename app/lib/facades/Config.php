@@ -36,7 +36,7 @@ class Config extends \Illuminate\Support\Facades\Config {
 	 */
 	public static function get($key, $default = null)
 	{
-		return Cache::rememberForever("config.{$key}", function() use ($key, $default)
+		return Cache::tags('global')->rememberForever("config.{$key}", function() use ($key, $default)
 		{
 			return parent::get($key, $default);
 		});

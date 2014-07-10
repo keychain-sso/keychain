@@ -36,7 +36,7 @@ class Utilities {
 	 */
 	public static function timezones($csv = false)
 	{
-		return Cache::rememberForever("system.timezones.{$csv}", function() use ($csv)
+		return Cache::tags('global')->rememberForever("timezones.{$csv}", function() use ($csv)
 		{
 			$identifiers = DateTimeZone::listIdentifiers();
 

@@ -50,7 +50,7 @@ class Access {
 		$subjectGroups = Auth::groups();
 
 		// Fetch all privileges tied to the subject and store them in the session
-		$acl = Cache::remember("acl.{$subjectUser->id}", 60, function()
+		$acl = Cache::tags("user.{$subjectUser->id}.security")->remember('acl', 60, function()
 		{
 			$acl = array();
 

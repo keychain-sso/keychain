@@ -100,7 +100,7 @@ class GroupController extends BaseController {
 					$userIds[] = $user->id;
 
 					// Clear the ACL cache for this user
-					Cache::forget("acl.{$user->id}");
+					Cache::tags("user.{$user->id}.security")->flush();
 				}
 
 				// Remove these users from the group
@@ -225,7 +225,7 @@ class GroupController extends BaseController {
 				$userGroup->save();
 
 				// Clear the ACL cache for current user
-				Cache::forget("acl.{$userId}");
+				Cache::tags("user.{$userId}.security")->flush();
 
 				// Redirect to previous URL
 				Session::flash('messages.success', Lang::get('group.group_joined'));
@@ -329,7 +329,7 @@ class GroupController extends BaseController {
 			UserGroup::where('user_id', $userId)->where('group_id', $group->id)->delete();
 
 			// Clear the ACL cache for current user
-			Cache::forget("acl.{$userId}");
+			Cache::tags("user.{$userId}.security")->flush();
 
 			// Redirect to previous URL
 			Session::flash('messages.success', Lang::get('group.group_left'));
@@ -403,7 +403,7 @@ class GroupController extends BaseController {
 				$userGroup->save();
 
 				// Clear the ACL cache for current user
-				Cache::forget("acl.{$request->user_id}");
+				Cache::tags("user.{$request->user_id}.security")->flush();
 
 				// Remove the group request
 				$request->delete();

@@ -132,7 +132,7 @@ class Verifier {
 				$email = UserEmail::where($token->permits_id)->update(array('verified' => 1));
 
 				// Purge the user field data cache
-				Cache::tags("fields.{$user->id}")->flush();
+				Cache::tags("user.{$user->id}.field")->flush();
 
 				// Delete the token
 				$token->delete();
