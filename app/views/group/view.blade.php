@@ -96,6 +96,8 @@
 				@endif
 			</div>
 		</nav>
+	@else
+		<hr />
 	@endif
 
 	@if ($modal === false)
