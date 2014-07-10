@@ -10,7 +10,7 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-			<h3>
+			<h3 class="spacer-none-top">
 				<a href="{{ url('group/list') }}" class="back" title="{{ Lang::get('group.return_group_list') }}" data-toggle="tooltip">
 					<span class="glyphicon glyphicon-chevron-left"></span>
 				</a>
@@ -73,7 +73,7 @@
 					@if ($editor && $group->type == GroupTypes::REQUEST)
 						<li>
 							<a href="{{ url('group/requests/'.$group->hash) }}">
-								<span class="label pull-right @if ($requests > 0) label-danger @else label-default @endif">
+								<span class="label label-counter @if ($requests > 0) label-danger @else label-default @endif">
 									{{ $requests }}
 								</span>
 
@@ -104,7 +104,7 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-			<h3>{{ Lang::get('group.members') }}</h3>
+			<h3 class="spacer-none-top">{{ Lang::get('group.members') }}</h3>
 		</div>
 
 		@foreach ($userGroups as $userGroup)
@@ -118,7 +118,7 @@
 				@endif
 
 				<div class="text-center">
-					<span class="thumbnail">
+					<span class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($userGroup->user->avatar))
 							<img src="{{ asset('uploads/avatars'.$user->avatar) }}" alt="" />
 						@else

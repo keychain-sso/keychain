@@ -11,24 +11,65 @@
  * @filesource
  */
 
-h2, h3 {
-  margin-top: 0;
+/* Spacer helpers */
+.spacer {
+  margin: 10px;
 }
-footer {
-  margin: 20px;
+.spacer-top {
+  margin-top: 10px;
 }
-.pagination {
+.spacer-bottom {
+  margin-bottom: 10px;
+}
+.spacer-right {
+  margin-right: 10px;
+}
+.spacer-left {
+  margin-left: 10px;
+}
+.spacer-sm {
+  margin: 5px;
+}
+.spacer-sm-top {
+  margin-top: 10px;
+}
+.spacer-sm-bottom {
+  margin-bottom: 10px;
+}
+.spacer-sm-right {
+  margin-right: 10px;
+}
+.spacer-sm-left {
+  margin-left: 10px;
+}
+.spacer-none {
   margin: 0;
 }
-.thumbnail {
-  margin-bottom: 5px;
+.spacer-none-top {
+  margin-top: 0;
 }
-.label {
-  margin-left: 5px;
-  margin-top: 2px;
-  padding-top: 3px;
-  padding-bottom: 2px;
+.spacer-none-bottom {
+  margin-bottom: 0;
 }
+.spacer-none-right {
+  margin-right: 0;
+}
+.spacer-none-left {
+  margin-left: 0;
+}
+
+/* Display helpers */
+.show-inline {
+  display: inline;
+}
+.show-inline-table {
+  display: inline-table;
+}
+.show-block {
+  display: block;
+}
+
+/* Jumbotron customs */
 .jumbotron .text-xl {
   font-size: 110px;
   margin-bottom: 20px;
@@ -36,19 +77,13 @@ footer {
 .jumbotron small {
   font-size: 100%;
 }
-.pull-right div {
-  display: inline-table;
-}
-.inlay {
-  float: left;
-  position: absolute;
-  left: 25px;
-  top: 5px;
-  margin: 0;
-}
+
+/* List-group customs */
 .list-group-icon {
   margin-right: 15px;
 }
+
+/* Navbars */
 .navbar-modal {
   margin: -15px -15px 15px -15px;
   border-radius: 6px 6px 0 0;
@@ -65,6 +100,8 @@ footer {
 .navbar-lg {
   height: 105px;
 }
+
+/* Navs */
 .nav-icons li {
   display: inline;
 }
@@ -81,6 +118,17 @@ footer {
 .nav-icons li:hover a {
   background: transparent;
 }
+
+/* Label counter */
+.label-counter {
+  float: right;
+  margin-left: 5px;
+  margin-top: 2px;
+  padding-top: 3px;
+  padding-bottom: 2px;
+}
+
+/* Editor popups */
 .modal-editor fieldset:not(:nth-child(3)) {
   margin-top: 20px;
 }
@@ -90,6 +138,17 @@ footer {
 .modal-editor .modal-footer {
   margin-top: 0;
 }
+
+/* Inlay element */
+.inlay {
+  float: left;
+  position: absolute;
+  left: 25px;
+  top: 5px;
+  margin: 0;
+}
+
+/* "Return to" style cheveron */
 .back {
   color: #ccc;
   position: absolute;
@@ -98,13 +157,15 @@ footer {
 .back:hover {
   text-decoration: none;
 }
-.datepicker {
-  z-index: 2000 !important;
-}
 @media (max-width: 767px) {
   .back {
     margin-left: 0;
     position: relative;
     top: 2px;
   }
+}
+
+/* Datepicker fixes */
+.datepicker {
+  z-index: 2000 !important;
 }

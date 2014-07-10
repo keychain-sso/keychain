@@ -4,7 +4,7 @@
 
 		<div class="text-center">
 			<ul class="nav nav-icons">
-				<li @if ($modal == 'edit') class="active" @endif>
+				<li @if ($modal == 'editor') class="active" @endif>
 					<a href="{{ url('user/edit/'.$user->hash) }}" title="{{ Lang::get('user.edit_profile') }}" data-toggle="tooltip">
 						<span class="glyphicon glyphicon-pencil"></span>
 					</a>
@@ -29,7 +29,7 @@
 				</li>
 			</ul>
 
-			<h3>{{ $title }}</h3>
+			<h3 class="spacer-none-top">{{ $title }}</h3>
 		</div>
 	</div>
 </nav>

@@ -19,7 +19,7 @@
 				<div class="pull-right">
 					<a class="btn btn-default btn-xs disabled">{{ Lang::get('user.verified') }}</a>
 
-					<div title="{{ Lang::get('user.primary_cant_remove') }}" data-toggle="tooltip">
+					<div title="{{ Lang::get('user.primary_cant_remove') }}" class="show-inline-table" data-toggle="tooltip">
 						<a class="btn btn-xs btn-danger disabled">
 							{{ Lang::get('global.remove') }}
 						</a>

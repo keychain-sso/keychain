@@ -3,7 +3,7 @@
 @section('body')
 	<div class="row">
 		<div class="col-sm-12">
-			<h2>
+			<h2 class="spacer-none-top">
 				<span class="glyphicon glyphicon-th-large"></span>
 				{{ Lang::get('global.groups') }}
 			</h2>
