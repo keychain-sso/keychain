@@ -53,5 +53,9 @@ return array(
 	'join_request_submitted'  => 'Your request to join this group has been submitted',
 	'membership_withdrawn'    => 'Your membership request has been withdrawn',
 	'no_members'              => 'This group has no members',
+	'request_header'          => ':user requested on :timestamp',
+	'request_approved'        => 'Membership request has been approved',
+	'request_rejected'        => 'Membership request has been reject',
+	'no_requests'             => 'There are no membership requests pending for this group',
 
 );

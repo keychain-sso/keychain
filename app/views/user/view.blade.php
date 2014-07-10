@@ -102,7 +102,7 @@
 					@foreach ($fieldView->{FieldCategories::BASIC} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{ $field->value }}</p>
+							<p class="list-group-item-text">{{ nl2br($field->value) }}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -151,7 +151,7 @@
 					@foreach ($fieldView->{FieldCategories::CONTACT} as $field)
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{ $field->value }}</p>
+							<p class="list-group-item-text">{{ nl2br($field->value) }}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -197,7 +197,7 @@
 						@foreach ($fieldView->{FieldCategories::OTHER} as $field)
 							<li class="list-group-item">
 								<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-								<p class="list-group-item-text">{{ $field->value }}</p>
+								<p class="list-group-item-text">{{ nl2br($field->value) }}</p>
 							</li>
 						@endforeach
 					</ul>

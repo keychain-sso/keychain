@@ -76,7 +76,7 @@
 						{? $asset = 'img/computer.png' ?}
 					@endif
 
-					<img src="{{ asset($asset) }}" class="list-group-icon pull-left" alt="" />
+					<img src="{{ asset($asset) }}" class="pull-left spacer-lg-right" alt="" />
 
 					@if ($session->id == Session::getId())
 						<span class="pull-right">

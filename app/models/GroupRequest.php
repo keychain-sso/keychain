@@ -23,4 +23,26 @@
  */
 class GroupRequest extends Eloquent {
 
+	/**
+	 * Relationship with the 'User' model
+	 *
+	 * @access public
+	 * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function user()
+	{
+		return $this->belongsTo('User');
+	}
+
+	/**
+	 * Relationship with the 'Group' model
+	 *
+	 * @access public
+	 * @return Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function group()
+	{
+		return $this->belongsTo('Group');
+	}
+
 }

@@ -27,20 +27,35 @@
 .spacer-left {
   margin-left: 10px;
 }
+.spacer-lg {
+  margin: 15px;
+}
+.spacer-lg-top {
+  margin-top: 15px;
+}
+.spacer-lg-bottom {
+  margin-bottom: 15px;
+}
+.spacer-lg-right {
+  margin-right: 15px;
+}
+.spacer-lg-left {
+  margin-left: 15px;
+}
 .spacer-sm {
   margin: 5px;
 }
 .spacer-sm-top {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .spacer-sm-bottom {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .spacer-sm-right {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 .spacer-sm-left {
-  margin-left: 10px;
+  margin-left: 5px;
 }
 .spacer-none {
   margin: 0;
@@ -78,9 +93,24 @@
   font-size: 100%;
 }
 
-/* List-group customs */
-.list-group-icon {
-  margin-right: 15px;
+/* Conversation thread */
+.thumbnail-thread {
+  margin-right: -10px;
+}
+.popover.popover-thread {
+  position: relative;
+  display: inline-table;
+  max-width: inherit;
+  box-shadow: none;
+  width: 100%;
+  left: -10px;
+  padding: 0;
+}
+.popover.popover-thread.right > .arrow {
+  top: 20px;
+}
+.popover.popover-thread.right > .arrow:after {
+  border-right-color: #f7f7f7;
 }
 
 /* Navbars */

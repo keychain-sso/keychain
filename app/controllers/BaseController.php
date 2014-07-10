@@ -31,10 +31,23 @@ class BaseController extends Controller {
 	 */
 	protected function setupLayout()
 	{
+		// Create the layout
 		if ( ! is_null($this->layout))
 		{
 			$this->layout = View::make($this->layout);
 		}
+
+		// Process input text to make it safe for display
+		$input = Input::all();
+
+		// Trim leading and trailing whitespace and remove HTML tags
+		foreach ($input as $key => $value)
+		{
+			$input[$key] = strip_tags(trim($value));
+		}
+
+		// Merge it back to the input data
+		Input::merge($input);
 	}
 
 }

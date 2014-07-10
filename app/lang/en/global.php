@@ -26,6 +26,8 @@ return array(
 	'no'                => 'No',
 	'manage'            => 'Manage',
 	'remove'            => 'Remove',
+	'approve'           => 'Approve',
+	'reject'            => 'Reject',
 	'information'       => 'Information',
 	'error'             => 'Error',
 	'email_verified'    => 'Your email address has been verified',

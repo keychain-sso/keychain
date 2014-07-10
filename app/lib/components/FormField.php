@@ -322,12 +322,6 @@ class FormField {
 					$flag = $value == Flags::YES ? Lang::get('global.yes') : Lang::get('global.no');
 					$value = "{$field->options}: {$flag}";
 					break;
-
-				// For everything else, convert newlines to HTML breaks
-				default:
-
-					$value = nl2br($value);
-					break;
 			}
 		}
 		else if ($action == 'edit')

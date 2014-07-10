@@ -73,8 +73,8 @@
 					@if ($editor && $group->type == GroupTypes::REQUEST)
 						<li>
 							<a href="{{ url('group/requests/'.$group->hash) }}">
-								<span class="label label-counter @if ($requests > 0) label-danger @else label-default @endif">
-									{{ $requests }}
+								<span class="label label-counter @if ($requestCount > 0) label-danger @else label-default @endif">
+									{{ $requestCount }}
 								</span>
 
 								<span class="glyphicon glyphicon-pushpin"></span>
@@ -120,7 +120,7 @@
 				<div class="text-center">
 					<span class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($userGroup->user->avatar))
-							<img src="{{ asset('uploads/avatars'.$user->avatar) }}" alt="" />
+							<img src="{{ asset('uploads/avatars'.$userGroup->user->avatar) }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif

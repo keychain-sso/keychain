@@ -374,6 +374,71 @@ class GroupController extends BaseController {
 	}
 
 	/**
+	 * Displays membership requests for a group
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @param  string  $action
+	 * @param  int  $request
+	 * @return Redirect
+	 */
+	public function getRequests($hash, $action = null, $request = 0)
+	{
+		// Get the group and request details
+		$group = Group::where('hash', $hash)->firstOrFail();
+		$request = GroupRequest::find($request);
+
+		// Validate edit rights
+		Access::restrict(Permissions::GROUP_EDIT, $group);
+
+		// Perform the requested action
+		switch ($action)
+		{
+			case 'approve':
+
+				// Add the user to the group
+				$userGroup = new UserGroup;
+				$userGroup->user_id = $request->user_id;
+				$userGroup->group_id = $request->group_id;
+				$userGroup->save();
+
+				// Clear the ACL cache for current user
+				Cache::forget("acl.{$request->user_id}");
+
+				// Remove the group request
+				$request->delete();
+
+				// Redirect to previous URL
+				Session::flash('messages.success', Lang::get('group.request_approved'));
+
+				return Redirect::to(URL::previous());
+
+			case 'reject':
+
+				// Remove the group request
+				$request->delete();
+
+				// Redirect to previous URL
+				Session::flash('messages.success', Lang::get('group.request_rejected'));
+
+				return Redirect::to(URL::previous());
+
+			default:
+
+				$data = $this->getGroupData($group);
+				$requests = GroupRequest::where('group_id', $group->id)->with('user')->get();
+
+				// Merge the view data with group info
+				$data = array_merge($data, array(
+					'requests' => $requests,
+					'modal'    => 'requests',
+				));
+
+				return View::make('group/view', 'group.membership_requests', $data);
+		}
+	}
+
+	/**
 	 * Fetches the group's details
 	 *
 	 * @access private
@@ -392,7 +457,7 @@ class GroupController extends BaseController {
 		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
 
 		// Get pending join requests for the group
-		$requests = GroupRequest::where('group_id', $group->id)->count();
+		$requestCount = GroupRequest::where('group_id', $group->id)->count();
 
 		// Check if current user has a pending join request
 		$pending = GroupRequest::where('user_id', $userId)->where('group_id', $group->id)->count();
@@ -426,16 +491,16 @@ class GroupController extends BaseController {
 
 		// Return the group information
 		return array(
-			'group'      => $group,
-			'userGroups' => $userGroups,
-			'member'     => $member,
-			'actions'    => $actions,
-			'editor'     => $editor,
-			'manager'    => $manager,
-			'requests'   => $requests,
-			'pending'    => $pending,
-			'remove'     => count($userGroups) > 0,
-			'modal'      => false,
+			'group'        => $group,
+			'userGroups'   => $userGroups,
+			'member'       => $member,
+			'actions'      => $actions,
+			'editor'       => $editor,
+			'manager'      => $manager,
+			'requestCount' => $requestCount,
+			'pending'      => $pending,
+			'remove'       => count($userGroups) > 0,
+			'modal'        => false,
 		);
 	}
 
