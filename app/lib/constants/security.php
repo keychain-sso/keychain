@@ -36,17 +36,6 @@ class TokenTypes {
 }
 
 /**
- * Defines types of devices
- */
-class DeviceTypes {
-
-	const COMPUTER = 1;
-	const MOBILE = 2;
-	const TABLET = 3;
-
-}
-
-/**
  * Defines all ACL permissions
  */
 class Permissions {
