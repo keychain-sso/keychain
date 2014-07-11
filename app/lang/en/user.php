@@ -12,6 +12,7 @@ return array(
 	*/
 
 
+	'create_new_user'        => 'Create new user',
 	'gender'                 => 'Gender',
 	'male'                   => 'Male',
 	'female'                 => 'Female',

@@ -525,7 +525,7 @@ class Setup extends Migration {
 			'group_id' => 1,
 		));
 
-		// Give sysadmins access to everything
+		// Give sysadmins access to view/edit all fields
 		DB::table('acl')->insert(array(
 			'object_id'    => 0,
 			'object_type'  => ACLTypes::ALL,

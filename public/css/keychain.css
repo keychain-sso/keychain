@@ -11,6 +11,11 @@
  * @filesource
  */
 
+/* Form feedback for < 100% wide controls */
+[class^="col"] .form-control-feedback {
+  top: 0;
+}
+
 /* Spacer helpers */
 .spacer {
   margin: 10px;
@@ -167,6 +172,13 @@
 }
 .modal-editor .modal-footer {
   margin-top: 0;
+}
+
+/* User profile icons */
+.profile-icon {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Inlay element */

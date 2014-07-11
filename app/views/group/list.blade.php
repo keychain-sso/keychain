@@ -3,6 +3,13 @@
 @section('body')
 	<div class="row">
 		<div class="col-sm-12">
+			@if (Access::check(Permissions::GROUP_MANAGE))
+				<a href="{{ url('group/create') }}" class="btn btn-default pull-right">
+					<span class="glyphicon glyphicon-plus"></span>
+					{{ Lang::get('group.create_new_group') }}
+				</a>
+			@endif
+
 			<h2 class="spacer-none-top">
 				<span class="glyphicon glyphicon-th-large"></span>
 				{{ Lang::get('global.groups') }}

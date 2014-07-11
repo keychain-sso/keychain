@@ -45,4 +45,15 @@ class UserGroup extends Eloquent {
 		return $this->belongsTo('Group');
 	}
 
+	/**
+	 * Relationship with the 'UserEmail' model
+	 *
+	 * @access public
+	 * @return Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+	public function emails()
+	{
+		return $this->hasMany('UserEmail', 'user_id', 'user_id')->where('user_emails.primary', 1);
+	}
+
 }

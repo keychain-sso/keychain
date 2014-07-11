@@ -24,6 +24,20 @@
 class UserController extends BaseController {
 
 	/**
+	 * Displays the user list
+	 *
+	 * @access public
+	 * @return View
+	 */
+	public function getList()
+	{
+		$length = Config::get('view.icon_length');
+		$users = User::with('emails')->paginate($length);
+
+		return View::make('user/list', 'global.users', array('users' => $users));
+	}
+
+	/**
 	 * Displays a specific user's profile
 	 *
 	 * @access public

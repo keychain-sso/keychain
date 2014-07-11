@@ -451,7 +451,7 @@ class GroupController extends BaseController {
 		$length = Config::get('view.icon_length');
 
 		// Get the group members
-		$userGroups = UserGroup::where('group_id', $group->id)->with('user')->paginate($length);
+		$userGroups = UserGroup::where('group_id', $group->id)->with(array('user', 'emails'))->paginate($length);
 
 		// Check if current user is a member
 		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;

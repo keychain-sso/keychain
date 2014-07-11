@@ -38,11 +38,11 @@ class Access {
 	 * @static
 	 * @access public
 	 * @param  string  $flag
-	 * @param  int  $object
+	 * @param  User|Group  $object
 	 * @param  int  $field
 	 * @return bool
 	 */
-	public static function check($flag, $object, $field = 0)
+	public static function check($flag, $object = null, $field = 0)
 	{
 		// Fetch all data related to the subject, which is always
 		// the currently logged in user
@@ -141,6 +141,16 @@ class Access {
 
 				// Does the subject have access directly to the group?
 				if (isset($acl["{$object->id}.".ACLTypes::GROUP.".{$field}.{$flag}"]))
+				{
+					return true;
+				}
+
+				break;
+
+			default:
+
+				// Does the subject have access to all objects?
+				if (isset($acl[ACLTypes::ALL.".{$field}.{$flag}"]))
 				{
 					return true;
 				}

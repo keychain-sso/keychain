@@ -119,7 +119,7 @@
 					}}
 				@endif
 
-				<div class="text-center">
+				<div class="profile-icon">
 					<span class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($userGroup->user->avatar))
 							<img src="{{ asset('uploads/avatars'.$userGroup->user->avatar) }}" alt="" />
@@ -132,6 +132,10 @@
 						{{ $userGroup->user->first_name }}
 						{{ $userGroup->user->last_name }}
 					</a>
+
+					<small class="text-muted">
+						{{ $userGroup->emails[0]->address }}
+					</small>
 				</div>
 			</div>
 		@endforeach
