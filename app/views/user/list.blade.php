@@ -2,7 +2,7 @@
 
 @section('body')
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-xs-12">
 			@if (Access::check(Permissions::USER_MANAGE))
 				<a href="{{ url('user/create') }}" class="btn btn-default pull-right">
 					<span class="glyphicon glyphicon-plus"></span>
@@ -17,24 +17,41 @@
 		</div>
 	</div>
 
-	<div class="row spacer-lg-top spacer-lg-bottom">
-		<div class="col-xs-8 col-sm-5 col-md-4 col-lg-3">
+	<div class="row">
+		<div class="col-xs-8 col-sm-5 col-md-4 col-lg-3 ">
 			<div class="form-group has-feedback">
 				{{
 					Form::text('search', null, array(
-						'class'       => 'form-control',
-						'placeholder' => Lang::get('global.search_user'),
+						'class'         => 'form-control',
+						'placeholder'   => Lang::get('global.search_user'),
+						'data-toggle'   => 'user-search',
+						'data-item'     => '.search-item',
+						'data-target'   => '#search-target',
+						'data-empty'    => '#search-empty',
+						'data-loader'   => '#search-loader',
+						'data-pages'    => '#paginator',
+						'data-url'      => url('user/search'),
+						'data-push'     => url('user/list'),
+						'data-checkbox' => Flags::NO,
 					))
 				}}
 
-				<span class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
+				<span id="search-loader" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
 			</div>
 		</div>
 	</div>
 
-	<div class="row">
+	<div id="search-target" class="row">
+		<div id="search-empty" class="col-xs-12 hide">
+			<ul class="list-group">
+				<li class="list-group-item">
+					{{ Lang::get('user.no_users_found') }}
+				</li>
+			</ul>
+		</div>
+
 		@foreach ($users as $user)
-			<div class="col-xs-3 col-md-2">
+			<div class="col-xs-3 col-md-2 search-item">
 				<div class="profile-icon">
 					<span class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($user->avatar))
@@ -59,7 +76,7 @@
 
 	<hr />
 
-	<div class="row">
+	<div id="paginator" class="row">
 		<div class="col-sm-6 visible-sm visible-md visible-lg text-muted">
 			{{
 				Lang::get('pagination.range', array(

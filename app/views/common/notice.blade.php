@@ -2,7 +2,7 @@
 
 @section('body')
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-xs-12">
 			<div class="jumbotron text-center">
 				@if ($type == NoticeTypes::SUCCESS)
 					<span class="glyphicon glyphicon-ok-sign text-xl text-success"></span>

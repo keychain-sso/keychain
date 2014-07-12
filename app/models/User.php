@@ -36,6 +36,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * @access public
 	 * @return Illuminate\Database\Eloquent\Relations\HasMany
 	 */
+	public function primaryEmail()
+	{
+		return $this->hasMany('UserEmail')->where('primary', 1);
+	}
+
+	/**
+	 * Relationship with the 'UserEmail' model
+	 *
+	 * @access public
+	 * @return Illuminate\Database\Eloquent\Relations\HasMany
+	 */
 	public function emails()
 	{
 		return $this->hasMany('UserEmail');

@@ -3,7 +3,7 @@
 @section('body')
 	<div class="text-center">
 		@if ( ! empty($user->avatar))
-			<img src="{{ asset('uploads/avatars'.$user->avatar) }}" class="img-circle img-thumbnail" alt="" />
+			<img src="{{ asset('uploads/avatars/'.$user->avatar) }}" class="img-circle img-thumbnail" alt="" />
 		@else
 			<img src="{{ asset('img/default-avatar.png') }}" class="img-circle img-thumbnail" alt="" />
 		@endif

@@ -71,5 +71,6 @@ return array(
 	'last_active'            => 'Last active: :time',
 	'sessions_killed'        => 'All other sessions have been terminated',
 	'security_saved'         => 'Security settings saved',
+	'no_users_found'         => 'No users found matching the entered name or email address',
 
 );

@@ -16,6 +16,11 @@
   top: 0;
 }
 
+/* Pagination dosn't need a margin */
+.pagination {
+  margin: 0;
+}
+
 /* Spacer helpers */
 .spacer {
   margin: 10px;

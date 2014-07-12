@@ -32,7 +32,7 @@ class UserController extends BaseController {
 	public function getList()
 	{
 		$length = Config::get('view.icon_length');
-		$users = User::with('emails')->paginate($length);
+		$users = User::with('emails')->orderBy('first_name')->orderBy('last_name')->paginate($length);
 
 		return View::make('user/list', 'global.users', array('users' => $users));
 	}
@@ -451,6 +451,74 @@ class UserController extends BaseController {
 			Session::flash('messages.success', Lang::get('user.security_saved'));
 
 			return Redirect::to(URL::previous());
+		}
+	}
+
+	/**
+	 * Performs user search on a query
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function getSearch()
+	{
+		$query = Input::get('query');
+		$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
+		$results = array();
+
+		// Max results = icon length - exclude count, so that we remain within the length limit
+		$max = Config::get('view.icon_length') - count($exclude);
+
+		if ($max > 0)
+		{
+			// If user is searching by name
+			if ( ! filter_var($query, FILTER_VALIDATE_EMAIL))
+			{
+				$name = explode(' ', $query);
+				$firstName = $name[0];
+				$lastName = isset($name[1]) ? $name[1] : false;
+
+				// Find user by first name
+				$users = User::where('first_name', 'like', "{$firstName}%");
+
+				// Add last name to criteria
+				if ($lastName !== false)
+				{
+					$users->where('last_name', 'like', "{$lastName}%");
+				}
+			}
+
+			// Searching by email address
+			else
+			{
+				// Find users by email address
+				$emails = UserEmail::where('address', 'like', "{$query}%");
+
+				// Append a '0' to have a safe where-in clause for the user lookup
+				$userIds = $emails->lists('user_id');
+				$userIds[] = 0;
+
+				// Look up user by IDs
+				$users = User::whereIn('id', $userIds);
+			}
+
+			// Remove excluded users
+			if (count($exclude) > 0)
+			{
+				$users->whereNotIn('hash', $exclude);
+			}
+
+			// Get the results of the search
+			$users = $users->with('primaryEmail')->orderBy('first_name')->orderBy('last_name')->take($max)->get();
+
+			// Build the view data
+			$data = array(
+				'users'    => $users,
+				'checkbox' => Input::get('checkbox'),
+			);
+
+			// Return the icon set
+			return View::make('common/icon', null, $data);
 		}
 	}
 

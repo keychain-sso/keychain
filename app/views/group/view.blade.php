@@ -9,7 +9,7 @@
 	}}
 
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-xs-12">
 			<h3 class="spacer-none-top">
 				<a href="{{ url('group/list') }}" class="back" title="{{ Lang::get('group.return_group_list') }}" data-toggle="tooltip">
 					<span class="glyphicon glyphicon-chevron-left"></span>
@@ -105,12 +105,44 @@
 	@endif
 
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-xs-12">
 			<h3 class="spacer-none-top">{{ Lang::get('group.members') }}</h3>
 		</div>
 
+		<div class="col-xs-8 col-sm-5 col-md-4 col-lg-3">
+			<div class="form-group has-feedback">
+				{{
+					Form::text('search', null, array(
+						'class'         => 'form-control',
+						'placeholder'   => Lang::get('global.search_user'),
+						'data-toggle'   => 'user-search',
+						'data-item'     => '.search-item',
+						'data-target'   => '#search-target',
+						'data-empty'    => '#search-empty',
+						'data-loader'   => '#search-loader',
+						'data-pages'    => '#paginator',
+						'data-url'      => url('user/search'),
+						'data-push'     => url("group/view/{$group->hash}"),
+						'data-checkbox' => $editor ? Flags::YES : Flags::NO,
+					))
+				}}
+
+				<span id="search-loader" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
+			</div>
+		</div>
+	</div>
+
+	<div id="search-target" class="row">
+		<div id="search-empty" class="col-xs-12 hide">
+			<ul class="list-group">
+				<li class="list-group-item">
+					{{ Lang::get('user.no_users_found') }}
+				</li>
+			</ul>
+		</div>
+
 		@foreach ($userGroups as $userGroup)
-			<div class="col-xs-3 col-md-2">
+			<div class="col-xs-3 col-md-2 search-item">
 				@if ($editor)
 					{{
 						Form::checkbox('users', $userGroup->user->hash, false, array(
@@ -122,7 +154,7 @@
 				<div class="profile-icon">
 					<span class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($userGroup->user->avatar))
-							<img src="{{ asset('uploads/avatars'.$userGroup->user->avatar) }}" alt="" />
+							<img src="{{ asset('uploads/avatars/'.$userGroup->user->avatar) }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif
@@ -141,7 +173,7 @@
 		@endforeach
 
 		@if (count($userGroups) == 0)
-			<div class="col-sm-12">
+			<div class="col-xs-12">
 				<ul class="list-group">
 					<li class="list-group-item">{{ Lang::get('group.no_members') }}</li>
 				</ul>
@@ -150,10 +182,10 @@
 	</div>
 
 	@if ($editor && $remove)
-		<div class="row">
-			<div class="col-sm-12">
-				<hr />
+		<hr />
 
+		<div class="row">
+			<div class="col-xs-12">
 				{{ Form::hidden('hash', $group->hash) }}
 
 				{{
@@ -162,6 +194,22 @@
 						'class'    => 'btn btn-default',
 					))
 				}}
+			</div>
+		</div>
+
+		<div id="paginator" class="row spacer-lg-top">
+			<div class="col-sm-6 visible-sm visible-md visible-lg text-muted">
+				{{
+					Lang::get('pagination.range', array(
+						'from'  => $userGroups->getFrom(),
+						'to'    => $userGroups->getTo(),
+						'total' => $userGroups->getTotal(),
+					))
+				}}
+			</div>
+
+			<div class="col-sm-6 text-right">
+				{{ $userGroups->links() }}
 			</div>
 		</div>
 	@endif
