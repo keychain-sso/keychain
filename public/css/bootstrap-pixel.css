@@ -1,12 +1,8 @@
 /**
- * Keychain
+ * Bootstrap Pixel Theme
  *
- * SSO login provider for enterprise.
- *
- * @package     Keychain
- * @copyright   (c) Keychain Developers
+ * @copyright   (c) Sayak Banerjee <sayakb@kde.org>
  * @license     http://opensource.org/licenses/BSD-3-Clause
- * @link        https://github.com/keychain-sso/keychain
  * @since       Version 1.0
  * @filesource
  */
@@ -81,6 +77,14 @@
 }
 .spacer-none-left {
   margin-left: 0;
+}
+
+/* Cursor helpers */
+.cursor-pointer {
+  cursor: pointer;
+}
+.cursor-default {
+  cursor: default;
 }
 
 /* Display helpers */

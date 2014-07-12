@@ -9,7 +9,7 @@
 
 	<link href="{{ asset('img/favicon.ico') }}" rel="icon" />
 	<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
-	<link href="{{ asset('css/keychain.css') }}" rel="stylesheet" />
+	<link href="{{ asset('css/bootstrap-pixel.css') }}" rel="stylesheet" />
 	<link href="{{ asset('css/datepicker.css') }}" rel="stylesheet" />
 </head>
 
@@ -68,7 +68,7 @@
 	<script type="text/javascript" src="{{ asset('js/jquery.scrollto.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('js/keychain.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/bootstrap-pixel.js') }}"></script>
 
 	@if ($appconfig['locale'] != 'en')
 		<script type="text/javascript" src="{{ asset('js/locales/bootstrap-datepicker.'.$appconfig['locale'].'.js') }}"></script>

@@ -1,12 +1,8 @@
 /**
- * Keychain
+ * Bootstrap Pixel Theme
  *
- * SSO login provider for enterprise.
- *
- * @package     Keychain
- * @copyright   (c) Keychain Developers
+ * @copyright   (c) Sayak Banerjee <sayakb@kde.org>
  * @license     http://opensource.org/licenses/BSD-3-Clause
- * @link        https://github.com/keychain-sso/keychain
  * @since       Version 1.0
  * @filesource
  */
@@ -93,7 +89,7 @@ function userSearch()
 			target = search.attr('data-target');
 			empty = search.attr('data-empty');
 			model = search.attr('data-model');
-			loader = search.attr('data-loader');
+			icon = search.attr('data-icon');
 			checkbox = search.attr('data-checkbox');
 			pages = search.attr('data-pages');
 			pushUrl = search.attr('data-push');
@@ -106,8 +102,8 @@ function userSearch()
 			// Otherwise, reset to original state
 			if (query.length > 0)
 			{
-				// Set the loader as busy
-				$(loader).removeClass('glyphicon-search').addClass('glyphicon-time');
+				// Set the icon as 'busy'
+				$(icon).removeClass('glyphicon-search glyphicon-remove cursor-pointer').addClass('glyphicon-time');
 
 				// Here, we backup the original state of the window
 				if (typeof(original) == 'undefined')
@@ -158,8 +154,14 @@ function userSearch()
 							$(empty).removeClass('hide');
 						}
 
-						// Set the loader as idle
-						$(loader).removeClass('glyphicon-time').addClass('glyphicon-search');
+						// Set the icon as 'clear'
+						$(icon).removeClass('glyphicon-time').addClass('glyphicon-remove cursor-pointer');
+
+						// Clear the search box if the icon is clicked
+						$(icon).off('click').on('click', function()
+						{
+							search.val('').keyup();
+						});
 					},
 				})
 			}
@@ -172,6 +174,9 @@ function userSearch()
 				original = undefined;
 				$(target).html(initial);
 				$(empty).addClass('hide');
+
+				// Set the icon as 'search'
+				$(icon).removeClass('glyphicon-time glyphicon-remove cursor-pointer').addClass('glyphicon-search');
 			}
 		}, 500);
 	});

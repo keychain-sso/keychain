@@ -28,7 +28,7 @@
 						'data-item'     => '.search-item',
 						'data-target'   => '#search-target',
 						'data-empty'    => '#search-empty',
-						'data-loader'   => '#search-loader',
+						'data-icon'     => '#search-icon',
 						'data-pages'    => '#paginator',
 						'data-url'      => url('user/search'),
 						'data-push'     => url('user/list'),
@@ -37,7 +37,7 @@
 					))
 				}}
 
-				<span id="search-loader" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
+				<span id="search-icon" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
 			</div>
 		</div>
 	</div>
