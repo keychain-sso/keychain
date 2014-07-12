@@ -104,33 +104,35 @@
 		@include('common.alerts')
 	@endif
 
-	<div class="row">
-		<div class="col-xs-12">
-			<h3 class="spacer-none-top">{{ Lang::get('group.members') }}</h3>
-		</div>
+	@if (count($userGroups) > 0)
+		<div class="row">
+			<div class="col-xs-12">
+				<h3 class="spacer-none-top">{{ Lang::get('group.members') }}</h3>
+			</div>
 
-		<div class="col-xs-8 col-sm-5 col-md-4 col-lg-3">
-			<div class="form-group has-feedback">
-				{{
-					Form::text('search', null, array(
-						'class'         => 'form-control',
-						'placeholder'   => Lang::get('global.search_user'),
-						'data-toggle'   => 'user-search',
-						'data-item'     => '.search-item',
-						'data-target'   => '#search-target',
-						'data-empty'    => '#search-empty',
-						'data-loader'   => '#search-loader',
-						'data-pages'    => '#paginator',
-						'data-url'      => url('user/search'),
-						'data-push'     => url("group/view/{$group->hash}"),
-						'data-checkbox' => $editor ? Flags::YES : Flags::NO,
-					))
-				}}
+			<div class="col-xs-8 col-sm-5 col-md-4 col-lg-3">
+				<div class="form-group has-feedback">
+					{{
+						Form::text('search', null, array(
+							'class'         => 'form-control',
+							'placeholder'   => Lang::get('global.search_user'),
+							'data-toggle'   => 'user-search',
+							'data-item'     => '.search-item',
+							'data-target'   => '#search-target',
+							'data-empty'    => '#search-empty',
+							'data-loader'   => '#search-loader',
+							'data-pages'    => '#paginator',
+							'data-url'      => url('user/search'),
+							'data-push'     => url("group/view/{$group->hash}"),
+							'data-checkbox' => $editor ? Flags::YES : Flags::NO,
+						))
+					}}
 
-				<span id="search-loader" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
+					<span id="search-loader" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
+				</div>
 			</div>
 		</div>
-	</div>
+	@endif
 
 	<div id="search-target" class="row">
 		<div id="search-empty" class="col-xs-12 hide">
@@ -145,7 +147,7 @@
 			<div class="col-xs-3 col-md-2 search-item">
 				@if ($editor)
 					{{
-						Form::checkbox('users', $userGroup->user->hash, false, array(
+						Form::checkbox('users[]', $userGroup->user->hash, false, array(
 							'class' => 'inlay',
 						))
 					}}

@@ -102,9 +102,6 @@ function userSearch()
 			query = search.val();
 			exclude = new Array();
 
-			// Set the loader as busy
-			$(loader).removeClass('glyphicon-search').addClass('glyphicon-time');
-
 			// Hide the empty results box
 			$(empty).addClass('hide');
 
@@ -112,6 +109,9 @@ function userSearch()
 			// Otherwise, reset to original state
 			if (query.length > 0)
 			{
+				// Set the loader as busy
+				$(loader).removeClass('glyphicon-search').addClass('glyphicon-time');
+
 				// Here, we backup the original state of the window
 				if (typeof(original) == 'undefined')
 				{

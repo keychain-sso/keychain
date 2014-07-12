@@ -87,11 +87,8 @@ class GroupController extends BaseController {
 			// Check if users were selected
 			if (Input::has('users'))
 			{
-				$users = Input::get('users');
-				$users = is_array($users) ? $users : array($users);
-
 				// Populate a list of user_ids to delete
-				$users = User::whereIn('hash', $users)->get();
+				$users = User::whereIn('hash', Input::get('users'))->get();
 				$userIds = array();
 
 				foreach ($users as $user)

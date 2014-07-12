@@ -43,7 +43,10 @@ class BaseController extends Controller {
 		// Trim leading and trailing whitespace and remove HTML tags
 		foreach ($input as $key => $value)
 		{
-			$input[$key] = strip_tags(trim($value));
+			if (is_string($value))
+			{
+				$input[$key] = strip_tags(trim($value));
+			}
 		}
 
 		// Merge it back to the input data
