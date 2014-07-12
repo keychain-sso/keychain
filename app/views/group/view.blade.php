@@ -125,6 +125,7 @@
 							'data-url'      => url('user/search'),
 							'data-push'     => url("group/view/{$group->hash}"),
 							'data-checkbox' => $editor ? Flags::YES : Flags::NO,
+							'autocomplete'  => 'off',
 						))
 					}}
 

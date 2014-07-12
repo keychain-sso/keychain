@@ -33,6 +33,7 @@
 						'data-url'      => url('user/search'),
 						'data-push'     => url('user/list'),
 						'data-checkbox' => Flags::NO,
+						'autocomplete'  => 'off',
 					))
 				}}
 
