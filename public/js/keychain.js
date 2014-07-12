@@ -102,9 +102,6 @@ function userSearch()
 			query = search.val();
 			exclude = new Array();
 
-			// Hide the empty results box
-			$(empty).addClass('hide');
-
 			// If query is not empty, do the search
 			// Otherwise, reset to original state
 			if (query.length > 0)
@@ -152,7 +149,11 @@ function userSearch()
 						$(target).append(users);
 
 						// Show empty box
-						if (exclude.length == 0 && users.trim().length == 0)
+						if (exclude.length > 0 || users.trim().length > 0)
+						{
+							$(empty).addClass('hide');
+						}
+						else
 						{
 							$(empty).removeClass('hide');
 						}
@@ -170,6 +171,7 @@ function userSearch()
 
 				original = undefined;
 				$(target).html(initial);
+				$(empty).addClass('hide');
 			}
 		}, 500);
 	});
