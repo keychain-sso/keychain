@@ -678,6 +678,15 @@ class Setup extends Migration {
 			'subject_type' => ACLTypes::GROUP,
 			'access'       => Permissions::GROUP_MANAGE,
 		));
+
+		// Allow sysadmins to manage ACLs
+		DB::table('acl')->insert(array(
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'access'       => Permissions::ACL_MANAGE,
+		));
 	}
 
 	/**

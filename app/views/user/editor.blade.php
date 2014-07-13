@@ -148,7 +148,7 @@
 		))
 	}}
 
-	<a href="{{ url('user/view/'.$user->hash) }}" class="btn btn-default">
+	<a href="{{ url("user/view/{$user->hash}") }}" class="btn btn-default">
 		{{ Lang::get('global.close') }}
 	</a>
 </div>

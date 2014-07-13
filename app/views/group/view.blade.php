@@ -38,7 +38,7 @@
 				<ul class="nav navbar-nav">
 					@if ($editor)
 						<li>
-							<a href="{{ url('group/edit/'.$group->hash) }}">
+							<a href="{{ url("group/edit/{$group->hash}") }}">
 								<span class="glyphicon glyphicon-pencil"></span>
 								{{ Lang::get('group.edit_group') }}
 							</a>
@@ -48,14 +48,14 @@
 					@if ( ! $pending)
 						@if ($member && ($editor || $group->type == GroupTypes::OPEN))
 							<li>
-								<a href="{{ url('group/leave/'.$group->hash) }}">
+								<a href="{{ url("group/leave/{$group->hash}") }}">
 									<span class="glyphicon glyphicon-share-alt"></span>
 									{{ Lang::get('group.leave_group') }}
 								</a>
 							</li>
 						@elseif ($editor || $group->type != GroupTypes::CLOSED)
 							<li>
-								<a href="{{ url('group/join/'.$group->hash) }}">
+								<a href="{{ url("group/join/{$group->hash}") }}">
 									<span class="glyphicon glyphicon-link"></span>
 									{{ Lang::get('group.join_group') }}
 								</a>
@@ -63,7 +63,7 @@
 						@endif
 					@else
 						<li>
-							<a href="{{ url('group/withdraw/'.$group->hash) }}">
+							<a href="{{ url("group/withdraw/{$group->hash}") }}">
 								<span class="glyphicon glyphicon-remove-circle"></span>
 								{{ Lang::get('group.withdraw_request') }}
 							</a>
@@ -72,7 +72,7 @@
 
 					@if ($editor && $group->type == GroupTypes::REQUEST)
 						<li>
-							<a href="{{ url('group/requests/'.$group->hash) }}">
+							<a href="{{ url("group/requests/{$group->hash}") }}">
 								<span class="label label-counter @if ($requestCount > 0) label-danger @else label-default @endif">
 									{{ $requestCount }}
 								</span>
@@ -84,13 +84,32 @@
 					@endif
 				</ul>
 
-				@if ($manager)
+				@if ($access || $manager)
 					<ul class="nav navbar-nav navbar-right">
-						<li>
-							<a href="#">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<span class="glyphicon glyphicon-wrench"></span>
 								{{ Lang::get('global.manage') }}
+								<span class="caret"></span>
 							</a>
+
+							<ul class="dropdown-menu">
+								@if ($access)
+									<li>
+										<a href="{{ url("group/permissions/{$group->hash}") }}">
+											{{ Lang::get('group.group_permissions') }}
+										</a>
+									</li>
+								@endif
+
+								@if ($manager)
+									<li>
+										<a href="{{ url("group/delete/{$group->hash}") }}">
+											{{ Lang::get('group.delete_group') }}
+										</a>
+									</li>
+								@endif
+							</ul>
 						</li>
 					</ul>
 				@endif
@@ -157,13 +176,13 @@
 				<div class="profile-icon">
 					<a href="#" class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($userGroup->user->avatar))
-							<img src="{{ asset('uploads/avatars/'.$userGroup->user->avatar) }}" alt="" />
+							<img src="{{ asset("uploads/avatars/{$userGroup->user->avatar}") }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif
 					</a>
 
-					<a href="{{ url('user/view/'.$userGroup->user->hash) }}">
+					<a href="{{ url("user/view/{$userGroup->user->hash}") }}">
 						{{ $userGroup->user->first_name }}
 						{{ $userGroup->user->last_name }}
 					</a>

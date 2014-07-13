@@ -17,7 +17,7 @@
 		<ul class="list-group">
 			@foreach ($keys as $key)
 				<li class="list-group-item">
-					<a href="{{ url('user/keys/'.$user->hash.'/remove/'.$key->id) }}" class="btn btn-xs btn-danger pull-right">
+					<a href="{{ url("user/keys/{$user->hash}/remove/{$key->id}") }}" class="btn btn-xs btn-danger pull-right">
 						{{ Lang::get('global.remove') }}
 					</a>
 
@@ -74,7 +74,7 @@
 		))
 	}}
 
-	<a href="{{ url('user/view/'.$user->hash) }}" class="btn btn-default">
+	<a href="{{ url("user/view/{$user->hash}") }}" class="btn btn-default">
 		{{ Lang::get('global.close') }}
 	</a>
 </div>

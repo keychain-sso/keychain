@@ -29,7 +29,7 @@
 		))
 	}}
 
-	<a href="{{ url('group/view/'.$group->hash) }}" class="btn btn-default">
+	<a href="{{ url("group/view/{$group->hash}") }}" class="btn btn-default">
 		{{ Lang::get('global.close') }}
 	</a>
 </div>

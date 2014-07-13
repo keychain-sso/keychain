@@ -9,15 +9,15 @@
 		@endif
 
 		<div class="profile-icon">
-			<a @if ($checkbox) href="#" @else href="{{ url('user/view/'.$user->hash) }}" @endif class="thumbnail spacer-sm-bottom">
+			<a @if ($checkbox) href="#" @else href="{{ url("user/view/{$user->hash}") }}" @endif class="thumbnail spacer-sm-bottom">
 				@if ( ! empty($user->avatar))
-					<img src="{{ asset('uploads/avatars/'.$user->avatar) }}" alt="" />
+					<img src="{{ asset("uploads/avatars/{$user->avatar}") }}" alt="" />
 				@else
 					<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 				@endif
 			</a>
 
-			<a href="{{ url('user/view/'.$user->hash) }}">
+			<a href="{{ url("user/view/{$user->hash}") }}">
 				{{ $user->first_name }}
 				{{ $user->last_name }}
 			</a>

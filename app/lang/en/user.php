@@ -30,6 +30,8 @@ return array(
 	'manage_email_addresses' => 'Manage email addresses',
 	'manage_ssh_keys'        => 'Manage SSH keys',
 	'security_settings'      => 'Security settings',
+	'user_permissions'       => 'User permissions',
+	'delete_user'            => 'Delete user',
 	'basic_info'             => 'Basic information',
 	'contact_info'           => 'Contact information',
 	'group_memberships'      => 'Group memberships',

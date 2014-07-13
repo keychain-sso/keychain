@@ -54,21 +54,21 @@
 		@foreach ($users as $user)
 			<div class="col-xs-3 col-md-2 search-item">
 				<div class="profile-icon" data-toggle="clickable">
-					<a href="{{ url('user/view/'.$user->hash) }}" class="thumbnail spacer-sm-bottom">
+					<a href="{{ url("user/view/{$user->hash}") }}" class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($user->avatar))
-							<img src="{{ asset('uploads/avatars'.$user->avatar) }}" alt="" />
+							<img src="{{ asset("uploads/avatars/{$user->avatar}") }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif
 					</a>
 
-					<a href="{{ url('user/view/'.$user->hash) }}">
+					<a href="{{ url("user/view/{$user->hash}") }}">
 						{{ $user->first_name }}
 						{{ $user->last_name }}
 					</a>
 
 					<small class="text-muted">
-						{{ $user->emails[0]->address }}
+						{{ $user->primaryEmail[0]->address }}
 					</small>
 				</div>
 			</div>

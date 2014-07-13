@@ -401,7 +401,7 @@ class UserController extends BaseController {
 			// Fetch the associated user
 			$hash = Input::get('hash');
 			$user = User::where('hash', $hash)->firstOrFail();
-			$manage = Access::check(Permissions::USER_MANAGE, $user);
+			$manage = Access::check(Permissions::USER_MANAGE);
 
 			// Validate edit rights
 			Access::restrict(Permissions::USER_EDIT, $user);
@@ -518,7 +518,8 @@ class UserController extends BaseController {
 
 		// Get user permissions
 		$editor = Access::check(Permissions::USER_EDIT, $user);
-		$manager = Access::check(Permissions::USER_MANAGE, $user);
+		$manager = Access::check(Permissions::USER_MANAGE);
+		$access = Access::check(Permissions::ACL_MANAGE);
 
 		// Build the user data
 		return array(
@@ -528,6 +529,7 @@ class UserController extends BaseController {
 			'memberships' => $memberships,
 			'editor'      => $editor,
 			'manager'     => $manager,
+			'access'      => $access,
 		);
 	}
 

@@ -15,6 +15,7 @@
 
 use Cache;
 use DateTimeZone;
+use Lang;
 
 /**
  * Utilities class
@@ -60,18 +61,35 @@ class Utilities {
 	{
 		return Cache::tags('global')->rememberForever("timezones.{$csv}", function() use ($csv)
 		{
-			$identifiers = DateTimeZone::listIdentifiers();
+			$timezones = DateTimeZone::listIdentifiers();
 
-			if ($csv)
+			// If not requesting CSV, we return a nested array where we group the timezones
+			// based on the geographical region
+			if ( ! $csv)
 			{
-				$identifiers = implode(',', $identifiers);
+				foreach ($timezones as $timezone)
+				{
+					if (str_contains($timezone, '/'))
+					{
+						list($region, $zone) = explode('/', $timezone);
+						$zone = str_replace('_', ' ', $zone);
+
+						$regions[$region][$timezone] = $zone;
+					}
+					else
+					{
+						$regions[Lang::get('global.others')][$timezone] = $timezone;
+					}
+				}
+
+				return $regions;
 			}
+
+			// For CSV, just return a regular array of possible values
 			else
 			{
-				$identifiers = static::arrayToSelect($identifiers);
+				return implode(',', $timezones);
 			}
-
-			return $identifiers;
 		});
 	}
 

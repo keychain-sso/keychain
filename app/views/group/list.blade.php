@@ -29,7 +29,7 @@
 						</small>
 
 						<h4 class="list-group-item-heading">
-							<a href="{{ url('group/view/'.$groupItem->hash) }}">{{ $groupItem->name }}</a>
+							<a href="{{ url("group/view/{$groupItem->hash}") }}">{{ $groupItem->name }}</a>
 
 							@if (in_array($groupItem->id, $userGroups))
 								<span class="glyphicon glyphicon-link text-primary" title="{{ Lang::get('group.member_of_group') }}"

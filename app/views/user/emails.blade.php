@@ -38,18 +38,18 @@
 						@if ($email->verified)
 							<a class="btn btn-default btn-xs disabled">{{ Lang::get('user.verified') }}</a>
 						@else
-							<a href="{{ url('user/emails/'.$user->hash.'/verify/'.$email->id) }}" class="btn btn-xs btn-default">
+							<a href="{{ url("user/emails/{$user->hash}/verify/{$email->id}") }}" class="btn btn-xs btn-default">
 								{{ Lang::get('user.verify') }}
 							</a>
 						@endif
 
-						<a href="{{ url('user/emails/'.$user->hash.'/remove/'.$email->id) }}" class="btn btn-xs btn-danger">
+						<a href="{{ url("user/emails/{$user->hash}/remove/{$email->id}") }}" class="btn btn-xs btn-danger">
 							{{ Lang::get('global.remove') }}
 						</a>
 					</div>
 
 					@if ($email->verified)
-						<a href="{{ url('user/emails/'.$user->hash.'/primary/'.$email->id) }}">
+						<a href="{{ url("user/emails/{$user->hash}/primary/{$email->id}") }}">
 							<span class="glyphicon glyphicon-star-empty text-muted" title="{{ Lang::get('user.set_as_primary') }}"
 							      data-toggle="tooltip"></span>
 						</a>
@@ -96,7 +96,7 @@
 		))
 	}}
 
-	<a href="{{ url('user/view/'.$user->hash) }}" class="btn btn-default">
+	<a href="{{ url("user/view/{$user->hash}") }}" class="btn btn-default">
 		{{ Lang::get('global.close') }}
 	</a>
 </div>

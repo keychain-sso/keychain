@@ -160,12 +160,12 @@ class FormField {
 
 		// Validate basic fields
 		$validator = Validator::make($data, array(
-			'first_name'    => 'required|alpha|max:80',
-			'last_name'     => 'required|alpha|max:80',
+			'first_name'    => 'required|max:80',
+			'last_name'     => 'required|max:80',
 			'gender'        => 'in:M,F,O',
 			'date_of_birth' => 'required|date|before:'.date('Y-m-d', time()),
 			'timezone'      => 'in:'.Utilities::timezones(true),
-			'title'         => 'max:80',
+			'title'         => 'max:50',
 		));
 
 		// If validation fails, return the first failed message

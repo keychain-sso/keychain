@@ -81,7 +81,7 @@
 	<script type="text/javascript" src="{{ asset('js/bootstrap-pixel.js') }}"></script>
 
 	@if ($appconfig['locale'] != 'en')
-		<script type="text/javascript" src="{{ asset('js/locales/bootstrap-datepicker.'.$appconfig['locale'].'.js') }}"></script>
+		<script type="text/javascript" src="{{ asset("js/locales/bootstrap-datepicker.{$appconfig['locale']}.js") }}"></script>
 	@endif
 </body>
 

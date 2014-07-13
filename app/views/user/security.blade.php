@@ -104,19 +104,15 @@
 			@endif
 		</ul>
 
-		@if ($user->id == $auth->id && count($sessions) > 1)
-			<div class="form-group">
-				<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
+		<div class="form-group">
+			<a href="{{ url("user/security/{$user->hash}/killall") }}" class="btn btn-default">
+				@if ($user->id == $auth->id && count($sessions) > 1)
 					{{ Lang::get('user.kill_other_sessions') }}
-				</a>
-			</div>
-		@elseif ($user->id != $auth->id && count($sessions) > 0)
-			<div class="form-group">
-				<a href="{{ url('user/security/'.$user->hash.'/killall') }}" class="btn btn-default">
+				@elseif ($user->id != $auth->id && count($sessions) > 0)
 					{{ Lang::get('user.kill_all_sessions') }}
-				</a>
-			</div>
-		@endif
+				@endif
+			</a>
+		</div>
 	</fieldset>
 
 	@if ($manager && $user->id != $auth->id)
@@ -168,7 +164,7 @@
 		))
 	}}
 
-	<a href="{{ url('user/view/'.$user->hash) }}" class="btn btn-default">
+	<a href="{{ url("user/view/{$user->hash}") }}" class="btn btn-default">
 		{{ Lang::get('global.close') }}
 	</a>
 </div>

@@ -588,14 +588,20 @@ class GroupController extends BaseController {
 		// Determine if the group actions bar should be displayed
 		$actions = false;
 
-		// Display if user can edit the group
-		if ($editor = Access::check(Permissions::GROUP_EDIT, $group))
+		// Display if user can manage the group
+		if ($manager = Access::check(Permissions::GROUP_MANAGE))
 		{
 			$actions = true;
 		}
 
-		// Display if user can manage the group
-		if ($manager = Access::check(Permissions::GROUP_MANAGE, $group))
+		// Display if user can modify the ACL
+		if ($access = Access::check(Permissions::ACL_MANAGE))
+		{
+			$actions = true;
+		}
+
+		// Display if user can edit the group
+		if ($editor = Access::check(Permissions::GROUP_EDIT, $group))
 		{
 			$actions = true;
 		}
@@ -620,6 +626,7 @@ class GroupController extends BaseController {
 			'actions'      => $actions,
 			'editor'       => $editor,
 			'manager'      => $manager,
+			'access'       => $access,
 			'requestCount' => $requestCount,
 			'pending'      => $pending,
 			'remove'       => count($userGroups) > 0,

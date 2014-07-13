@@ -3,7 +3,7 @@
 @section('body')
 	<div class="text-center">
 		@if ( ! empty($user->avatar))
-			<img src="{{ asset('uploads/avatars/'.$user->avatar) }}" class="img-circle img-thumbnail" alt="" />
+			<img src="{{ asset("uploads/avatars/{$user->avatar}") }}" class="img-circle img-thumbnail" alt="" />
 		@else
 			<img src="{{ asset('img/default-avatar.png') }}" class="img-circle img-thumbnail" alt="" />
 		@endif
@@ -22,28 +22,28 @@
 				@if ($editor)
 					<ul class="nav navbar-nav">
 						<li>
-							<a href="{{ url('user/edit/'.$user->hash) }}">
+							<a href="{{ url("user/edit/{$user->hash}") }}">
 								<span class="glyphicon glyphicon-pencil"></span>
 								{{ Lang::get('user.edit_profile') }}
 							</a>
 						</li>
 
 						<li>
-							<a href="{{ url('user/emails/'.$user->hash) }}">
+							<a href="{{ url("user/emails/{$user->hash}") }}">
 								<span class="glyphicon glyphicon-envelope"></span>
 								{{ Lang::get('user.manage_email_addresses') }}
 							</a>
 						</li>
 
 						<li>
-							<a href="{{ url('user/keys/'.$user->hash) }}">
+							<a href="{{ url("user/keys/{$user->hash}") }}">
 								<span class="glyphicon glyphicon-briefcase"></span>
 								{{ Lang::get('user.manage_ssh_keys') }}
 							</a>
 						</li>
 
 						<li>
-							<a href="{{ url('user/security/'.$user->hash) }}">
+							<a href="{{ url("user/security/{$user->hash}") }}">
 								<span class="glyphicon glyphicon-lock"></span>
 								{{ Lang::get('user.security_settings') }}
 							</a>
@@ -51,13 +51,32 @@
 					</ul>
 				@endif
 
-				@if ($manager)
+				@if ($access || $manager)
 					<ul class="nav navbar-nav navbar-right">
-						<li>
-							<a href="#">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<span class="glyphicon glyphicon-wrench"></span>
 								{{ Lang::get('global.manage') }}
+								<span class="caret"></span>
 							</a>
+
+							<ul class="dropdown-menu">
+								@if ($access)
+									<li>
+										<a href="{{ url("user/permissions/{$user->hash}") }}">
+											{{ Lang::get('user.user_permissions') }}
+										</a>
+									</li>
+								@endif
+
+								@if ($manager)
+									<li>
+										<a href="{{ url("user/delete/{$user->hash}") }}">
+											{{ Lang::get('user.delete_user') }}
+										</a>
+									</li>
+								@endif
+							</ul>
 						</li>
 					</ul>
 				@endif
@@ -169,7 +188,7 @@
 						@foreach ($memberships as $membership)
 							<li class="list-group-item">
 								<p class="list-group-item-text">
-									<a href="{{ url('group/view/'.$membership->group->hash) }}">
+									<a href="{{ url("group/view/{$membership->group->hash}") }}">
 										{{ $membership->group->name }}
 									</a>
 								</p>

@@ -30,6 +30,7 @@ return array(
 	'reject'            => 'Reject',
 	'information'       => 'Information',
 	'error'             => 'Error',
+	'others'            => 'Others',
 	'email_verified'    => 'Your email address has been verified',
 	'return_profile'    => 'Click here to return to your user profile',
 	'return_login'      => 'Click here to go to the login screen',

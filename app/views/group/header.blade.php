@@ -3,7 +3,7 @@
 		@if (empty($group->id))
 			<a href="{{ url('group/list') }}" class="close">&times;</a>
 		@else
-			<a href="{{ url('group/view/'.$group->hash) }}" class="close">&times;</a>
+			<a href="{{ url("group/view/{$group->hash}") }}" class="close">&times;</a>
 		@endif
 
 		<div class="text-center">

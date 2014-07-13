@@ -118,7 +118,7 @@
 	@if (empty($group->id))
 		<a href="{{ url('group/list') }}" class="btn btn-default">
 	@else
-		<a href="{{ url('group/view/'.$group->hash) }}" class="btn btn-default">
+		<a href="{{ url("group/view/{$group->hash}") }}" class="btn btn-default">
 	@endif
 		{{ Lang::get('global.close') }}
 	</a>

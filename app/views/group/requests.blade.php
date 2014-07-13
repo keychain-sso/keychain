@@ -7,7 +7,7 @@
 				<div class="col-xs-2">
 					<span class="thumbnail thumbnail-thread">
 						@if ( ! empty($request->user->avatar))
-							<img src="{{ asset('uploads/avatars'.$request->user->avatar) }}" alt="" />
+							<img src="{{ asset("uploads/avatars{$request->user->avatar}") }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif
@@ -31,11 +31,11 @@
 							<p>{{ nl2br($request->justification) }}</p>
 
 							<div class="text-right">
-								<a href="{{ url('group/requests/'.$group->hash.'/approve/'.$request->id) }}" class="btn btn-xs btn-success">
+								<a href="{{ url("group/requests/{$group->hash}/approve/{$request->id}") }}" class="btn btn-xs btn-success">
 									{{ Lang::get('global.approve') }}
 								</a>
 
-								<a href="{{ url('group/requests/'.$group->hash.'/reject/'.$request->id) }}" class="btn btn-xs btn-danger">
+								<a href="{{ url("group/requests/{$group->hash}/reject/{$request->id}") }}" class="btn btn-xs btn-danger">
 									{{ Lang::get('global.reject') }}
 								</a>
 							</div>
@@ -56,7 +56,7 @@
 </div>
 
 <div class="modal-footer">
-	<a href="{{ url('group/view/'.$group->hash) }}" class="btn btn-default">
+	<a href="{{ url("group/view/{$group->hash}") }}" class="btn btn-default">
 		{{ Lang::get('global.close') }}
 	</a>
 </div>
