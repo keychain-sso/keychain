@@ -18,13 +18,15 @@
 	</div>
 
 	<div class="row">
-		<div class="col-xs-8 col-sm-5 col-md-4 col-lg-3 ">
+		<div class="col-xs-8 col-sm-5 col-md-4 col-lg-3">
 			<div class="form-group has-feedback">
 				{{
 					Form::text('search', null, array(
 						'class'         => 'form-control',
 						'placeholder'   => Lang::get('global.search_user'),
+						'autocomplete'  => 'off',
 						'data-toggle'   => 'user-search',
+						'data-size'     => 'col-xs-3 col-md-2',
 						'data-item'     => '.search-item',
 						'data-target'   => '#search-target',
 						'data-empty'    => '#search-empty',
@@ -33,7 +35,6 @@
 						'data-url'      => url('user/search'),
 						'data-push'     => url('user/list'),
 						'data-checkbox' => Flags::NO,
-						'autocomplete'  => 'off',
 					))
 				}}
 
@@ -44,7 +45,7 @@
 
 	<div id="search-target" class="row">
 		<div id="search-empty" class="col-xs-12 hide">
-			<ul class="list-group">
+			<ul class="list-group spacer-none">
 				<li class="list-group-item">
 					{{ Lang::get('user.no_users_found') }}
 				</li>

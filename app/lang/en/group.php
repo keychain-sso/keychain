@@ -28,6 +28,7 @@ return array(
 	'leave_group'             => 'Leave this group',
 	'withdraw_request'        => 'Withdraw membership request',
 	'membership_requests'     => 'Membership requests',
+	'add_users'               => 'Add users',
 	'group_permissions'       => 'Group permissions',
 	'delete_group'            => 'Delete group',
 	'group_deleted'           => 'Group has been deleted',
@@ -62,5 +63,6 @@ return array(
 	'request_approved'        => 'Membership request has been approved',
 	'request_rejected'        => 'Membership request has been reject',
 	'no_requests'             => 'There are no membership requests pending for this group',
+	'users_added'             => 'Selected users have been added to the group',
 
 );

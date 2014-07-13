@@ -1,5 +1,5 @@
 @foreach ($users as $user)
-	<div class="col-xs-3 col-md-2 search-item" data-toggle="clickable">
+	<div class="search-item" data-toggle="clickable">
 		@if ($checkbox)
 			{{
 				Form::checkbox('users', $user->hash, false, array(

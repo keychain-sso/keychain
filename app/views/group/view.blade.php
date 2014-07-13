@@ -82,6 +82,15 @@
 							</a>
 						</li>
 					@endif
+
+					@if ($manager && $canAdd)
+						<li>
+							<a href="{{ url("group/add-user/{$group->hash}") }}">
+								<span class="glyphicon glyphicon-plus-sign"></span>
+								{{ Lang::get('group.add_users') }}
+							</a>
+						</li>
+					@endif
 				</ul>
 
 				@if ($access || $manager)
@@ -135,16 +144,17 @@
 						Form::text('search', null, array(
 							'class'         => 'form-control',
 							'placeholder'   => Lang::get('global.search_user'),
+							'autocomplete'  => 'off',
 							'data-toggle'   => 'user-search',
+							'data-size'     => 'col-xs-3 col-md-2',
 							'data-item'     => '.search-item',
 							'data-target'   => '#search-target',
 							'data-empty'    => '#search-empty',
 							'data-icon'     => '#search-icon',
 							'data-pages'    => '#paginator',
-							'data-url'      => url("group/user-search/{$group->hash}"),
+							'data-url'      => url("group/search/{$group->hash}?member=1"),
 							'data-push'     => url("group/view/{$group->hash}"),
 							'data-checkbox' => $editor ? Flags::YES : Flags::NO,
-							'autocomplete'  => 'off',
 						))
 					}}
 
@@ -156,7 +166,7 @@
 
 	<div id="search-target" class="row">
 		<div id="search-empty" class="col-xs-12 hide">
-			<ul class="list-group">
+			<ul class="list-group spacer-none">
 				<li class="list-group-item">
 					{{ Lang::get('user.no_users_found') }}
 				</li>

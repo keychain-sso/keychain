@@ -112,8 +112,8 @@ function itemSearch()
 			url = search.attr('data-url');
 			item = search.attr('data-item');
 			target = search.attr('data-target');
+			size = search.attr('data-size');
 			empty = search.attr('data-empty');
-			model = search.attr('data-model');
 			icon = search.attr('data-icon');
 			checkbox = search.attr('data-checkbox');
 			pages = search.attr('data-pages');
@@ -168,6 +168,12 @@ function itemSearch()
 
 						// Append the user icons to the target
 						$(target).append(users);
+
+						// Set the size of the items
+						$(target + ' ' + item).addClass(size);
+
+						// Regenerate clickable icons
+						clickableIcons();
 
 						// Show empty box
 						if (exclude.length > 0 || users.trim().length > 0)

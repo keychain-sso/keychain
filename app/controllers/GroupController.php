@@ -141,14 +141,11 @@ class GroupController extends BaseController {
 			{
 				// Populate a list of user_ids to delete
 				$users = User::whereIn('hash', Input::get('users'))->get();
-				$userIds = array();
+				$userIds = $users->lists('id');
 
+				// Clear the ACL cache for the selected users
 				foreach ($users as $user)
 				{
-					// Queue the user ID
-					$userIds[] = $user->id;
-
-					// Clear the ACL cache for this user
 					Cache::tags("user.{$user->id}.security")->flush();
 				}
 
@@ -494,13 +491,100 @@ class GroupController extends BaseController {
 	}
 
 	/**
+	 * Shows the add user screen
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return View
+	 */
+	public function getAddUser($hash)
+	{
+		// Fetch the group information
+		$group = Group::where('hash', $hash)->firstOrFail();
+		$data = $this->getGroupViewData($group);
+
+		// Validate edit rights
+		Access::restrict(Permissions::GROUP_EDIT, $group);
+
+		// Get users that are not already members
+		$length = Config::get('view.icon_length');
+		$members = UserGroup::where('group_id', $group->id)->lists('user_id');
+		$users = User::whereNotIn('id', $members)->paginate($length);
+
+		// Merge the group data with view data
+		$data = array_merge($data, array(
+			'users'  => $users,
+			'modal'  => 'group.users',
+		));
+
+		return View::make('group/view', 'group.add_users', $data);
+	}
+
+	/**
+	 * Handles post events for the add user screen
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postAddUser()
+	{
+		if (Input::has('_add'))
+		{
+			// Fetch the associated group
+			$hash = Input::get('hash');
+			$group = Group::where('hash', $hash)->firstOrFail();
+
+			// Validate edit rights
+			Access::restrict(Permissions::GROUP_EDIT, $group);
+
+			// Check if users were selected
+			if (Input::has('users'))
+			{
+				// Populate a list of user_ids to add
+				$users = User::whereIn('hash', Input::get('users'))->get();
+				$userIds = $users->lists('id');
+				$userGroups = array();
+
+				foreach ($users as $user)
+				{
+					// Build the row to be inserted into the table
+					$userGroups[] = array(
+						'user_id'  => $user->id,
+						'group_id' => $group->id,
+					);
+
+					// Clear the ACL cache for the selected users
+					Cache::tags("user.{$user->id}.security")->flush();
+				}
+
+				// Remove these users from the group to avoid duplicate entries
+				UserGroup::whereIn('user_id', $userIds)->where('group_id', $group->id)->delete();
+
+				// Add the users to the group
+				UserGroup::insert($userGroups);
+
+				// Redirect back to the group
+				Session::flash('messages.success', Lang::get('group.users_added'));
+
+				return Redirect::to("group/view/{$group->hash}");
+			}
+			else
+			{
+				Session::flash('messages.error', Lang::get('group.users_not_selected'));
+
+				return Redirect::to(URL::previous());
+			}
+		}
+	}
+
+	/**
 	 * Performs user search on a query via AJAX
 	 *
 	 * @access public
 	 * @param  string  $hash
 	 * @return View
 	 */
-	public function getUserSearch($hash)
+	public function getSearch($hash)
 	{
 		if (Request::ajax())
 		{
@@ -516,7 +600,15 @@ class GroupController extends BaseController {
 				// Apply group membership filter
 				$group = Group::where('hash', $hash)->firstOrFail();
 				$members = UserGroup::where('group_id', $group->id)->lists('user_id');
-				$users->whereIn('id', $members);
+
+				if (Input::get('member'))
+				{
+					$users->whereIn('id', $members);
+				}
+				else
+				{
+					$users->whereNotIn('id', $members);
+				}
 
 				// Get the results of the search
 				$users = $users->take($max)->get();
@@ -579,11 +671,15 @@ class GroupController extends BaseController {
 		// Check if current user is a member
 		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
 
+		// Check if we need to show the add member link
+		$canAdd = User::whereNotIn('id', $userGroups->lists('user_id'))->count() > 0;
+
 		// Get pending join requests for the group
-		$requestCount = GroupRequest::where('group_id', $group->id)->count();
+		$requests = GroupRequest::where('group_id', $group->id);
+		$requestCount = $requests->count();
 
 		// Check if current user has a pending join request
-		$pending = GroupRequest::where('user_id', $userId)->where('group_id', $group->id)->count();
+		$pending = in_array($userId, $requests->lists('user_id'));
 
 		// Determine if the group actions bar should be displayed
 		$actions = false;
@@ -623,6 +719,7 @@ class GroupController extends BaseController {
 			'group'        => $group,
 			'userGroups'   => $userGroups,
 			'member'       => $member,
+			'canAdd'       => $canAdd,
 			'actions'      => $actions,
 			'editor'       => $editor,
 			'manager'      => $manager,
