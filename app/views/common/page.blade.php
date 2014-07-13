@@ -60,7 +60,7 @@
 	</div>
 
 	@if (isset($modal))
-		<div class="modal modal-editor">
+		<div id="modal-editor" class="modal modal-editor">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					@include($modal)

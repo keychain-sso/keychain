@@ -49,7 +49,7 @@
 				{{ Form::radio('type', GroupTypes::OPEN, $group->type == GroupTypes::OPEN) }}
 				{{ Lang::get('group.open') }}
 
-				<span data-toggle="popover" data-content="{{ Lang::get('group.open_exp') }}">
+				<span title="{{ Lang::get('group.open_exp') }}" data-toggle="tooltip" data-placement="right">
 					<span class="glyphicon glyphicon-question-sign text-info"></span>
 				</span>
 			</label>
@@ -60,7 +60,7 @@
 				{{ Form::radio('type', GroupTypes::REQUEST, $group->type == GroupTypes::REQUEST) }}
 				{{ Lang::get('group.request_only') }}
 
-				<span data-toggle="popover" data-content="{{ Lang::get('group.request_only_exp') }}">
+				<span title="{{ Lang::get('group.request_only_exp') }}" data-toggle="tooltip" data-placement="right">
 					<span class="glyphicon glyphicon-question-sign text-info"></span>
 				</span>
 			</label>
@@ -71,7 +71,7 @@
 				{{ Form::radio('type', GroupTypes::CLOSED, $group->type == GroupTypes::CLOSED) }}
 				{{ Lang::get('group.closed') }}
 
-				<span data-toggle="popover" data-content="{{ Lang::get('group.closed_exp') }}">
+				<span title="{{ Lang::get('group.closed_exp') }}" data-toggle="tooltip" data-placement="right">
 					<span class="glyphicon glyphicon-question-sign text-info"></span>
 				</span>
 			</label>
@@ -90,7 +90,7 @@
 				{{ Form::radio('notify', Flags::YES, $group->notify == Flags::YES) }}
 				{{ Lang::get('group.notify_enable') }}
 
-				<span data-toggle="popover" data-content="{{ Lang::get('group.notify_enable_exp') }}">
+				<span title="{{ Lang::get('group.notify_enable_exp') }}" data-toggle="tooltip" data-placement="right">
 					<span class="glyphicon glyphicon-question-sign text-info"></span>
 				</span>
 			</label>

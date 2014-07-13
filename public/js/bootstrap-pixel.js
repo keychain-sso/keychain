@@ -42,15 +42,7 @@ function init()
 function bootstrapOptIn()
 {
 	// Initialize tooltips
-	$('[data-toggle=tooltip]').tooltip({
-		placement: 'bottom',
-	});
-
-	// Initialize popovers
-	$('[data-toggle=popover]').popover({
-		placement: 'right',
-		trigger: 'hover',
-	});
+	$('[data-toggle=tooltip]').tooltip();
 
 	// Date picker control
 	$('[data-toggle=datepicker]').datepicker({
