@@ -113,7 +113,9 @@
 
 								@if ($manager)
 									<li>
-										<a href="{{ url("group/delete/{$group->hash}") }}">
+										<a href="#" data-toggle="confirm" data-href="{{ url("group/delete/{$group->hash}") }}"
+										   data-prompt="{{ Lang::get('global.click_again') }}"
+										   data-wait="{{ Lang::get('global.please_wait') }}">
 											{{ Lang::get('group.delete_group') }}
 										</a>
 									</li>

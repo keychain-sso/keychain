@@ -96,7 +96,7 @@ class GroupController extends BaseController {
 			$group->hash = Utilities::hash($group);
 			$group->save();
 
-			// Redirect back to the previous URL
+			// Redirect back to the group list
 			Session::flash('messages.success', Lang::get('group.group_created'));
 
 			return Redirect::to('group/list');
@@ -578,6 +578,37 @@ class GroupController extends BaseController {
 	}
 
 	/**
+	 * Deletes a specific group
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return View
+	 */
+	public function getDelete($hash)
+	{
+		// Get the group details
+		$group = Group::where('hash', $hash)->firstOrFail();
+		$members = UserGroup::where('group_id', $group->id)->lists('user_id');
+
+		// Validate group_manage rights
+		Access::restrict(Permissions::GROUP_MANAGE);
+
+		// Clear the ACL for all members of the group
+		foreach ($members as $member)
+		{
+			Cache::tags("user.{$member}.security")->flush();
+		}
+
+		// Delete the group
+		$group->delete();
+
+		// Redirect back to the group list
+		Session::flash('messages.success', Lang::get('group.group_deleted'));
+
+		return Redirect::to('group/list');
+	}
+
+	/**
 	 * Performs user search on a query via AJAX
 	 *
 	 * @access public
@@ -672,7 +703,14 @@ class GroupController extends BaseController {
 		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
 
 		// Check if we need to show the add member link
-		$canAdd = User::whereNotIn('id', $userGroups->lists('user_id'))->count() > 0;
+		if (count($members = $userGroups->lists('user_id')) > 0)
+		{
+			$canAdd = User::whereNotIn('id', $members)->count() > 0;
+		}
+		else
+		{
+			$canAdd = true;
+		}
 
 		// Get pending join requests for the group
 		$requests = GroupRequest::where('group_id', $group->id);

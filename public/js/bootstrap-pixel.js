@@ -31,6 +31,9 @@ function init()
 
 	// Load search functionality
 	itemSearch();
+
+	// Generate confirmation actions
+	confirmPrompts();
 }
 
 /**
@@ -88,7 +91,7 @@ function itemSearch()
 {
 	$('[data-toggle=user-search]').keyup(function(e)
 	{
-		// Set the user search instance
+		// Set the search instance
 		search = $(this);
 
 		// Clear pending search requests
@@ -202,5 +205,66 @@ function itemSearch()
 				$(icon).removeClass('glyphicon-time glyphicon-remove cursor-pointer').addClass('glyphicon-search');
 			}
 		}, 500);
+	});
+}
+
+/**
+ * Generates confirmation prompts
+ *
+ * @access public
+ * @return void
+ */
+function confirmPrompts()
+{
+	$('[data-toggle=confirm]').click(function(e)
+	{
+		// Set the link instance
+		link = $(this);
+
+		// Read config options from the element
+		href = link.attr('data-href');
+		prompt = link.attr('data-prompt');
+		wait = link.attr('data-wait');
+		clicked = link.attr('data-clicked');
+		text = link.html();
+
+		// Check if the link isn't clicked yet
+		if (clicked === undefined)
+		{
+			// Are we waiting? Be patient!
+			if (text.indexOf(wait) == -1)
+			{
+				// Save the original text
+				original = text;
+
+				// Show the wait text
+				link.html(wait);
+
+				// Show the tooltip
+				link.tooltip({
+						title: prompt,
+						placement: 'left',
+						trigger: 'manual'
+					});
+
+				link.tooltip('show');
+
+				// Mark item as clicked
+				setTimeout(function()
+				{
+					link.html(original);
+					link.attr('data-clicked', true);
+				}, 500);
+			}
+		}
+
+		// Link was clicked, navigate to target location
+		else
+		{
+			window.location = href;
+		}
+
+		e.preventDefault();
+		e.stopPropagation();
 	});
 }

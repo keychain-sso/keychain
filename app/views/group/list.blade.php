@@ -15,6 +15,10 @@
 				{{ Lang::get('global.groups') }}
 			</h2>
 
+			@if ( ! isset($modal))
+				@include('common.alerts')
+			@endif
+
 			<ul class="list-group">
 				@foreach ($groupItems as $groupItem)
 					<li class="list-group-item">
