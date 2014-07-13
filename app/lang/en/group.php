@@ -12,6 +12,7 @@ return array(
 	*/
 
 	'create_new_group'        => 'Create new group',
+	'group_created'           => 'Group has been created',
 	'member_of_group'         => 'You are a member of this group',
 	'return_group_list'       => 'Return to groups list',
 	'open_group'              => 'Open group',

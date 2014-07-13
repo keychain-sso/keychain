@@ -27,6 +27,28 @@ use DateTimeZone;
 class Utilities {
 
 	/**
+	 * Generates a hash for a specific model
+	 *
+	 * @static
+	 * @access public
+	 * @param  Eloquent  $model
+	 * @param  string  $column
+	 * @return string
+	 */
+	public static function hash($model, $column = 'hash')
+	{
+		while (true)
+		{
+			$hash = str_random(8);
+
+			if ($model->where($column, $hash)->count() == 0)
+			{
+				return $hash;
+			}
+		}
+	}
+
+	/**
 	 * Returns a list of timezones supported by the server
 	 *
 	 * @static

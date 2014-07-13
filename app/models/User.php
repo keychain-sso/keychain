@@ -85,4 +85,57 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->hasMany('UserField');
 	}
 
+	/**
+	 * Searches for a specific user by name/email address
+	 *
+	 * @access public
+	 * @return User
+	 */
+	public function scopeSearch($users)
+	{
+		$query = Input::get('query');
+		$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
+		$results = array();
+
+		// If user is searching by name
+		if ( ! filter_var($query, FILTER_VALIDATE_EMAIL))
+		{
+			$name = explode(' ', $query);
+			$firstName = $name[0];
+			$lastName = isset($name[1]) ? $name[1] : false;
+
+			// Find user by first name
+			$users->where('first_name', 'like', "{$firstName}%");
+
+			// Add last name to criteria
+			if ($lastName !== false)
+			{
+				$users->where('last_name', 'like', "{$lastName}%");
+			}
+		}
+
+		// Searching by email address
+		else
+		{
+			// Find users by email address
+			$emails = UserEmail::where('address', 'like', "{$query}%");
+
+			// Append a '0' to have a safe where-in clause for the user lookup
+			$userIds = $emails->lists('user_id');
+			$userIds[] = 0;
+
+			// Look up user by IDs
+			$users->whereIn('id', $userIds);
+		}
+
+		// Remove excluded users
+		if (count($exclude) > 0)
+		{
+			$users->whereNotIn('hash', $exclude);
+		}
+
+		// Return the results of the search
+		return $users->with('primaryEmail')->orderBy('first_name')->orderBy('last_name');
+	}
+
 }

@@ -59,6 +59,16 @@
 		@yield('body')
 	</div>
 
+	@if (isset($modal))
+		<div class="modal modal-editor">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					@include($modal)
+				</div>
+			</div>
+		</div>
+	@endif
+
 	<footer class="text-center">
 		&copy; <a href="https://github.com/keychain-sso">Keychain Developers</a>
 	</footer>

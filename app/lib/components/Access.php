@@ -165,7 +165,7 @@ class Access {
 	 * @param  int  $object
 	 * @param  int  $field
 	 */
-	public static function restrict($flag, $object, $field = 0)
+	public static function restrict($flag, $object = null, $field = 0)
 	{
 		if ( ! static::check($flag, $object, $field))
 		{

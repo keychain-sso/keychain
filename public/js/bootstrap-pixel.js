@@ -26,8 +26,11 @@ function init()
 	// Load all bootstrap opt-in controls
 	bootstrapOptIn();
 
+	// Make icons with checkbox clickable
+	clickableIcons();
+
 	// Load search functionality
-	userSearch();
+	itemSearch();
 }
 
 /**
@@ -62,12 +65,34 @@ function bootstrapOptIn()
 }
 
 /**
- * Provides user search functionality
+ * Makes icons with checkboxes clickable
  *
  * @access public
  * @return void
  */
-function userSearch()
+function clickableIcons()
+{
+	$('[data-toggle=clickable] .thumbnail').off('click').on('click', function(e)
+	{
+		parent = $(this).parents('[data-toggle=clickable]').first();
+		checkbox = parent.find('input[type=checkbox]');
+
+		if (checkbox.length > 0)
+		{
+			checkbox.prop('checked', ! checkbox.is(':checked'));
+		}
+
+		e.preventDefault();
+	});
+}
+
+/**
+ * Provides item search functionality
+ *
+ * @access public
+ * @return void
+ */
+function itemSearch()
 {
 	$('[data-toggle=user-search]').keyup(function(e)
 	{

@@ -205,14 +205,4 @@
 			</div>
 		</div>
 	@endif
-
-	@if ($modal !== false)
-		<div class="modal modal-editor">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					@include("user.{$modal}")
-				</div>
-			</div>
-		</div>
-	@endif
 @stop

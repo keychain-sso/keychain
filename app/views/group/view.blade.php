@@ -100,7 +100,7 @@
 		<hr />
 	@endif
 
-	@if ($modal === false)
+	@if ( ! isset($modal))
 		@include('common.alerts')
 	@endif
 
@@ -122,7 +122,7 @@
 							'data-empty'    => '#search-empty',
 							'data-icon'     => '#search-icon',
 							'data-pages'    => '#paginator',
-							'data-url'      => url('user/search'),
+							'data-url'      => url("group/user-search/{$group->hash}"),
 							'data-push'     => url("group/view/{$group->hash}"),
 							'data-checkbox' => $editor ? Flags::YES : Flags::NO,
 							'autocomplete'  => 'off',
@@ -145,7 +145,7 @@
 		</div>
 
 		@foreach ($userGroups as $userGroup)
-			<div class="col-xs-3 col-md-2 search-item">
+			<div class="col-xs-3 col-md-2 search-item" data-toggle="clickable">
 				@if ($editor)
 					{{
 						Form::checkbox('users[]', $userGroup->user->hash, false, array(
@@ -155,13 +155,13 @@
 				@endif
 
 				<div class="profile-icon">
-					<span class="thumbnail spacer-sm-bottom">
+					<a href="#" class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($userGroup->user->avatar))
 							<img src="{{ asset('uploads/avatars/'.$userGroup->user->avatar) }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif
-					</span>
+					</a>
 
 					<a href="{{ url('user/view/'.$userGroup->user->hash) }}">
 						{{ $userGroup->user->first_name }}
@@ -218,14 +218,4 @@
 	@endif
 
 	{{ Form::close() }}
-
-	@if ($modal !== false)
-		<div class="modal modal-editor">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					@include("group.{$modal}")
-				</div>
-			</div>
-		</div>
-	@endif
 @stop

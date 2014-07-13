@@ -31,24 +31,76 @@ class GroupController extends BaseController {
 	 */
 	public function getList()
 	{
-		$length = Config::get('view.list_length');
-		$groups = Group::paginate($length);
-		$userGroups = UserGroup::where('user_id', Auth::id())->get();
-		$membership = array();
+		return View::make('group/list', 'global.groups', $this->getGroupListData());
+	}
 
-		// Cache group membership data
-		foreach ($userGroups as $userGroup)
+	/**
+	 * Opens the create group screen
+	 *
+	 * @access public
+	 * @return View
+	 */
+	public function getCreate()
+	{
+		// Get the group list info
+		$data = $this->getGroupListData();
+
+		// Validate manage rights
+		Access::restrict(Permissions::GROUP_MANAGE);
+
+		// Merge the list data with view data
+		$data = array_merge($data, array(
+			'group'  => new Group,
+			'modal'  => 'group.editor',
+			'action' => 'GroupController@postCreate',
+		));
+
+		return View::make('group/list', 'group.create_new_group', $data);
+	}
+
+	/**
+	 * Handles create group post actions
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postCreate()
+	{
+		if (Input::has('_save'))
 		{
-			$membership[$userGroup->group_id] = true;
+			// Validate manage rights
+			Access::restrict(Permissions::GROUP_MANAGE);
+
+			// Validate posted fields
+			$validator = Validator::make(Input::all(), array(
+				'name'        => 'required|alpha_space|max:80|unique:groups,name',
+				'description' => 'required',
+				'type'        => 'required|exists:group_types,id',
+				'notify'      => 'required|in:0,1',
+			));
+
+			// Run the validator
+			if ($validator->fails())
+			{
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Update the group information
+			$group = new Group;
+			$group->name = Input::get('name');
+			$group->description = Input::get('description');
+			$group->type = Input::get('type');
+			$group->notify = Input::get('notify');
+			$group->hash = Utilities::hash($group);
+			$group->save();
+
+			// Redirect back to the previous URL
+			Session::flash('messages.success', Lang::get('group.group_created'));
+
+			return Redirect::to('group/list');
 		}
-
-		// Build the view data
-		$data = array(
-			'groups'     => $groups,
-			'membership' => $membership,
-		);
-
-		return View::make('group/list', 'global.groups', $data);
 	}
 
 	/**
@@ -62,7 +114,7 @@ class GroupController extends BaseController {
 	{
 		// Get the group information
 		$group = Group::where('hash', $hash)->firstOrFail();
-		$data = $this->getGroupData($group);
+		$data = $this->getGroupViewData($group);
 
 		return View::make('group/view', 'group.members', $data);
 	}
@@ -125,12 +177,18 @@ class GroupController extends BaseController {
 	{
 		// Fetch the group information
 		$group = Group::where('hash', $hash)->firstOrFail();
-		$data = $this->getGroupData($group);
+		$data = $this->getGroupViewData($group);
 
 		// Validate edit rights
 		Access::restrict(Permissions::GROUP_EDIT, $group);
 
-		return View::make('group/view', 'group.edit_group', array_merge($data, array('modal' => 'editor')));
+		// Merge the group data with view data
+		$data = array_merge($data, array(
+			'modal'  => 'group.editor',
+			'action' => 'GroupController@postEdit',
+		));
+
+		return View::make('group/view', 'group.edit_group', $data);
 	}
 
 	/**
@@ -152,7 +210,7 @@ class GroupController extends BaseController {
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
-				'name'        => 'required|alpha_space|max:80',
+				'name'        => 'required|alpha_space|max:80|unique:groups,name,'.$group->id,
 				'description' => 'required',
 				'type'        => 'required|exists:group_types,id',
 				'notify'      => 'required|in:0,1',
@@ -176,10 +234,10 @@ class GroupController extends BaseController {
 			}
 
 			// Update the group information
-			$group->name        = Input::get('name');
+			$group->name = Input::get('name');
 			$group->description = Input::get('description');
-			$group->type        = Input::get('type');
-			$group->notify      = Input::get('notify');
+			$group->type = Input::get('type');
+			$group->notify = Input::get('notify');
 			$group->save();
 
 			// Redirect back to the previous URL
@@ -233,9 +291,9 @@ class GroupController extends BaseController {
 			// This is a request only group, show the request modal
 			else if ($group->type == GroupTypes::REQUEST)
 			{
-				$data = $this->getGroupData($group);
+				$data = $this->getGroupViewData($group);
 
-				return View::make('group/view', 'group.join_group', array_merge($data, array('modal' => 'join')));
+				return View::make('group/view', 'group.join_group', array_merge($data, array('modal' => 'group.join')));
 			}
 		}
 		else
@@ -422,13 +480,13 @@ class GroupController extends BaseController {
 
 			default:
 
-				$data = $this->getGroupData($group);
+				$data = $this->getGroupViewData($group);
 				$requests = GroupRequest::where('group_id', $group->id)->with('user')->get();
 
 				// Merge the view data with group info
 				$data = array_merge($data, array(
 					'requests' => $requests,
-					'modal'    => 'requests',
+					'modal'    => 'group.requests',
 				));
 
 				return View::make('group/view', 'group.membership_requests', $data);
@@ -436,13 +494,81 @@ class GroupController extends BaseController {
 	}
 
 	/**
-	 * Fetches the group's details
+	 * Performs user search on a query via AJAX
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return View
+	 */
+	public function getUserSearch($hash)
+	{
+		if (Request::ajax())
+		{
+			// Get the search criteria
+			$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
+			$max = Config::get('view.icon_length') - count($exclude);
+
+			// Do the search only if we need to return any users
+			if ($max > 0)
+			{
+				$users = User::search();
+
+				// Apply group membership filter
+				$group = Group::where('hash', $hash)->firstOrFail();
+				$members = UserGroup::where('group_id', $group->id)->lists('user_id');
+				$users->whereIn('id', $members);
+
+				// Get the results of the search
+				$users = $users->take($max)->get();
+
+				// Build the view data
+				$data = array(
+					'users'    => $users,
+					'checkbox' => Input::get('checkbox'),
+				);
+
+				// Return the icon set
+				return View::make('common/icon', null, $data);
+			}
+		}
+		else
+		{
+			App::abort(HTTPStatus::NOTFOUND);
+		}
+	}
+
+	/**
+	 * Fetches the group list
 	 *
 	 * @access private
 	 * @param  Group  $group
 	 * @return array
 	 */
-	private function getGroupData($group)
+	private function getGroupListData()
+	{
+		$length = Config::get('view.list_length');
+
+		// Get a list of all groups
+		$groupItems = Group::paginate($length);
+
+		// Get a list of current user's memberships
+		$userGroups = UserGroup::where('user_id', Auth::id())->lists('group_id');
+
+		// Return the list data
+		return array(
+			'groupItems' => $groupItems,
+			'userGroups' => $userGroups,
+		);
+	}
+
+	/**
+	 * Fetches a specific group's details
+	 *
+	 * @access private
+	 * @param  Group  $group
+	 * @return array
+	 */
+	private function getGroupViewData($group)
 	{
 		$userId = Auth::id();
 		$length = Config::get('view.icon_length');
@@ -497,7 +623,6 @@ class GroupController extends BaseController {
 			'requestCount' => $requestCount,
 			'pending'      => $pending,
 			'remove'       => count($userGroups) > 0,
-			'modal'        => false,
 		);
 	}
 

@@ -79,7 +79,7 @@ class UserController extends BaseController {
 		$data = array_merge($data, array(
 			'fieldEdit' => FormField::getEdit($user),
 			'timezones' => Utilities::timezones(),
-			'modal'     => 'editor',
+			'modal'     => 'user.editor',
 		));
 
 		return View::make('user/view', 'user.edit_profile', $data);
@@ -182,7 +182,7 @@ class UserController extends BaseController {
 
 			default:
 
-				return View::make('user/view', 'user.manage_email_addresses', array_merge($data, array('modal' => 'emails')));
+				return View::make('user/view', 'user.manage_email_addresses', array_merge($data, array('modal' => 'user.emails')));
 		}
 	}
 
@@ -273,7 +273,7 @@ class UserController extends BaseController {
 
 				$data = array_merge($data, array(
 					'keys'  => $user->keys,
-					'modal' => 'keys',
+					'modal' => 'user.keys',
 				));
 
 				return View::make('user/view', 'user.manage_ssh_keys', $data);
@@ -381,7 +381,7 @@ class UserController extends BaseController {
 
 				$data = array_merge($data, array(
 					'sessions' => UserSession::where('user_id', $user->id)->get(),
-					'modal'    => 'security',
+					'modal'    => 'user.security',
 				));
 
 				return View::make('user/view', 'user.security_settings', $data);
@@ -455,70 +455,37 @@ class UserController extends BaseController {
 	}
 
 	/**
-	 * Performs user search on a query
+	 * Performs user search on a query via AJAX
 	 *
 	 * @access public
-	 * @return string
+	 * @return View
 	 */
 	public function getSearch()
 	{
-		$query = Input::get('query');
-		$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
-		$results = array();
-
-		// Max results = icon length - exclude count, so that we remain within the length limit
-		$max = Config::get('view.icon_length') - count($exclude);
-
-		if ($max > 0)
+		if (Request::ajax())
 		{
-			// If user is searching by name
-			if ( ! filter_var($query, FILTER_VALIDATE_EMAIL))
+			// Get the search criteria
+			$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
+			$max = Config::get('view.icon_length') - count($exclude);
+
+			if ($max > 0)
 			{
-				$name = explode(' ', $query);
-				$firstName = $name[0];
-				$lastName = isset($name[1]) ? $name[1] : false;
+				// Get the results of the search
+				$users = User::search()->take($max)->get();
 
-				// Find user by first name
-				$users = User::where('first_name', 'like', "{$firstName}%");
+				// Build the view data
+				$data = array(
+					'users'    => $users,
+					'checkbox' => Input::get('checkbox'),
+				);
 
-				// Add last name to criteria
-				if ($lastName !== false)
-				{
-					$users->where('last_name', 'like', "{$lastName}%");
-				}
+				// Return the icon set
+				return View::make('common/icon', null, $data);
 			}
-
-			// Searching by email address
-			else
-			{
-				// Find users by email address
-				$emails = UserEmail::where('address', 'like', "{$query}%");
-
-				// Append a '0' to have a safe where-in clause for the user lookup
-				$userIds = $emails->lists('user_id');
-				$userIds[] = 0;
-
-				// Look up user by IDs
-				$users = User::whereIn('id', $userIds);
-			}
-
-			// Remove excluded users
-			if (count($exclude) > 0)
-			{
-				$users->whereNotIn('hash', $exclude);
-			}
-
-			// Get the results of the search
-			$users = $users->with('primaryEmail')->orderBy('first_name')->orderBy('last_name')->take($max)->get();
-
-			// Build the view data
-			$data = array(
-				'users'    => $users,
-				'checkbox' => Input::get('checkbox'),
-			);
-
-			// Return the icon set
-			return View::make('common/icon', null, $data);
+		}
+		else
+		{
+			App::abort(HTTPStatus::NOTFOUND);
 		}
 	}
 
@@ -561,7 +528,6 @@ class UserController extends BaseController {
 			'memberships' => $memberships,
 			'editor'      => $editor,
 			'manager'     => $manager,
-			'modal'       => false,
 		);
 	}
 

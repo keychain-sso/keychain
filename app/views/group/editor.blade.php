@@ -1,6 +1,6 @@
 {{
 	Form::open(array(
-		'action' => 'GroupController@postEdit',
+		'action' => $action,
 		'role'   => 'form',
 	))
 }}
@@ -115,7 +115,11 @@
 		))
 	}}
 
-	<a href="{{ url('group/view/'.$group->hash) }}" class="btn btn-default">
+	@if (empty($group->id))
+		<a href="{{ url('group/list') }}" class="btn btn-default">
+	@else
+		<a href="{{ url('group/view/'.$group->hash) }}" class="btn btn-default">
+	@endif
 		{{ Lang::get('global.close') }}
 	</a>
 </div>

@@ -16,28 +16,28 @@
 			</h2>
 
 			<ul class="list-group">
-				@foreach ($groups as $group)
+				@foreach ($groupItems as $groupItem)
 					<li class="list-group-item">
 						<small class="pull-right text-muted">
-							@if ($group->type == GroupTypes::OPEN)
+							@if ($groupItem->type == GroupTypes::OPEN)
 								{{ Lang::get('group.open_group') }}
-							@elseif ($group->type == GroupTypes::REQUEST)
+							@elseif ($groupItem->type == GroupTypes::REQUEST)
 								{{ Lang::get('group.request_group') }}
-							@elseif ($group->type == GroupTypes::CLOSED)
+							@elseif ($groupItem->type == GroupTypes::CLOSED)
 								{{ Lang::get('group.closed_group') }}
 							@endif
 						</small>
 
 						<h4 class="list-group-item-heading">
-							<a href="{{ url('group/view/'.$group->hash) }}">{{ $group->name }}</a>
+							<a href="{{ url('group/view/'.$groupItem->hash) }}">{{ $groupItem->name }}</a>
 
-							@if (isset($membership[$group->id]))
+							@if (in_array($groupItem->id, $userGroups))
 								<span class="glyphicon glyphicon-link text-primary" title="{{ Lang::get('group.member_of_group') }}"
 								      data-toggle="tooltip"></span>
 							@endif
 						</h4>
 
-						<p class="list-group-item-text">{{{ $group->description }}}</p>
+						<p class="list-group-item-text">{{{ $groupItem->description }}}</p>
 					</li>
 				@endforeach
 			</ul>
@@ -48,15 +48,15 @@
 		<div class="col-sm-6 visible-sm visible-md visible-lg text-muted">
 			{{
 				Lang::get('pagination.range', array(
-					'from'  => $groups->getFrom(),
-					'to'    => $groups->getTo(),
-					'total' => $groups->getTotal(),
+					'from'  => $groupItems->getFrom(),
+					'to'    => $groupItems->getTo(),
+					'total' => $groupItems->getTotal(),
 				))
 			}}
 		</div>
 
 		<div class="col-sm-6 text-right">
-			{{ $groups->links() }}
+			{{ $groupItems->links() }}
 		</div>
 	</div>
 @stop
