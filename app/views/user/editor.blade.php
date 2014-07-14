@@ -83,7 +83,7 @@
 			}}
 
 			{{
-				Form::text('date_of_birth', date('Y-m-d', strtotime($user->date_of_birth)), array(
+				Form::text('date_of_birth', date('Y-m-d', empty($user->date_of_birth) ? null : strtotime($user->date_of_birth)), array(
 					'class'       => 'form-control',
 					'data-toggle' => 'datepicker',
 				))

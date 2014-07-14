@@ -593,7 +593,7 @@ class GroupController extends BaseController {
 		// Validate group_manage rights
 		Access::restrict(Permissions::GROUP_MANAGE);
 
-		// Clear the ACL for all members of the group
+		// Clear the ACL cache for all members of the group
 		foreach ($members as $member)
 		{
 			Cache::tags("user.{$member}.security")->flush();

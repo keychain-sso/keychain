@@ -1,7 +1,8 @@
 {{
 	Form::open(array(
-		'action' => 'UserController@postSecurity',
-		'role'   => 'form',
+		'action'       => 'UserController@postSecurity',
+		'role'         => 'form',
+		'autocomplete' => 'off',
 	))
 }}
 

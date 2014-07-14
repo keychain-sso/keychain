@@ -52,7 +52,7 @@ class Setup extends Migration {
 			$table->string('password', 80);
 			$table->string('remember_token', 60)->nullable()->index();
 			$table->enum('gender', array('M', 'F', 'O'))->nullable();
-			$table->timestamp('date_of_birth');
+			$table->timestamp('date_of_birth')->nullable();
 			$table->string('timezone', 80);
 			$table->string('avatar', 15)->nullable();
 			$table->string('title', 80)->nullable();

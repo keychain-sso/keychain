@@ -108,10 +108,12 @@
 						</li>
 					@endif
 
-					<li class="list-group-item">
-						<h4 class="list-group-item-heading">{{ Lang::get('user.date_of_birth') }}</h4>
-						<p class="list-group-item-text">{{ date('Y-m-d', strtotime($user->date_of_birth)) }}</p>
-					</li>
+					@if ( ! empty($user->date_of_birth))
+						<li class="list-group-item">
+							<h4 class="list-group-item-heading">{{ Lang::get('user.date_of_birth') }}</h4>
+							<p class="list-group-item-text">{{ date('Y-m-d', strtotime($user->date_of_birth)) }}</p>
+						</li>
+					@endif
 
 					<li class="list-group-item">
 						<h4 class="list-group-item-heading">{{ Lang::get('user.timezone') }}</h4>

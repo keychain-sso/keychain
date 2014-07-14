@@ -54,7 +54,7 @@
 
 		@foreach ($users as $user)
 			<div class="col-xs-3 col-md-2 search-item">
-				<div class="profile-icon" data-toggle="clickable">
+				<div class="profile-icon">
 					<a href="{{ url("user/view/{$user->hash}") }}" class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($user->avatar))
 							<img src="{{ asset("uploads/avatars/{$user->avatar}") }}" alt="" />

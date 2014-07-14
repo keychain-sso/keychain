@@ -163,7 +163,7 @@ class FormField {
 			'first_name'    => 'required|max:80',
 			'last_name'     => 'required|max:80',
 			'gender'        => 'in:M,F,O',
-			'date_of_birth' => 'required|date|before:'.date('Y-m-d', time()),
+			'date_of_birth' => 'date|before:'.date('Y-m-d', time()),
 			'timezone'      => 'in:'.Utilities::timezones(true),
 			'title'         => 'max:50',
 		));

@@ -31,10 +31,62 @@ class UserController extends BaseController {
 	 */
 	public function getList()
 	{
-		$length = Config::get('view.icon_length');
-		$users = User::with('emails')->orderBy('first_name')->orderBy('last_name')->paginate($length);
+		return View::make('user/list', 'global.users', $this->getUserListData());
+	}
 
-		return View::make('user/list', 'global.users', array('users' => $users));
+	/**
+	 * Opens the create user screen
+	 *
+	 * @access public
+	 * @return View
+	 */
+	public function getCreate()
+	{
+		// Get the user list info
+		$data = $this->getUserListData();
+
+		// Validate manage rights
+		Access::restrict(Permissions::USER_MANAGE);
+
+		// Merge the list data with the view data
+		$data = array_merge($data, array(
+			'timezones' => Utilities::timezones(),
+			'modal'     => 'user.create'
+		));
+
+		// Show the user create screen
+		return View::make('user/list', 'user.create_new_user', $data);
+	}
+
+	/**
+	 * Handles create user post actions
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postCreate()
+	{
+		if (Input::has('_save'))
+		{
+			// Validate manage rights
+			Access::restrict(Permissions::USER_MANAGE);
+
+			// Validate posted fields
+			$validator = Validator::make(Input::all(), array(
+				'first_name' => 'required|max:80',
+				'last_name'  => 'required|max:80',
+				'email'      => 'required|email|max:80|unique:user_emails,address',
+				'password'   => 'required',
+			));
+
+			// Run the validator
+			if ($validator->fails())
+			{
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+		}
 	}
 
 	/**
@@ -48,7 +100,7 @@ class UserController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getUserData($user);
+		$data = $this->getUserViewData($user);
 
 		// Set the page title
 		$title = Lang::get('user.viewing_profile', array(
@@ -70,7 +122,7 @@ class UserController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getUserData($user);
+		$data = $this->getUserViewData($user);
 
 		// Validate edit rights
 		Access::restrict(Permissions::USER_EDIT, $user);
@@ -113,9 +165,9 @@ class UserController extends BaseController {
 			{
 				Session::flash('messages.error', $status);
 			}
-		}
 
-		return Redirect::to(URL::previous())->withInput();
+			return Redirect::to(URL::previous())->withInput();
+		}
 	}
 
 	/**
@@ -131,7 +183,7 @@ class UserController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getUserData($user);
+		$data = $this->getUserViewData($user);
 
 		// Validate edit rights
 		Access::restrict(Permissions::USER_EDIT, $user);
@@ -155,11 +207,26 @@ class UserController extends BaseController {
 
 			case 'verify':
 
-				// Send the verification email
-				Verifier::make('email_add', $email);
+				// If logged in user has manager rights, we mark the email as
+				// verified right away. Otherwise, we send a verification token to
+				// the email address
+				if (Access::check(Permissions::USER_MANAGE))
+				{
+					$userEmail = UserEmail::where('id', $email)->firstOrFail();
+					$userEmail->primary = 1;
+					$userEmail->save();
 
-				// Redirect back to the previous URL
-				Session::flash('messages.success', Lang::get('user.email_verify'));
+					// Redirect back to the previous URL
+					Session::flash('messages.success', Lang::get('user.email_verify_editor'));
+				}
+				else
+				{
+					// Send the email verification mail
+					Verifier::make('email_verify', $email);
+
+					// Redirect back to the previous URL
+					Session::flash('messages.success', Lang::get('user.email_verify'));
+				}
 
 				return Redirect::to(URL::previous());
 
@@ -250,7 +317,7 @@ class UserController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getUserData($user);
+		$data = $this->getUserViewData($user);
 
 		// Validate edit rights
 		Access::restrict(Permissions::USER_EDIT, $user);
@@ -348,7 +415,7 @@ class UserController extends BaseController {
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
-		$data = $this->getUserData($user);
+		$data = $this->getUserViewData($user);
 
 		// Validate edit rights
 		Access::restrict(Permissions::USER_EDIT, $user);
@@ -490,13 +557,27 @@ class UserController extends BaseController {
 	}
 
 	/**
+	 * Fetches the user list
+	 *
+	 * @access private
+	 * @return array
+	 */
+	private function getUserListData()
+	{
+		$length = Config::get('view.icon_length');
+		$users = User::with('emails')->orderBy('first_name')->orderBy('last_name')->paginate($length);
+
+		return array('users' => $users);
+	}
+
+	/**
 	 * Fetches the user's profile data
 	 *
 	 * @access private
 	 * @param  User  $user
 	 * @return array
 	 */
-	private function getUserData($user)
+	private function getUserViewData($user)
 	{
 		// Parse user's email addresses as primary and other
 		$emails = new stdClass;
