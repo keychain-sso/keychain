@@ -17,6 +17,10 @@
 		</div>
 	</div>
 
+	@if ( ! isset($modal))
+		@include('common.alerts')
+	@endif
+
 	<div class="row">
 		<div class="col-xs-8 col-sm-5 col-md-4 col-lg-3">
 			<div class="form-group has-feedback">

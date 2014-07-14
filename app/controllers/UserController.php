@@ -538,6 +538,30 @@ class UserController extends BaseController {
 	}
 
 	/**
+	 * Deletes a specific user
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return View
+	 */
+	public function getDelete($hash)
+	{
+		// Get the user details
+		$user = User::where('hash', $hash)->firstOrFail();
+
+		// Validate user_manage rights
+		Access::restrict(Permissions::USER_MANAGE);
+
+		// Delete the user
+		$user->delete();
+
+		// Redirect back to the user list
+		Session::flash('messages.success', Lang::get('user.user_deleted'));
+
+		return Redirect::to('user/list');
+	}
+
+	/**
 	 * Performs user search on a query via AJAX
 	 *
 	 * @access public

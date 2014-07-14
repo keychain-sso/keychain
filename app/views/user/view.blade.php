@@ -67,7 +67,9 @@
 
 								@if ($manager)
 									<li>
-										<a href="{{ url("user/delete/{$user->hash}") }}">
+										<a href="#" data-toggle="confirm" data-href="{{ url("user/delete/{$user->hash}") }}"
+										   data-prompt="{{ Lang::get('global.click_again') }}"
+										   data-wait="{{ Lang::get('global.please_wait') }}">
 											{{ Lang::get('user.delete_user') }}
 										</a>
 									</li>
