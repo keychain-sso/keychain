@@ -83,16 +83,13 @@ class Utilities {
 
 						case 2:
 
-							$zones[1] = str_replace('_', ' ', $zones[1]);
-							$regions[$zones[0]][$timezone] = $zones[1];
+							$regions[$zones[0]][$timezone] = static::cleanString($zones[1]);
 
 							break;
 
 						case 3:
 
-							$zones[1] = str_replace('_', ' ', $zones[1]);
-							$zones[2] = str_replace('_', ' ', $zones[2]);
-							$regions[$zones[0]][$timezone] = "{$zones[1]} &rarr; {$zones[2]}";
+							$regions[$zones[0]][$timezone] = static::cleanString("{$zones[1]}/{$zones[2]}");
 
 							break;
 					}
@@ -107,6 +104,25 @@ class Utilities {
 				return implode(',', $timezones);
 			}
 		});
+	}
+
+	/**
+	 * Cleans a string off unacceptable display characters
+	 *
+	 * @static
+	 * @access public
+	 * @param  string  $text
+	 * @return string
+	 */
+	public static function cleanString($text)
+	{
+		// Clean off underscores
+		$text = str_replace('_', ' ', $text);
+
+		// Replace slashes with arrows
+		$text = str_replace('/', ' &rarr; ', $text);
+
+		return $text;
 	}
 
 	/**

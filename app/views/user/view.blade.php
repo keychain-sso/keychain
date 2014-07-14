@@ -113,7 +113,7 @@
 
 					<li class="list-group-item">
 						<h4 class="list-group-item-heading">{{ Lang::get('user.timezone') }}</h4>
-						<p class="list-group-item-text">{{ $user->timezone }}</p>
+						<p class="list-group-item-text">{{ Utilities::cleanString($user->timezone) }}</p>
 					</li>
 
 					@foreach ($fieldView->{FieldCategories::BASIC} as $field)
