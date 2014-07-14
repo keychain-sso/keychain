@@ -25,6 +25,12 @@
 					<samp class="list-group-item-text">{{ $key->fingerprint }}</samp>
 				</li>
 			@endforeach
+
+			@if (count($keys) == 0)
+				<li class="list-group-item">
+					{{ Lang::get('user.no_ssh_keys') }}
+				</li>
+			@endif
 		</ul>
 	</fieldset>
 

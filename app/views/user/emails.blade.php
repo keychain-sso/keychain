@@ -32,35 +32,37 @@
 				{{ $emails->primary->address }}
 			</li>
 
-			@foreach ($emails->other as $email)
-				<li class="list-group-item">
-					<div class="pull-right">
-						@if ($email->verified)
-							<a class="btn btn-default btn-xs disabled">{{ Lang::get('user.verified') }}</a>
-						@else
-							<a href="{{ url("user/emails/{$user->hash}/verify/{$email->id}") }}" class="btn btn-xs btn-default">
-								{{ Lang::get('user.verify') }}
+			@if (isset($emails->other))
+				@foreach ($emails->other as $email)
+					<li class="list-group-item">
+						<div class="pull-right">
+							@if ($email->verified)
+								<a class="btn btn-default btn-xs disabled">{{ Lang::get('user.verified') }}</a>
+							@else
+								<a href="{{ url("user/emails/{$user->hash}/verify/{$email->id}") }}" class="btn btn-xs btn-default">
+									{{ Lang::get('user.verify') }}
+								</a>
+							@endif
+
+							<a href="{{ url("user/emails/{$user->hash}/remove/{$email->id}") }}" class="btn btn-xs btn-danger">
+								{{ Lang::get('global.remove') }}
 							</a>
+						</div>
+
+						@if ($email->verified)
+							<a href="{{ url("user/emails/{$user->hash}/primary/{$email->id}") }}">
+								<span class="glyphicon glyphicon-star-empty text-muted" title="{{ Lang::get('user.set_as_primary') }}"
+									  data-toggle="tooltip"></span>
+							</a>
+						@else
+							<span class="glyphicon glyphicon-star-empty text-danger" title="{{ Lang::get('user.primary_verify') }}"
+								  data-toggle="tooltip"></span>
 						@endif
 
-						<a href="{{ url("user/emails/{$user->hash}/remove/{$email->id}") }}" class="btn btn-xs btn-danger">
-							{{ Lang::get('global.remove') }}
-						</a>
-					</div>
-
-					@if ($email->verified)
-						<a href="{{ url("user/emails/{$user->hash}/primary/{$email->id}") }}">
-							<span class="glyphicon glyphicon-star-empty text-muted" title="{{ Lang::get('user.set_as_primary') }}"
-							      data-toggle="tooltip"></span>
-						</a>
-					@else
-						<span class="glyphicon glyphicon-star-empty text-danger" title="{{ Lang::get('user.primary_verify') }}"
-						      data-toggle="tooltip"></span>
-					@endif
-
-					{{ $email->address }}
-				</li>
-			@endforeach
+						{{ $email->address }}
+					</li>
+				@endforeach
+			@endif
 		</ul>
 	</fieldset>
 

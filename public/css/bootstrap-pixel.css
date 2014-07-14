@@ -17,6 +17,13 @@
   margin: 0;
 }
 
+/* Navbar right margin fix */
+@media (max-width: 767px) {
+  .navbar-right {
+    margin-top: -7.5px;
+  }
+}
+
 /* Spacer helpers */
 .spacer {
   margin: 10px;

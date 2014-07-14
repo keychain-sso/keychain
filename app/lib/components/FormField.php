@@ -81,10 +81,13 @@ class FormField {
 						$parsed = static::parse('view', $field, $userFieldInfo[$field->id]->value);
 
 						// Assign the field to its own bucket
-						$fields->{$field->category}[$field->order] = (object) array(
-							'name'  => $field->name,
-							'value' => $parsed[FieldParser::VALUE],
-						);
+						if ( ! empty($value = $parsed[FieldParser::VALUE]))
+						{
+							$fields->{$field->category}[$field->order] = (object) array(
+								'name'  => $field->name,
+								'value' => $value,
+							);
+						}
 					}
 				}
 			}
@@ -174,7 +177,7 @@ class FormField {
 		}
 
 		// Update basic field data
-		$user->first_name    = $data['name'];
+		$user->name          = $data['name'];
 		$user->gender        = $data['gender'];
 		$user->date_of_birth = $data['date_of_birth'];
 		$user->timezone      = $data['timezone'];

@@ -265,7 +265,7 @@ class UserController extends BaseController {
 
 			default:
 
-				return View::make('user/view', 'user.manage_email_addresses', array_merge($data, array('modal' => 'user.emails')));
+				return View::make('user/view', 'user.manage_emails', array_merge($data, array('modal' => 'user.emails')));
 		}
 	}
 

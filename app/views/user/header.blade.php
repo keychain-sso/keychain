@@ -17,7 +17,7 @@
 					</li>
 
 					<li @if ($modal == 'user.emails') class="active" @endif>
-						<a href="{{ url("user/emails/{$user->hash}") }}" title="{{ Lang::get('user.manage_email_addresses') }}"
+						<a href="{{ url("user/emails/{$user->hash}") }}" title="{{ Lang::get('user.manage_emails') }}"
 						   data-toggle="tooltip" data-placement="bottom">
 							<span class="glyphicon glyphicon-envelope"></span>
 						</a>

@@ -27,7 +27,7 @@
 						<li>
 							<a href="{{ url("user/emails/{$user->hash}") }}">
 								<span class="glyphicon glyphicon-envelope"></span>
-								{{ Lang::get('user.manage_email_addresses') }}
+								{{ Lang::get('user.manage_emails') }}
 							</a>
 						</li>
 
@@ -146,7 +146,7 @@
 						</p>
 					</li>
 
-					@if ( ! empty($emails->other))
+					@if (isset($emails->other))
 						<li class="list-group-item">
 							<h4 class="list-group-item-heading">{{ Lang::get('user.other_email') }}</h4>
 
@@ -182,17 +182,17 @@
 				</div>
 
 				<ul class="list-group">
-					@if ( ! empty($memberships))
-						@foreach ($memberships as $membership)
-							<li class="list-group-item">
-								<p class="list-group-item-text">
-									<a href="{{ url("group/view/{$membership->group->hash}") }}">
-										{{ $membership->group->name }}
-									</a>
-								</p>
-							</li>
-						@endforeach
-					@else
+					@foreach ($memberships as $membership)
+						<li class="list-group-item">
+							<p class="list-group-item-text">
+								<a href="{{ url("group/view/{$membership->group->hash}") }}">
+									{{ $membership->group->name }}
+								</a>
+							</p>
+						</li>
+					@endforeach
+
+					@if (count($memberships) == 0)
 						<li class="list-group-item">
 							<p class="list-group-item-text">{{ Lang::get('user.no_memberships') }}</p>
 						</li>
