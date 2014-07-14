@@ -69,16 +69,32 @@ class Utilities {
 			{
 				foreach ($timezones as $timezone)
 				{
-					if (str_contains($timezone, '/'))
-					{
-						list($region, $zone) = explode('/', $timezone);
-						$zone = str_replace('_', ' ', $zone);
+					$zones = explode('/', $timezone);
 
-						$regions[$region][$timezone] = $zone;
-					}
-					else
+					// Based on the number of items in zones, we categorize
+					// the timezone in it's own optgroup
+					switch (count($zones))
 					{
-						$regions[Lang::get('global.others')][$timezone] = $timezone;
+						case 1:
+
+							$regions[Lang::get('global.others')][$timezone] = $timezone;
+
+							break;
+
+						case 2:
+
+							$zones[1] = str_replace('_', ' ', $zones[1]);
+							$regions[$zones[0]][$timezone] = $zones[1];
+
+							break;
+
+						case 3:
+
+							$zones[1] = str_replace('_', ' ', $zones[1]);
+							$zones[2] = str_replace('_', ' ', $zones[2]);
+							$regions[$zones[0]][$timezone] = "{$zones[1]} &rarr; {$zones[2]}";
+
+							break;
 					}
 				}
 
