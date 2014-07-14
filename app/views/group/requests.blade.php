@@ -20,8 +20,7 @@
 						<h3 class="popover-title">
 							{{
 								Lang::get('group.request_header', array(
-									'user'      => link_to("user/view/{$request->user->hash}",
-														   sprintf('%s %s', $request->user->first_name, $request->user->last_name)),
+									'user'      => link_to("user/view/{$request->user->hash}", $user->name),
 									'timestamp' => date('Y-m-d h:i a', strtotime($request->created_at)),
 								))
 							}}

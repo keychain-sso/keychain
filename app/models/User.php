@@ -97,25 +97,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
 		$results = array();
 
-		// If user is searching by name
-		if ( ! filter_var($query, FILTER_VALIDATE_EMAIL))
-		{
-			$name = explode(' ', $query);
-			$firstName = $name[0];
-			$lastName = isset($name[1]) ? $name[1] : false;
-
-			// Find user by first name
-			$users->where('first_name', 'like', "{$firstName}%");
-
-			// Add last name to criteria
-			if ($lastName !== false)
-			{
-				$users->where('last_name', 'like', "{$lastName}%");
-			}
-		}
-
-		// Searching by email address
-		else
+		// If user is searching by email address
+		if (filter_var($query, FILTER_VALIDATE_EMAIL))
 		{
 			// Find users by email address
 			$emails = UserEmail::where('address', 'like', "{$query}%");
@@ -128,6 +111,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			$users->whereIn('id', $userIds);
 		}
 
+		// Searching by user's name
+		else
+		{
+			// We do not use %query% to allow the index to be utilized
+			$users->where('name', 'like', "{$query}%");
+		}
+
 		// Remove excluded users
 		if (count($exclude) > 0)
 		{
@@ -135,7 +125,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		}
 
 		// Return the results of the search
-		return $users->with('primaryEmail')->orderBy('first_name')->orderBy('last_name');
+		return $users->with('primaryEmail')->orderBy('name');
 	}
 
 }

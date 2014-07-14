@@ -1,7 +1,7 @@
 <p>
 	{{
 		Lang::get('email.salutation', array(
-			'name' => $user['first_name'],
+			'name' => $user['name'],
 		))
 	}}
 </p>

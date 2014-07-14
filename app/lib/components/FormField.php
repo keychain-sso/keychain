@@ -160,8 +160,7 @@ class FormField {
 
 		// Validate basic fields
 		$validator = Validator::make($data, array(
-			'first_name'    => 'required|max:80',
-			'last_name'     => 'required|max:80',
+			'name'          => 'required|max:80',
 			'gender'        => 'in:M,F,O',
 			'date_of_birth' => 'date|before:'.date('Y-m-d', time()),
 			'timezone'      => 'in:'.Utilities::timezones(true),
@@ -175,8 +174,7 @@ class FormField {
 		}
 
 		// Update basic field data
-		$user->first_name    = $data['first_name'];
-		$user->last_name     = $data['last_name'];
+		$user->first_name    = $data['name'];
 		$user->gender        = $data['gender'];
 		$user->date_of_birth = $data['date_of_birth'];
 		$user->timezone      = $data['timezone'];

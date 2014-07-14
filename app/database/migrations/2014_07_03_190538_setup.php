@@ -47,13 +47,12 @@ class Setup extends Migration {
 		Schema::create('users', function($table)
 		{
 			$table->increments('id');
-			$table->string('first_name', 80)->index();
-			$table->string('last_name', 80)->index();
+			$table->string('name', 80)->index();
 			$table->string('password', 80);
 			$table->string('remember_token', 60)->nullable()->index();
 			$table->enum('gender', array('M', 'F', 'O'))->nullable();
 			$table->timestamp('date_of_birth')->nullable();
-			$table->string('timezone', 80);
+			$table->string('timezone', 80)->default('UTC');
 			$table->string('avatar', 15)->nullable();
 			$table->string('title', 80)->nullable();
 			$table->integer('status')->unsigned()->index();
@@ -307,8 +306,7 @@ class Setup extends Migration {
 
 		// Insert admin user account
 		DB::table('users')->insert(array(
-			'first_name'    => 'John',
-			'last_name'     => 'Doe',
+			'name'          => 'John Doe',
 			'gender'        => 'M',
 			'date_of_birth' => '1980-07-01',
 			'timezone'      => 'America/Chicago',
@@ -335,8 +333,7 @@ class Setup extends Migration {
 
 		// Insert another user account
 		DB::table('users')->insert(array(
-			'first_name'    => 'Jane',
-			'last_name'     => 'Doe',
+			'name'          => 'Jane Doe',
 			'gender'        => 'F',
 			'date_of_birth' => '1982-03-01',
 			'timezone'      => 'America/Chicago',

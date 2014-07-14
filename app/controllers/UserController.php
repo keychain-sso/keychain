@@ -73,10 +73,9 @@ class UserController extends BaseController {
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
-				'first_name' => 'required|max:80',
-				'last_name'  => 'required|max:80',
-				'email'      => 'required|email|max:80|unique:user_emails,address',
-				'password'   => 'required',
+				'name'     => 'required|max:80',
+				'email'    => 'required|email|max:80|unique:user_emails,address',
+				'password' => 'required',
 			));
 
 			// Run the validator
@@ -86,6 +85,25 @@ class UserController extends BaseController {
 
 				return Redirect::to(URL::previous())->withInput();
 			}
+
+			// Create the new user
+			$user = new User;
+			$user->name = Input::get('name');
+			$user->password = Hash::make(Input::get('password'));
+			$user->hash = Utilities::hash($user);
+			$user->status = UserStatus::ACTIVE;
+			$user->save();
+
+			// Insert the user's email address
+			$userEmail = new UserEmail;
+			$userEmail->user_id = $user->id;
+			$userEmail->address = Input::get('email');
+			$userEmail->primary = Flags::YES;
+			$userEmail->verified = Flags::YES;
+			$userEmail->save();
+
+			// Redirect to the new user's profile
+			return Redirect::to("user/view/{$user->hash}");
 		}
 	}
 
@@ -103,11 +121,9 @@ class UserController extends BaseController {
 		$data = $this->getUserViewData($user);
 
 		// Set the page title
-		$title = Lang::get('user.viewing_profile', array(
-			'first_name' => $user->first_name,
-			'last_name'  => $user->last_name,
-		));
+		$title = Lang::get('user.viewing_profile', array('name' => $user->name));
 
+		// Show the view screen
 		return View::make('user/view', $title, $data);
 	}
 
@@ -565,7 +581,7 @@ class UserController extends BaseController {
 	private function getUserListData()
 	{
 		$length = Config::get('view.icon_length');
-		$users = User::with('emails')->orderBy('first_name')->orderBy('last_name')->paginate($length);
+		$users = User::with('emails')->orderBy('name')->paginate($length);
 
 		return array('users' => $users);
 	}

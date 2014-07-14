@@ -17,14 +17,8 @@
 				@endif
 			</a>
 
-			<a href="{{ url("user/view/{$user->hash}") }}">
-				{{ $user->first_name }}
-				{{ $user->last_name }}
-			</a>
-
-			<small class="text-muted">
-				{{ $user->primaryEmail[0]->address }}
-			</small>
+			<a href="{{ url("user/view/{$user->hash}") }}">{{ $user->name }}</a>
+			<small class="text-muted">{{ $user->primaryEmail[0]->address }}</small>
 		</div>
 	</div>
 @endforeach

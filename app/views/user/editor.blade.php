@@ -16,27 +16,13 @@
 
 		<div class="form-group">
 			{{
-				Form::label('first_name', Lang::get('user.first_name'), array(
+				Form::label('name', Lang::get('user.name'), array(
 					'class' => 'control-label'
 				))
 			}}
 
 			{{
-				Form::text('first_name', $user->first_name, array(
-					'class' => 'form-control',
-				))
-			}}
-		</div>
-
-		<div class="form-group">
-			{{
-				Form::label('last_name', Lang::get('user.last_name'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::text('last_name', $user->last_name, array(
+				Form::text('name', $user->name, array(
 					'class' => 'form-control',
 				))
 			}}

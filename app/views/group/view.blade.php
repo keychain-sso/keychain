@@ -194,14 +194,8 @@
 						@endif
 					</a>
 
-					<a href="{{ url("user/view/{$userGroup->user->hash}") }}">
-						{{ $userGroup->user->first_name }}
-						{{ $userGroup->user->last_name }}
-					</a>
-
-					<small class="text-muted">
-						{{ $userGroup->emails[0]->address }}
-					</small>
+					<a href="{{ url("user/view/{$userGroup->user->hash}") }}">{{ $userGroup->user->name }}</a>
+					<small class="text-muted">{{ $userGroup->emails[0]->address }}</small>
 				</div>
 			</div>
 		@endforeach
