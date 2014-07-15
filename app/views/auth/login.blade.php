@@ -56,7 +56,7 @@
 							</label>
 						</div>
 
-						<a href="{{ url('auth/register') }}" class="btn btn-link pull-right">
+						<a href="{{ url('auth/register') }}" class="btn btn-link pull-right" tabindex="-1">
 							{{ Lang::get('auth.create_account') }}
 						</a>
 
