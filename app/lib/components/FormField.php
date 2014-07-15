@@ -81,11 +81,11 @@ class FormField {
 						$parsed = static::parse('view', $field, $userFieldInfo[$field->id]->value);
 
 						// Assign the field to its own bucket
-						if ( ! empty($value = $parsed[FieldParser::VALUE]))
+						if ( ! empty($parsed[FieldParser::VALUE]))
 						{
 							$fields->{$field->category}[$field->order] = (object) array(
 								'name'  => $field->name,
-								'value' => $value,
+								'value' => $parsed[FieldParser::VALUE],
 							);
 						}
 					}
