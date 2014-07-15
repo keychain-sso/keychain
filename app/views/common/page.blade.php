@@ -14,46 +14,48 @@
 </head>
 
 <body>
-	<nav class="navbar navbar-default navbar-static-top" role="navigation">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
+	@if (Request::segment(1) != 'auth')
+		<nav class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
 
-				<a class="navbar-brand" href="{{ url() }}">{{ Config::get('app.title') }}</a>
-			</div>
+					<a class="navbar-brand" href="{{ url() }}">{{ Config::get('app.title') }}</a>
+				</div>
 
-			<div class="collapse navbar-collapse navbar-ex1-collapse">
-				<ul class="nav navbar-nav navbar-right">
-					<li>
-						<a href="{{ url('user/list') }}">
-							<span class="glyphicon glyphicon-user"></span>
-							{{ Lang::get('global.users') }}
-						</a>
-					</li>
-
-					<li>
-						<a href="{{ url('group/list') }}">
-							<span class="glyphicon glyphicon-th-large"></span>
-							{{ Lang::get('global.groups') }}
-						</a>
-					</li>
-
-					@if (Auth::check())
+				<div class="collapse navbar-collapse navbar-ex1-collapse">
+					<ul class="nav navbar-nav navbar-right">
 						<li>
-							<a href="{{ url('auth/logout') }}">
-								<span class="glyphicon glyphicon-log-out"></span>
-								{{ Lang::get('global.logout') }}
+							<a href="{{ url('user/list') }}">
+								<span class="glyphicon glyphicon-user"></span>
+								{{ Lang::get('global.users') }}
 							</a>
 						</li>
-					@endif
-				</ul>
+
+						<li>
+							<a href="{{ url('group/list') }}">
+								<span class="glyphicon glyphicon-th-large"></span>
+								{{ Lang::get('global.groups') }}
+							</a>
+						</li>
+
+						@if (Auth::check())
+							<li>
+								<a href="{{ url('auth/logout') }}">
+									<span class="glyphicon glyphicon-log-out"></span>
+									{{ Lang::get('global.logout') }}
+								</a>
+							</li>
+						@endif
+					</ul>
+				</div>
 			</div>
-		</div>
-	</nav>
+		</nav>
+	@endif
 
 	<div class="container">
 		@yield('body')

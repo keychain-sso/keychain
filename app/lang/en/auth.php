@@ -15,5 +15,7 @@ return array(
 	'login'             => 'Login',
 	'remember'          => 'Remember me',
 	'login_failed'      => 'Incorrect email address and/or password',
+	'create_account'    => 'Create an account',
+	'forgot_password'   => 'Forgot your password?',
 
 );
