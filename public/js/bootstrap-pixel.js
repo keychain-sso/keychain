@@ -255,6 +255,25 @@ function confirmPrompts()
 					link.html(original);
 					link.attr('data-clicked', true);
 				}, 500);
+
+				// Reset the click state in 5 seconds
+				setTimeout(function()
+				{
+					link.removeAttr('data-clicked');
+					link.tooltip('hide');
+				}, 5000);
+
+				// If link is within a dropdown, reset when dropdown is closed
+				dropdown = link.parents('.dropdown');
+
+				if (dropdown.count != 0)
+				{
+					dropdown.off('hidden.bs.dropdown').on('hidden.bs.dropdown', function()
+					{
+						link.removeAttr('data-clicked');
+						link.tooltip('hide');
+					});
+				}
 			}
 		}
 
