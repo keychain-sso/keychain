@@ -55,6 +55,8 @@
 				</div>
 			</div>
 		</nav>
+	@else
+		<br />
 	@endif
 
 	<div class="container">
