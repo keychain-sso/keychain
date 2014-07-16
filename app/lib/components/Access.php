@@ -67,10 +67,13 @@ class Access {
 				$query->where('subject_id', $user->id)->where('subject_type', ACLTypes::USER);
 			});
 
-			$list = $list->orWhere(function($query) use ($groups)
+			if (count($groups) > 0)
 			{
-				$query->whereIn('subject_id', $groups)->where('subject_type', ACLTypes::GROUP);
-			});
+				$list = $list->orWhere(function($query) use ($groups)
+				{
+					$query->whereIn('subject_id', $groups)->where('subject_type', ACLTypes::GROUP);
+				});
+			}
 
 			// Iterate through the list and build the access data
 			foreach ($list->get() as $item)

@@ -59,7 +59,7 @@ class UserController extends BaseController {
 	}
 
 	/**
-	 * Handles create user post actions
+	 * Handles create user POST events
 	 *
 	 * @access public
 	 * @return Redirect

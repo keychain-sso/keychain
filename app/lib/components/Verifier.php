@@ -20,11 +20,13 @@ use DateTimeZone;
 use HTTPStatus;
 use Lang;
 use Mail;
+use NoticeTypes;
 use Session;
 use Token;
 use TokenTypes;
 use User;
 use UserEmail;
+use UserStatus;
 use View;
 
 /**
@@ -129,10 +131,20 @@ class Verifier {
 				$token = Token::where('permits_type', TokenTypes::EMAIL)->where('token', $hash)->firstOrFail();
 
 				// Verify the associated email
-				$email = UserEmail::where($token->permits_id)->update(array('verified' => 1));
+				$userEmail = UserEmail::find($token->permits_id);
+				$userEmail->verified = 1;
+				$userEmail->save();
+
+				// If this is the primary email, we activate the user account as well
+				if ($userEmail->primary)
+				{
+					$user = User::find($userEmail->user_id);
+					$user->status = UserStatus::ACTIVE;
+					$user->save();
+				}
 
 				// Purge the user field data cache
-				Cache::tags("user.{$user->id}.field")->flush();
+				Cache::tags("user.{$userEmail->user_id}.field")->flush();
 
 				// Delete the token
 				$token->delete();

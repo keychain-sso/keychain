@@ -58,7 +58,7 @@ class GroupController extends BaseController {
 	}
 
 	/**
-	 * Handles create group post actions
+	 * Handles create group POST events
 	 *
 	 * @access public
 	 * @return Redirect
@@ -119,7 +119,7 @@ class GroupController extends BaseController {
 	}
 
 	/**
-	 * Handles post events for the view group page
+	 * Handles POST events for the view group page
 	 *
 	 * @access public
 	 * @return Redirect
@@ -182,7 +182,7 @@ class GroupController extends BaseController {
 	}
 
 	/**
-	 * Handles post events for the group details editor
+	 * Handles POST events for the group details editor
 	 *
 	 * @access public
 	 * @return Redirect
@@ -293,7 +293,7 @@ class GroupController extends BaseController {
 	}
 
 	/**
-	 * Handles post events for the join group modal
+	 * Handles POST events for the join group modal
 	 *
 	 * @access public
 	 * @return Redirect
@@ -514,7 +514,7 @@ class GroupController extends BaseController {
 	}
 
 	/**
-	 * Handles post events for the add user screen
+	 * Handles POST events for the add user screen
 	 *
 	 * @access public
 	 * @return Redirect

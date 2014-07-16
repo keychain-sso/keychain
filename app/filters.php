@@ -35,9 +35,9 @@ App::after(function($request, $response)
 
 Route::filter('auth', function()
 {
-	if (Auth::guest() && Request::segment(1) != 'auth')
+	if (Auth::guest() && ! in_array(Request::segment(1), array('auth', 'token')))
 	{
-		if (Request::segment(1) == 'q')
+		if (Request::ajax())
 		{
 			return Response::make('Unauthorized', 401);
 		}

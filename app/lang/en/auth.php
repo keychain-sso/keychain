@@ -20,5 +20,6 @@ return array(
 	'forgot_password'      => 'Forgot your password?',
 	'confirm_password'     => 'Confirm password',
 	'already_have_account' => 'Already have an account?',
+	'register_email'       => 'An e-mail has been sent to you containing further instructions',
 
 );
