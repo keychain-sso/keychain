@@ -52,7 +52,6 @@ class GroupController extends BaseController {
 		$data = array_merge($data, array(
 			'group'  => new Group,
 			'modal'  => 'group.editor',
-			'action' => 'GroupController@postCreate',
 		));
 
 		return View::make('group/list', 'group.create_new_group', $data);
@@ -179,13 +178,7 @@ class GroupController extends BaseController {
 		// Validate edit rights
 		Access::restrict(Permissions::GROUP_EDIT, $group);
 
-		// Merge the group data with view data
-		$data = array_merge($data, array(
-			'modal'  => 'group.editor',
-			'action' => 'GroupController@postEdit',
-		));
-
-		return View::make('group/view', 'group.edit_group', $data);
+		return View::make('group/view', 'group.edit_group', array_merge($data, array('modal'  => 'group.editor')));
 	}
 
 	/**
@@ -677,10 +670,14 @@ class GroupController extends BaseController {
 		// Get a list of current user's memberships
 		$userGroups = UserGroup::where('user_id', Auth::id())->lists('group_id');
 
+		// Check if user has group manage rights
+		$manager = Access::check(Permissions::GROUP_MANAGE);
+
 		// Return the list data
 		return array(
 			'groupItems' => $groupItems,
 			'userGroups' => $userGroups,
+			'manager'    => $manager,
 		);
 	}
 

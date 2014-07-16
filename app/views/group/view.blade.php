@@ -1,12 +1,7 @@
 @extends('common.page')
 
 @section('body')
-	{{
-		Form::open(array(
-			'action' => 'GroupController@postView',
-			'role'   => 'form',
-		))
-	}}
+	{{ Form::open(array('role'   => 'form')) }}
 
 	<div class="row">
 		<div class="col-xs-12">
@@ -178,11 +173,7 @@
 		@foreach ($userGroups as $userGroup)
 			<div class="col-xs-3 col-md-2 search-item" data-toggle="clickable">
 				@if ($editor)
-					{{
-						Form::checkbox('users[]', $userGroup->user->hash, false, array(
-							'class' => 'inlay',
-						))
-					}}
+					{{ Form::checkbox('users[]', $userGroup->user->hash, false, array('class' => 'inlay')) }}
 				@endif
 
 				<div class="profile-icon">

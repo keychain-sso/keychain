@@ -1,9 +1,4 @@
-{{
-	Form::open(array(
-		'action' => 'GroupController@postAddUser',
-		'role'   => 'form',
-	))
-}}
+{{ Form::open(array('role' => 'form')) }}
 
 <div class="modal-body">
 	@include('group.header')
@@ -46,11 +41,7 @@
 		@foreach ($users as $user)
 			<div class="col-xs-4 search-item">
 				<div class="profile-icon" data-toggle="clickable">
-					{{
-						Form::checkbox('users[]', $user->hash, false, array(
-							'class' => 'inlay',
-						))
-					}}
+					{{ Form::checkbox('users[]', $user->hash, false, array('class' => 'inlay')) }}
 
 					<a href="#" class="thumbnail spacer-sm-bottom">
 						@if ( ! empty($user->avatar))

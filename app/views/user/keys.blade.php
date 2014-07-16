@@ -1,9 +1,4 @@
-{{
-	Form::open(array(
-		'action' => 'UserController@postKeys',
-		'role'   => 'form',
-	))
-}}
+{{ Form::open(array('role' => 'form')) }}
 
 <div class="modal-body">
 	@include('user.header')
@@ -41,31 +36,13 @@
 		</legend>
 
 		<div class="form-group">
-			{{
-				Form::label('title', Lang::get('user.title'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::text('title', null, array(
-					'class' => 'form-control',
-				))
-			}}
+			{{ Form::label('title', Lang::get('user.title'), array('class' => 'control-label')) }}
+			{{ Form::text('title', null, array('class' => 'form-control')) }}
 		</div>
 
 		<div class="form-group">
-			{{
-				Form::label('key', Lang::get('user.public_key'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::textarea('key', null, array(
-					'class' => 'form-control',
-				))
-			}}
+			{{ Form::label('key', Lang::get('user.public_key'), array('class' => 'control-label')) }}
+			{{ Form::textarea('key', null, array('class' => 'form-control')) }}
 		</div>
 	</fieldset>
 </div>

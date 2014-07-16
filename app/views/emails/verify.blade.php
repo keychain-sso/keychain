@@ -1,10 +1,4 @@
-<p>
-	{{
-		Lang::get('email.salutation', array(
-			'name' => $user['name'],
-		))
-	}}
-</p>
+<p>{{ Lang::get('email.salutation', array('name' => $user['name'])) }}</p>
 
 <p>
 	{{ $action }}

@@ -1,6 +1,5 @@
 {{
 	Form::open(array(
-		'action'       => 'UserController@postSecurity',
 		'role'         => 'form',
 		'autocomplete' => 'off',
 	))
@@ -17,46 +16,19 @@
 
 		@if ($user->id == $auth->id)
 			<div class="form-group">
-				{{
-					Form::label('old_password', Lang::get('user.old_password'), array(
-						'class' => 'control-label'
-					))
-				}}
-
-				{{
-					Form::password('old_password', array(
-						'class' => 'form-control',
-					))
-				}}
+				{{ Form::label('old_password', Lang::get('user.old_password'), array('class' => 'control-label')) }}
+				{{ Form::password('old_password', array('class' => 'form-control')) }}
 			</div>
 		@endif
 
 		<div class="form-group">
-			{{
-				Form::label('new_password', Lang::get('user.new_password'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::password('new_password', array(
-					'class' => 'form-control',
-				))
-			}}
+			{{ Form::label('new_password', Lang::get('user.new_password'), array('class' => 'control-label')) }}
+			{{ Form::password('new_password', array('class' => 'form-control')) }}
 		</div>
 
 		<div class="form-group">
-			{{
-				Form::label('confirm_password', Lang::get('user.confirm_new_password'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::password('confirm_password', array(
-					'class' => 'form-control',
-				))
-			}}
+			{{ Form::label('confirm_password', Lang::get('user.confirm_new_password'), array('class' => 'control-label')) }}
+			{{ Form::password('confirm_password', array('class' => 'form-control')) }}
 		</div>
 	</fieldset>
 
@@ -89,11 +61,7 @@
 					<h4 class="list-group-item-heading">{{ $session->ip_address }}</h4>
 
 					<p class="list-group-item-text">
-						{{
-							Lang::get('user.last_active', array(
-								'time' => date('Y-m-d h:i a', strtotime($session->updated_at)),
-							))
-						}}
+						{{ Lang::get('user.last_active', array('time' => date('Y-m-d h:i a', strtotime($session->updated_at)))) }}
 					</p>
 				</li>
 			@endforeach
@@ -124,11 +92,7 @@
 			</legend>
 
 			<div class="form-group">
-				{{
-					Form::label('status', Lang::get('user.profile_status'), array(
-						'class' => 'control-label'
-					))
-				}}
+				{{ Form::label('status', Lang::get('user.profile_status'), array('class' => 'control-label')) }}
 
 				<div class="radio">
 					<label>

@@ -1,9 +1,4 @@
-{{
-	Form::open(array(
-		'action' => 'UserController@postEmails',
-		'role'   => 'form',
-	))
-}}
+{{ Form::open(array('role' => 'form')) }}
 
 <div class="modal-body">
 	@include('user.header')
@@ -73,17 +68,8 @@
 		</legend>
 
 		<div class="form-group">
-			{{
-				Form::label('email', Lang::get('user.email_address'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::text('email', null, array(
-					'class' => 'form-control',
-				))
-			}}
+			{{ Form::label('email', Lang::get('user.email_address'), array('class' => 'control-label')) }}
+			{{ Form::text('email', null, array('class' => 'form-control')) }}
 		</div>
 	</fieldset>
 </div>

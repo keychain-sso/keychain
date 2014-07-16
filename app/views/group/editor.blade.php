@@ -1,33 +1,15 @@
-{{
-	Form::open(array(
-		'action' => $action,
-		'role'   => 'form',
-	))
-}}
+{{ Form::open(array('role'   => 'form')) }}
 
 <div class="modal-body">
 	@include('group.header')
 
 	<div class="form-group">
-		{{
-			Form::label('name', Lang::get('group.group_name'), array(
-				'class' => 'control-label'
-			))
-		}}
-
-		{{
-			Form::text('name', $group->name, array(
-				'class' => 'form-control',
-			))
-		}}
+		{{ Form::label('name', Lang::get('group.group_name'), array('class' => 'control-label')) }}
+		{{ Form::text('name', $group->name, array('class' => 'form-control')) }}
 	</div>
 
 	<div class="form-group">
-		{{
-			Form::label('description', Lang::get('group.description'), array(
-				'class' => 'control-label'
-			))
-		}}
+		{{ Form::label('description', Lang::get('group.description'), array('class' => 'control-label')) }}
 
 		{{
 			Form::textarea('description', $group->description, array(
@@ -38,11 +20,7 @@
 	</div>
 
 	<div class="form-group">
-		{{
-			Form::label('type', Lang::get('group.group_type'), array(
-				'class' => 'control-label'
-			))
-		}}
+		{{ Form::label('type', Lang::get('group.group_type'), array('class' => 'control-label')) }}
 
 		<div class="radio">
 			<label>
@@ -79,11 +57,7 @@
 	</div>
 
 	<div class="form-group">
-		{{
-			Form::label('type', Lang::get('group.notification'), array(
-				'class' => 'control-label'
-			))
-		}}
+		{{ Form::label('type', Lang::get('group.notification'), array('class' => 'control-label')) }}
 
 		<div class="radio">
 			<label>

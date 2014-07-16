@@ -28,6 +28,7 @@ return array(
 	'remove'            => 'Remove',
 	'approve'           => 'Approve',
 	'reject'            => 'Reject',
+	'name'              => 'Name',
 	'information'       => 'Information',
 	'error'             => 'Error',
 	'others'            => 'Others',

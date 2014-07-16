@@ -1,11 +1,7 @@
 @foreach ($users as $user)
 	<div class="search-item" data-toggle="clickable">
 		@if ($checkbox)
-			{{
-				Form::checkbox('users', $user->hash, false, array(
-					'class' => 'inlay',
-				))
-			}}
+			{{ Form::checkbox('users', $user->hash, false, array('class' => 'inlay')) }}
 		@endif
 
 		<div class="profile-icon">

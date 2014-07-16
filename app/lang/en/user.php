@@ -22,7 +22,6 @@ return array(
 	'timezone'               => 'Timezone',
 	'primary_email'          => 'Primary e-mail address',
 	'other_email'            => 'Other e-mail addresses',
-	'name'                   => 'Name',
 	'settings'               => 'Settings',
 	'viewing_profile'        => 'Viewing profile - :name',
 	'edit_profile'           => 'Edit profile',

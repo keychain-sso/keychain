@@ -1,9 +1,4 @@
-{{
-	Form::open(array(
-		'action' => 'GroupController@postJoin',
-		'role'   => 'form',
-	))
-}}
+{{ Form::open(array('role'   => 'form')) }}
 
 <div class="modal-body">
 	@include('group.header')
@@ -11,11 +6,7 @@
 	<p>{{ Lang::get('group.provide_justification') }}</p>
 
 	<div class="form-group">
-		{{
-			Form::textarea('justification', null, array(
-				'class' => 'form-control',
-			))
-		}}
+		{{ Form::textarea('justification', null, array('class' => 'form-control')) }}
 	</div>
 </div>
 

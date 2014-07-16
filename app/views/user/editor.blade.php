@@ -1,9 +1,4 @@
-{{
-	Form::open(array(
-		'action' => 'UserController@postEdit',
-		'role'   => 'form',
-	))
-}}
+{{ Form::open(array('role' => 'form')) }}
 
 <div class="modal-body">
 	@include('user.header')
@@ -15,39 +10,17 @@
 		</legend>
 
 		<div class="form-group">
-			{{
-				Form::label('name', Lang::get('user.name'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::text('name', $user->name, array(
-					'class' => 'form-control',
-				))
-			}}
+			{{ Form::label('name', Lang::get('global.name'), array('class' => 'control-label')) }}
+			{{ Form::text('name', $user->name, array('class' => 'form-control')) }}
 		</div>
 
 		<div class="form-group">
-			{{
-				Form::label('title', Lang::get('user.title'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::text('title', $user->title, array(
-					'class' => 'form-control',
-				))
-			}}
+			{{ Form::label('title', Lang::get('user.title'), array('class' => 'control-label')) }}
+			{{ Form::text('title', $user->title, array('class' => 'form-control')) }}
 		</div>
 
 		<div class="form-group">
-			{{
-				Form::label('gender', Lang::get('user.gender'), array(
-					'class' => 'control-label'
-				))
-			}}
+			{{ Form::label('gender', Lang::get('user.gender'), array('class' => 'control-label')) }}
 
 			{{
 				Form::select('gender', array(
@@ -62,11 +35,7 @@
 		</div>
 
 		<div class="form-group  has-feedback">
-			{{
-				Form::label('date_of_birth', Lang::get('user.date_of_birth'), array(
-					'class' => 'control-label'
-				))
-			}}
+			{{ Form::label('date_of_birth', Lang::get('user.date_of_birth'), array('class' => 'control-label')) }}
 
 			{{
 				Form::text('date_of_birth', date('Y-m-d', empty($user->date_of_birth) ? null : strtotime($user->date_of_birth)), array(
@@ -79,17 +48,8 @@
 		</div>
 
 		<div class="form-group">
-			{{
-				Form::label('timezone', Lang::get('user.timezone'), array(
-					'class' => 'control-label'
-				))
-			}}
-
-			{{
-				Form::select('timezone', $timezones, $user->timezone, array(
-					'class' => 'form-control',
-				))
-			}}
+			{{ Form::label('timezone', Lang::get('user.timezone'), array('class' => 'control-label')) }}
+			{{ Form::select('timezone', $timezones, $user->timezone, array('class' => 'form-control')) }}
 		</div>
 
 		@foreach ($fieldEdit->{FieldCategories::BASIC} as $field)

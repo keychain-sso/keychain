@@ -82,6 +82,17 @@ class AuthController extends BaseController {
 	}
 
 	/**
+	 * Displays the registration page
+	 *
+	 * @access public
+	 * @return View
+	 */
+	public function getRegister()
+	{
+		return View::make('auth/register', 'auth.login');
+	}
+
+	/**
 	 * Handles user logout
 	 *
 	 * @access public
