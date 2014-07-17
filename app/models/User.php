@@ -38,7 +38,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	public function primaryEmail()
 	{
-		return $this->hasMany('UserEmail')->where('primary', 1);
+		return $this->hasMany('UserEmail')->where('primary', Flags::YES);
 	}
 
 	/**
@@ -105,10 +105,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 			// Append a '0' to have a safe where-in clause for the user lookup
 			$userIds = $emails->lists('user_id');
-			$userIds[] = 0;
 
 			// Look up user by IDs
-			$users->whereIn('id', $userIds);
+			if (count($userIds) > 0)
+			{
+				$users->whereIn('id', $userIds);
+			}
 		}
 
 		// Searching by user's name

@@ -1,15 +1,15 @@
 <div class="row">
 	<div class="col-xs-12">
-		@if ( ! empty($global))
-			<div class="alert alert-warning">
+		@if ( ! empty($info))
+			<div class="alert alert-info">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 
-				@if (is_array($global))
-					@foreach ($global as $msg)
-						{{ $msg }}
+				@if (is_array($info))
+					@foreach ($info as $message)
+						{{ $message }}
 					@endforeach
 				@else
-					{{ $global }}
+					{{ $info }}
 				@endif
 			</div>
 		@endif
@@ -19,8 +19,8 @@
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 
 				@if (is_array($success))
-					@foreach ($success as $msg)
-						{{ $msg }}
+					@foreach ($success as $message)
+						{{ $message }}
 					@endforeach
 				@else
 					{{ $success }}
@@ -33,8 +33,8 @@
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 
 				@if (is_array($error))
-					@foreach ($error as $msg)
-						{{ $msg }}
+					@foreach ($error as $message)
+						{{ $message }}
 					@endforeach
 				@else
 					{{ $error }}

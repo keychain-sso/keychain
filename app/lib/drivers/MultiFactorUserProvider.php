@@ -14,6 +14,7 @@
  */
 
 use Config;
+use Flags;
 use Hash;
 use Session;
 use User;
@@ -92,7 +93,7 @@ class MultiFactorUserProvider implements UserProviderInterface {
 	public function retrieveByCredentials(array $credentials)
 	{
 		// First, we fetch a matching verified email address
-		$email = UserEmail::where('address', $credentials['email'])->where('verified', 1)->first();
+		$email = UserEmail::where('address', $credentials['email'])->where('verified', Flags::YES)->first();
 
 		// If an email address match is found, return the corresponding user
 		if ($email != null)

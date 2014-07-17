@@ -93,6 +93,7 @@ class GroupController extends BaseController {
 			$group->type = Input::get('type');
 			$group->notify = Input::get('notify');
 			$group->hash = Utilities::hash($group);
+			$group->auto_join = Input::has('auto_join');
 			$group->save();
 
 			// Redirect back to the group list
@@ -228,6 +229,7 @@ class GroupController extends BaseController {
 			$group->description = Input::get('description');
 			$group->type = Input::get('type');
 			$group->notify = Input::get('notify');
+			$group->auto_join = Input::has('auto_join');
 			$group->save();
 
 			// Redirect back to the previous URL
@@ -737,8 +739,8 @@ class GroupController extends BaseController {
 			$actions = true;
 		}
 
-		// Display if user is a member of the group
-		else if ($member)
+		// Display if user is a member of an open group
+		else if ($member && $group->type == GroupTypes::OPEN)
 		{
 			$actions = true;
 		}

@@ -17,6 +17,8 @@ use App;
 use Auth;
 use Cache;
 use DateTimeZone;
+use Flags;
+use Group;
 use HTTPStatus;
 use Lang;
 use Mail;
@@ -26,6 +28,7 @@ use Token;
 use TokenTypes;
 use User;
 use UserEmail;
+use UserGroup;
 use UserStatus;
 use View;
 
@@ -78,7 +81,7 @@ class Verifier {
 
 				// Resolve the user and email address
 				$user = User::find($id);
-				$to = UserEmail::where('user_id', $id)->where('primary', 1)->firstOrFail()->address;
+				$to = UserEmail::where('user_id', $id)->where('primary', Flags::YES)->firstOrFail()->address;
 				break;
 
 			default:
@@ -130,17 +133,44 @@ class Verifier {
 				// Fetch the token
 				$token = Token::where('permits_type', TokenTypes::EMAIL)->where('token', $hash)->firstOrFail();
 
-				// Verify the associated email
+				// Get the associated user and email
 				$userEmail = UserEmail::find($token->permits_id);
-				$userEmail->verified = 1;
+				$user = User::find($userEmail->user_id);
+
+				// Verify the associated email
+				$userEmail->verified = Flags::YES;
 				$userEmail->save();
 
-				// If this is the primary email, we activate the user account as well
-				if ($userEmail->primary)
+				// If the user is inactive, activate their account
+				// We also process auto-join groups at this point
+				// As a security check, we do it only if the primary email is
+				// being activated
+				if ($user->status == UserStatus::INACTIVE && $userEmail->primary)
 				{
-					$user = User::find($userEmail->user_id);
+					// Activate the user
 					$user->status = UserStatus::ACTIVE;
 					$user->save();
+
+					// Get all auto-join groups
+					$autoGroups = Group::where('auto_join', Flags::YES)->lists('id');
+
+					if (count($autoGroups) > 0)
+					{
+						// Remove all memberships for auto join groups for this user
+						UserGroup::where('user_id', $user->id)->whereIn('group_id', $autoGroups)->delete();
+
+						// Build group memberships
+						foreach ($autoGroups as $group)
+						{
+							$userGroups[] = array(
+								'user_id'  => $user->id,
+								'group_id' => $group,
+							);
+						}
+
+						// Insert the group membership info
+						UserGroup::insert($userGroups);
+					}
 				}
 
 				// Purge the user field data cache

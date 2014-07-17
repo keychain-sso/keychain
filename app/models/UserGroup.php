@@ -53,7 +53,7 @@ class UserGroup extends Eloquent {
 	 */
 	public function emails()
 	{
-		return $this->hasMany('UserEmail', 'user_id', 'user_id')->where('user_emails.primary', 1);
+		return $this->hasMany('UserEmail', 'user_id', 'user_id')->where('user_emails.primary', Flags::YES);
 	}
 
 }

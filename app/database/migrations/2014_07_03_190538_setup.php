@@ -159,6 +159,7 @@ class Setup extends Migration {
 			$table->integer('type')->unsigned();
 			$table->string('hash', 8)->unique()->index();
 			$table->boolean('notify')->default(0);
+			$table->boolean('auto_join')->default(0);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
 
@@ -495,6 +496,7 @@ class Setup extends Migration {
 			'description' => 'All registered users on the website.',
 			'type'        => GroupTypes::CLOSED,
 			'hash'        => str_random(8),
+			'auto_join'   => Flags::YES,
 		));
 
 		DB::table('groups')->insert(array(

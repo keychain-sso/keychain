@@ -211,7 +211,7 @@ class UserController extends BaseController {
 
 				// Check for user_id as well, to avoid injection
 				// Primary emails may not be removed
-				UserEmail::where('id', $email)->where('user_id', $user->id)->where('primary', 0)->delete();
+				UserEmail::where('id', $email)->where('user_id', $user->id)->where('primary', Flags::NO)->delete();
 
 				// Purge the user field data cache
 				Cache::tags("user.{$user->id}.field")->flush();
@@ -229,7 +229,7 @@ class UserController extends BaseController {
 				if (Access::check(Permissions::USER_MANAGE))
 				{
 					$userEmail = UserEmail::where('id', $email)->firstOrFail();
-					$userEmail->primary = 1;
+					$userEmail->primary = Flags::YES;
 					$userEmail->save();
 
 					// Redirect back to the previous URL
@@ -250,8 +250,8 @@ class UserController extends BaseController {
 
 				// Check for user_id as well, to avoid injection
 				// Only verified emails can be marked as primary
-				$userEmail = UserEmail::where('id', $email)->where('user_id', $user->id)->where('verified', 1)->firstOrFail();
-				$userEmail->primary = 1;
+				$userEmail = UserEmail::where('id', $email)->where('user_id', $user->id)->where('verified', Flags::YES)->firstOrFail();
+				$userEmail->primary = Flags::YES;
 				$userEmail->save();
 
 				// Now, mark the previous primary as regular
@@ -481,20 +481,31 @@ class UserController extends BaseController {
 	{
 		if (Input::has('_save'))
 		{
+			$userId = Auth::id();
+
 			// Fetch the associated user
 			$hash = Input::get('hash');
 			$user = User::where('hash', $hash)->firstOrFail();
-			$manage = Access::check(Permissions::USER_MANAGE);
+			$manager = Access::check(Permissions::USER_MANAGE);
+			$save = false;
 
 			// Validate edit rights
 			Access::restrict(Permissions::USER_EDIT, $user);
 
 			// Define the validation rules
-			$validator = Validator::make(Input::all(), array(
+			$rules = array(
 				'new_password'     => 'min:7',
 				'confirm_password' => 'required_with:new_password|same:new_password',
-				'status'           => 'required|exists:user_status,id',
-			));
+			);
+
+			// Validate the status field only if it was displayed
+			if ($manager && $user->id != $userId)
+			{
+				$rules['status'] = 'required|exists:user_status,id';
+			}
+
+			// Create the validator instance
+			$validator = Validator::make(Input::all(), $rules);
 
 			// Run the validator
 			if ($validator->fails())
@@ -505,7 +516,7 @@ class UserController extends BaseController {
 			}
 
 			// Check the old password
-			if ( ! $manage && ! Hash::check(Input::get('old_password'), $user->password))
+			if ( ! $manager && ! Hash::check(Input::get('old_password'), $user->password))
 			{
 				Session::flash('messages.error', Lang::get('user.old_password_invalid'));
 
@@ -516,23 +527,37 @@ class UserController extends BaseController {
 			if (Input::has('new_password'))
 			{
 				$user->password = Hash::make(Input::get('new_password'));
+
+				$save = true;
 			}
 
 			// Check if logged in user has manage rights
 			// If so, update the account settings as well
-			if ($manage && $user->id != Auth::id())
+			if ($manager && $user->id != $userId)
 			{
 				$user->status = Input::get('status');
+
+				$save = true;
 			}
 
-			$user->save();
+			if ($save)
+			{
+				// Save the user data
+				$user->save();
 
-			// Purge the user field data cache
-			Cache::tags("user.{$user->id}.field")->flush();
+				// Purge the user field data cache
+				Cache::tags("user.{$user->id}.field")->flush();
+
+				// Show a success message
+				Session::flash('messages.success', Lang::get('user.security_saved'));
+			}
+			else
+			{
+				// There's nothing to save
+				Session::flash('messages.info', Lang::get('user.security_no_changes'));
+			}
 
 			// Redirect back to the previous URL
-			Session::flash('messages.success', Lang::get('user.security_saved'));
-
 			return Redirect::to(URL::previous());
 		}
 	}

@@ -49,7 +49,7 @@ class View extends \Illuminate\Support\Facades\View {
 			static::$defaults = array(
 				'error'     => Session::get('messages.error'),
 				'success'   => Session::get('messages.success'),
-				'global'    => Session::get('messages.global'),
+				'info'      => Session::get('messages.info'),
 				'appconfig' => Config::get('app'),
 				'auth'      => Auth::user(),
 				'title'     => null,

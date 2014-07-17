@@ -35,6 +35,8 @@ return array(
 	'remove_users'            => 'Remove these users',
 	'users_not_selected'      => 'You did not select any users',
 	'users_removed'           => 'Selected users have been removed from this group',
+	'general_info'            => 'General information',
+	'membership_preferences'  => 'Membership preferences',
 	'group_name'              => 'Group name',
 	'description'             => 'Description',
 	'group_type'              => 'Group type',
@@ -50,6 +52,10 @@ return array(
 	'notify_enable_exp'       => 'Group managers will be notified when a user joins or requests membership to '.
 	                             'the group',
 	'notify_disable'          => 'Disable',
+	'user_compliance'         => 'User compliance',
+	'auto_add_users'          => 'Auto-add new users',
+	'auto_add_users_exp'      => 'If enabled, all users who register on the site will be automatically added to '.
+	                             'this group',
 	'open_requests'           => 'Please close the open group member requests before changing the group type',
 	'info_saved'              => 'Group information has been saved',
 	'already_member'          => 'You are already a member of this group',
