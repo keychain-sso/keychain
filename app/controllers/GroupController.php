@@ -317,9 +317,7 @@ class GroupController extends BaseController {
 			if ( ! $member && $group->type == GroupTypes::REQUEST)
 			{
 				// Validate posted fields
-				$validator = Validator::make(Input::all(), array(
-					'justification' => 'required',
-				));
+				$validator = Validator::make(Input::all(), array('justification' => 'required'));
 
 				// Run the validator
 				if ($validator->fails())

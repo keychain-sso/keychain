@@ -46,7 +46,7 @@ class AuthController extends BaseController {
 		{
 			// Define validation rules
 			$validator = Validator::make(Input::all(), array(
-				'email'    => 'required|email|max:80',
+				'email'    => 'required',
 				'password' => 'required'
 			));
 
@@ -80,6 +80,51 @@ class AuthController extends BaseController {
 
 				return Redirect::to(URL::previous())->withInput();
 			}
+		}
+	}
+
+	/**
+	 * Displays the forgot password page
+	 *
+	 * @access public
+	 * @return View
+	 */
+	public function getForgot()
+	{
+		return View::make('auth/forgot', 'auth.forgot_password');
+	}
+
+	/**
+	 * Handles POST events for the forgot password
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postForgot()
+	{
+		if (Input::has('_send'))
+		{
+			// Define validation rules
+			$validator = Validator::make(Input::all(), array('email' => 'required|exists:user_emails,address'));
+
+			// Run the validator
+			if ($validator->fails())
+			{
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Get the associated email address
+			$email = UserEmail::where('address', Input::get('email'))->first();
+
+			// Send the verification code
+			Verifier::make(TokenTypes::PASSWORD, 'email.forgot_password', $email);
+
+			// Redirect to the previous URL
+			Session::flash('messages.success', Lang::get('auth.verify_email'));
+
+			return Redirect::to(URL::previous());
 		}
 	}
 
@@ -129,18 +174,18 @@ class AuthController extends BaseController {
 			$user->save();
 
 			// Insert the user's email address
-			$userEmail = new UserEmail;
-			$userEmail->user_id = $user->id;
-			$userEmail->address = Input::get('email');
-			$userEmail->primary = Flags::YES;
-			$userEmail->verified = Flags::NO;
-			$userEmail->save();
+			$email = new UserEmail;
+			$email->user_id = $user->id;
+			$email->address = Input::get('email');
+			$email->primary = Flags::YES;
+			$email->verified = Flags::NO;
+			$email->save();
 
 			// Send the email verification mail
-			Verifier::make('register', $userEmail->id);
+			Verifier::make(TokenTypes::EMAIL, 'email.register', $email);
 
 			// Show registration success message
-			Session::flash('messages.success', Lang::get('auth.register_email'));
+			Session::flash('messages.success', Lang::get('auth.verify_email'));
 
 			return Redirect::to(URL::previous());
 		}

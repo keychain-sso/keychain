@@ -43,79 +43,47 @@ use View;
 class Verifier {
 
 	/**
-	 * Transforms a 1D array to a laravel select worthy array
+	 * Creates a validation token and sends out the email containing
+	 * that token
 	 *
 	 * @static
 	 * @access public
+	 * @param  int  $type
 	 * @param  string  $action
-	 * @param  int  $id
+	 * @param  UserEmail  $email
 	 * @return void
 	 */
-	public static function make($action, $id)
+	public static function make($type, $action, $email)
 	{
-		// Generate a unique hash
-		$hash = md5(microtime().$action.$id);
-
-		// Based on the type, determine all data
-		switch ($action)
-		{
-			case 'email_add':
-			case 'email_verify':
-			case 'register':
-
-				// Classify into a broader bucket
-				$type = TokenTypes::EMAIL;
-				$verify = 'email';
-
-				// Resolve the user and email address
-				$email = UserEmail::findOrFail($id);
-				$user = User::find($email->user_id);
-				$to = $email->address;
-				break;
-
-			case 'forgot':
-
-				// Classify into a broader bucket
-				$type = TokenTypes::PASSWORD;
-				$verify = 'password';
-
-				// Resolve the user and email address
-				$user = User::find($id);
-				$to = UserEmail::where('user_id', $id)->where('primary', Flags::YES)->firstOrFail()->address;
-				break;
-
-			default:
-
-				App::abort(HTTPStatus::NOTFOUND);
-				break;
-		}
+		// Get the associated user
+		$user = User::find($email->user_id);
 
 		// Delete any previous token for this permit
-		Token::where('permits_id', $id)->where('permits_type', $type)->delete();
+		Token::where('permits_id', $email->id)->where('permits_type', $type)->delete();
 
 		// Create the token entry
 		$token = new Token;
-		$token->token = $hash;
-		$token->permits_id = $id;
+		$token->token = md5(microtime().$action.$email->id);
+		$token->permits_id = $email->id;
 		$token->permits_type = $type;
 		$token->save();
 
 		// Build the email template
 		$data = array(
 			'user'   => $user,
-			'action' => Lang::get("email.action_{$action}"),
-			'token'  => url("token/verify/{$verify}/{$hash}"),
+			'action' => Lang::get($action),
+			'token'  => url("token/verify/{$token->token}"),
 		);
 
-		// Finally, we send the email
-		Mail::queue('emails/verify', $data, function($message) use ($to)
+		// Finally, we send the email to the user
+		Mail::queue('emails/verify', $data, function($message) use ($email)
 		{
-			$message->to($to)->subject(Lang::get('email.mail_subject'));
+			$message->to($email->address)->subject(Lang::get('email.mail_subject'));
 		});
 	}
 
 	/**
-	 * Validates a token based on its type
+	 * Validates an email/password token based
 	 *
 	 * @static
 	 * @access public
@@ -123,29 +91,29 @@ class Verifier {
 	 * @param  string  $hash
 	 * @return bool
 	 */
-	public static function check($type, $hash)
+	public static function check($hash)
 	{
+		// Fetch the token
+		$token = Token::where('token', $hash)->firstOrFail();
+
+		// Get the associated user and email
+		$email = UserEmail::find($token->permits_id);
+		$user = User::find($email->user_id);
+
 		// Perform validation based on token type
-		switch ($type)
+		switch ($token->permits_type)
 		{
-			case 'email':
-
-				// Fetch the token
-				$token = Token::where('permits_type', TokenTypes::EMAIL)->where('token', $hash)->firstOrFail();
-
-				// Get the associated user and email
-				$userEmail = UserEmail::find($token->permits_id);
-				$user = User::find($userEmail->user_id);
+			case TokenTypes::EMAIL:
 
 				// Verify the associated email
-				$userEmail->verified = Flags::YES;
-				$userEmail->save();
+				$email->verified = Flags::YES;
+				$email->save();
 
 				// If the user is inactive, activate their account
 				// We also process auto-join groups at this point
 				// As a security check, we do it only if the primary email is
 				// being activated
-				if ($user->status == UserStatus::INACTIVE && $userEmail->primary)
+				if ($user->status == UserStatus::INACTIVE && $email->primary)
 				{
 					// Activate the user
 					$user->status = UserStatus::ACTIVE;
@@ -174,7 +142,7 @@ class Verifier {
 				}
 
 				// Purge the user field data cache
-				Cache::tags("user.{$userEmail->user_id}.field")->flush();
+				Cache::tags("user.{$email->user_id}.field")->flush();
 
 				// Delete the token
 				$token->delete();
@@ -196,13 +164,10 @@ class Verifier {
 
 				return View::make('common/notice', 'global.information', $data);
 
-			case 'password':
-
-				// Fetch the token
-				$token = Token::where('permits_type', TokenTypes::PASSWORD)->where('token', $hash)->firstOrFail();
+			case TokenTypes::PASSWORD:
 
 				// Set the session flag to indicate successful validation
-				Session::set('security.token.validated', true);
+				Session::set('security.reset.email', $email);
 
 				// Delete the token
 				$token->delete();

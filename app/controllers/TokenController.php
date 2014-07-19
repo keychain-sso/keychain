@@ -24,16 +24,15 @@
 class TokenController extends BaseController {
 
 	/**
-	 * Verifies a specific token
+	 * Verifies an email/password token
 	 *
 	 * @access public
-	 * @param  string  $type
-	 * @param  string  $hash
+	 * @param  string  $token
 	 * @return View
 	 */
-	public function getVerify($type, $hash)
+	public function getVerify($token)
 	{
-		return Verifier::check($type, $hash);
+		return Verifier::check($token);
 	}
 
 }

@@ -11,15 +11,17 @@ return array(
 	|
 	*/
 
-	'log_into'             => 'Log into :site',
-	'login'                => 'Login',
-	'register'             => 'Register',
-	'remember'             => 'Remember me',
-	'login_failed'         => 'Incorrect email address and/or password',
-	'create_account'       => 'Create an account',
-	'forgot_password'      => 'Forgot your password?',
-	'confirm_password'     => 'Confirm password',
-	'already_have_account' => 'Already have an account?',
-	'register_email'       => 'An e-mail has been sent to you containing further instructions',
+	'log_into'               => 'Log into :site',
+	'login'                  => 'Login',
+	'register'               => 'Register',
+	'remember'               => 'Remember me',
+	'login_failed'           => 'Incorrect email address and/or password',
+	'create_account'         => 'Create an account',
+	'forgot_password'        => 'Forgot your password?',
+	'confirm_password'       => 'Confirm password',
+	'already_have_account'   => 'Already have an account?',
+	'verify_email'           => 'An e-mail has been sent to you containing further instructions',
+	'send_confirmation_code' => 'Send confirmation code',
+	'return_login'           => 'Return to login',
 
 );

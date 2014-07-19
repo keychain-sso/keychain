@@ -95,12 +95,12 @@ class UserController extends BaseController {
 			$user->save();
 
 			// Insert the user's email address
-			$userEmail = new UserEmail;
-			$userEmail->user_id = $user->id;
-			$userEmail->address = Input::get('email');
-			$userEmail->primary = Flags::YES;
-			$userEmail->verified = Flags::YES;
-			$userEmail->save();
+			$email = new UserEmail;
+			$email->user_id = $user->id;
+			$email->address = Input::get('email');
+			$email->primary = Flags::YES;
+			$email->verified = Flags::YES;
+			$email->save();
 
 			// Redirect to the new user's profile
 			return Redirect::to("user/view/{$user->hash}");
@@ -192,10 +192,10 @@ class UserController extends BaseController {
 	 * @access public
 	 * @param  string  $hash
 	 * @param  string  $action
-	 * @param  int  $email
+	 * @param  int  $id
 	 * @return View
 	 */
-	public function getEmails($hash, $action = null, $email = 0)
+	public function getEmails($hash, $action = null, $id = 0)
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
@@ -204,22 +204,31 @@ class UserController extends BaseController {
 		// Validate edit rights
 		Access::restrict(Permissions::USER_EDIT, $user);
 
+		// Get the associated email
+		if ($id > 0)
+		{
+			$email = UserEmail::where('id', $id)->where('user_id', $user->id)->firstOrFail();
+		}
+
 		// Perform the requested action
 		switch ($action)
 		{
 			case 'remove':
 
-				// Check for user_id as well, to avoid injection
 				// Primary emails may not be removed
-				UserEmail::where('id', $email)->where('user_id', $user->id)->where('primary', Flags::NO)->delete();
+				if ( ! $email->primary)
+				{
+					// Delete the email address
+					$email->delete();
 
-				// Purge the user field data cache
-				Cache::tags("user.{$user->id}.field")->flush();
+					// Purge the user field data cache
+					Cache::tags("user.{$user->id}.field")->flush();
 
-				// Redirect back to the previous URL
-				Session::flash('messages.success', Lang::get('user.email_removed'));
+					// Redirect back to the previous URL
+					Session::flash('messages.success', Lang::get('user.email_removed'));
 
-				return Redirect::to(URL::previous());
+					return Redirect::to(URL::previous());
+				}
 
 			case 'verify':
 
@@ -228,9 +237,8 @@ class UserController extends BaseController {
 				// the email address
 				if (Access::check(Permissions::USER_MANAGE))
 				{
-					$userEmail = UserEmail::where('id', $email)->firstOrFail();
-					$userEmail->primary = Flags::YES;
-					$userEmail->save();
+					$email->primary = Flags::YES;
+					$email->save();
 
 					// Redirect back to the previous URL
 					Session::flash('messages.success', Lang::get('user.email_verify_editor'));
@@ -238,7 +246,7 @@ class UserController extends BaseController {
 				else
 				{
 					// Send the email verification mail
-					Verifier::make('email_verify', $email);
+					Verifier::make(TokenTypes::EMAIL, 'email.address_verify', $email);
 
 					// Redirect back to the previous URL
 					Session::flash('messages.success', Lang::get('user.email_verify'));
@@ -248,25 +256,29 @@ class UserController extends BaseController {
 
 			case 'primary':
 
-				// Check for user_id as well, to avoid injection
 				// Only verified emails can be marked as primary
-				$userEmail = UserEmail::where('id', $email)->where('user_id', $user->id)->where('verified', Flags::YES)->firstOrFail();
-				$userEmail->primary = Flags::YES;
-				$userEmail->save();
+				if ($email->verified)
+				{
+					$email->primary = Flags::YES;
+					$email->save();
 
-				// Now, mark the previous primary as regular
-				UserEmail::where('user_id', $user->id)->where('id', '<>', $email)->update(array('primary' => 0));
+					// Now, mark the previous primary as regular
+					UserEmail::where('user_id', $user->id)->where('id', '<>', $id)->update(array('primary' => Flags::NO));
 
-				// Purge the user field data cache
-				Cache::tags("user.{$user->id}.field")->flush();
+					// Purge the user field data cache
+					Cache::tags("user.{$user->id}.field")->flush();
 
-				// Redirect back to the previous URL
-				return Redirect::to(URL::previous());
+					// Redirect back to the previous URL
+					return Redirect::to(URL::previous());
+				}
 
 			default:
 
 				return View::make('user/view', 'user.manage_emails', array_merge($data, array('modal' => 'user.emails')));
 		}
+
+		// If we are here, something is fishy
+		App::abort(HTTPStatus::FORBIDDEN);
 	}
 
 	/**
@@ -286,10 +298,11 @@ class UserController extends BaseController {
 			// Validate edit rights
 			Access::restrict(Permissions::USER_EDIT, $user);
 
+			// Does the user have manager access?
+			$manager = Access::check(Permissions::USER_MANAGE);
+
 			// Validate posted fields
-			$validator = Validator::make(Input::all(), array(
-				'email' => 'required|email|max:80|unique:user_emails,address',
-			));
+			$validator = Validator::make(Input::all(), array('email' => 'required|email|max:80|unique:user_emails,address'));
 
 			// Run the validator
 			if ($validator->fails())
@@ -304,17 +317,20 @@ class UserController extends BaseController {
 			$email->user_id = $user->id;
 			$email->address = Input::get('email');
 			$email->primary = Flags::NO;
-			$email->verified = Flags::NO;
+			$email->verified = $manager;
 			$email->save();
 
-			// Send the verification token
-			Verifier::make('email_add', $email->id);
+			// Send the verification token for non-managers only
+			if ( ! $manager)
+			{
+				Verifier::make(TokenTypes::EMAIL, 'email.address_add', $email);
+			}
 
 			// Purge the user field data cache
 			Cache::tags("user.{$user->id}.field")->flush();
 
 			// Redirect back to the previous URL
-			Session::flash('messages.success', Lang::get('user.email_verify'));
+			Session::flash('messages.success', $manager ? Lang::get('user.email_added') : Lang::get('user.email_verify'));
 
 			return Redirect::to(URL::previous());
 		}
@@ -326,10 +342,10 @@ class UserController extends BaseController {
 	 * @access public
 	 * @param  string  $hash
 	 * @param  string  $action
-	 * @param  int  $key
+	 * @param  int  $id
 	 * @return View|Redirect
 	 */
-	public function getKeys($hash, $action = null, $key = 0)
+	public function getKeys($hash, $action = null, $id = 0)
 	{
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
@@ -344,7 +360,7 @@ class UserController extends BaseController {
 			case 'remove':
 
 				// Also check for user_id to avoid injection
-				UserKey::where('id', $key)->where('user_id', $user->id)->delete();
+				UserKey::where('id', $id)->where('user_id', $user->id)->delete();
 
 				// Redirect back to previous URL
 				Session::flash('messages.success', Lang::get('user.ssh_key_removed'));
