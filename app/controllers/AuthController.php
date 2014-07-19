@@ -170,7 +170,7 @@ class AuthController extends BaseController {
 				return Redirect::to(URL::previous())->withInput();
 			}
 
-			// Change the user's password
+			// Has the token verification been done?
 			if (Session::has('security.reset.account'))
 			{
 				// Read the email from session
@@ -180,6 +180,9 @@ class AuthController extends BaseController {
 				$user = User::find($email->user_id);
 				$user->password = Hash::make(Input::get('new_password'));
 				$user->save();
+
+				// Remove the token email
+				Session::forget('security.reset.account');
 
 				// Redirect to the login page
 				Session::flash('messages.success', Lang::get('auth.password_reset'));
