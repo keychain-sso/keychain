@@ -23,6 +23,7 @@ use HTTPStatus;
 use Lang;
 use Mail;
 use NoticeTypes;
+use Redirect;
 use Session;
 use Token;
 use TokenTypes;
@@ -167,7 +168,7 @@ class Verifier {
 			case TokenTypes::PASSWORD:
 
 				// Set the session flag to indicate successful validation
-				Session::set('security.reset.email', $email);
+				Session::put('security.reset.account', $email);
 
 				// Delete the token
 				$token->delete();

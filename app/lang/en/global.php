@@ -34,7 +34,7 @@ return array(
 	'others'            => 'Others',
 	'click_again'       => 'Click again to confirm',
 	'please_wait'       => 'Please wait&hellip;',
-	'email_verified'    => 'Your email address has been verified',
+	'email_verified'    => 'Your email address has been verified.',
 	'return_profile'    => 'Click here to return to your user profile',
 	'return_login'      => 'Click here to go to the login screen',
 	'search_user'       => 'Search by name or email',

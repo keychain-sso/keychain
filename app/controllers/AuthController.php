@@ -91,7 +91,7 @@ class AuthController extends BaseController {
 	 */
 	public function getForgot()
 	{
-		return View::make('auth/forgot', 'auth.forgot_password');
+		return View::make('auth/forgot', 'auth.reset_password');
 	}
 
 	/**
@@ -125,6 +125,71 @@ class AuthController extends BaseController {
 			Session::flash('messages.success', Lang::get('auth.verify_email'));
 
 			return Redirect::to(URL::previous());
+		}
+	}
+
+	/**
+	 * Displays the reset password page
+	 *
+	 * @access public
+	 * @return View
+	 */
+	public function getReset()
+	{
+		if (Session::has('security.reset.account'))
+		{
+			return View::make('auth/reset', 'auth.reset_password');
+		}
+		else
+		{
+			App::abort(HTTPStatus::FORBIDDEN);
+		}
+	}
+
+	/**
+	 * Handles POST events for the reset password screen
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postReset()
+	{
+		if (Input::has('_reset'))
+		{
+			// Define validation rules
+			$validator = Validator::make(Input::all(), array(
+				'new_password'     => 'required|min:5|same:confirm_password',
+				'confirm_password' => 'required',
+			));
+
+			// Run the validator
+			if ($validator->fails())
+			{
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Change the user's password
+			if (Session::has('security.reset.account'))
+			{
+				// Read the email from session
+				$email = Session::get('security.reset.account');
+
+				// Get the associated user
+				$user = User::find($email->user_id);
+				$user->password = Hash::make(Input::get('new_password'));
+				$user->save();
+
+				// Redirect to the login page
+				Session::flash('messages.success', Lang::get('auth.password_reset'));
+
+				return Redirect::to('auth/login');
+			}
+			else
+			{
+				App::abort(HTTPStatus::FORBIDDEN);
+			}
 		}
 	}
 
