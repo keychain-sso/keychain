@@ -48,7 +48,7 @@
 									{{ Lang::get('group.leave_group') }}
 								</a>
 							</li>
-						@elseif ($editor || $group->type != GroupTypes::CLOSED)
+						@elseif ( ! $member && ($editor || $group->type != GroupTypes::CLOSED))
 							<li>
 								<a href="{{ url("group/join/{$group->hash}") }}">
 									<span class="glyphicon glyphicon-link"></span>

@@ -146,7 +146,7 @@ class GroupController extends BaseController {
 				// Clear the ACL cache for the selected users
 				foreach ($users as $user)
 				{
-					Cache::tags("user.{$user->id}.security")->flush();
+					Cache::tags("security.user.{$user->id}")->flush();
 				}
 
 				// Remove these users from the group
@@ -272,7 +272,7 @@ class GroupController extends BaseController {
 				$userGroup->save();
 
 				// Clear the ACL cache for current user
-				Cache::tags("user.{$userId}.security")->flush();
+				Cache::tags("security.user.{$userId}")->flush();
 
 				// Redirect to previous URL
 				Session::flash('messages.success', Lang::get('group.group_joined'));
@@ -334,6 +334,32 @@ class GroupController extends BaseController {
 				$request->justification = Input::get('justification');
 				$request->save();
 
+				// Get a list of users who has group_edit rights
+				$editorIds = Access::lists(Permissions::GROUP_EDIT, $group, 0, true);
+				$editors = User::whereIn('id', $editorIds['users'])->with('primaryEmail')->get();
+
+				// Send the join notification to each admin
+				foreach ($editors as $editor)
+				{
+					$action = Lang::get('email.join_request', array(
+						'user'  => $editor->name,
+						'group' => $group->name,
+					));
+
+					$data = array(
+						'action'        => $action,
+						'justification' => Input::get('justification'),
+						'user'          => $editor,
+						'group'         => $group,
+						'link'          => true,
+					);
+
+					Mail::queue('emails/group', $data, function($message) use ($editor)
+					{
+						$message->to($editor->primaryEmail[0]->address)->subject(Lang::get('email.subject_group'));
+					});
+				}
+
 				// Redirect back to the previous URL
 				Session::flash('messages.success', Lang::get('group.join_request_submitted'));
 
@@ -374,7 +400,7 @@ class GroupController extends BaseController {
 			UserGroup::where('user_id', $userId)->where('group_id', $group->id)->delete();
 
 			// Clear the ACL cache for current user
-			Cache::tags("user.{$userId}.security")->flush();
+			Cache::tags("security.user.{$userId}")->flush();
 
 			// Redirect to previous URL
 			Session::flash('messages.success', Lang::get('group.group_left'));
@@ -448,7 +474,7 @@ class GroupController extends BaseController {
 				$userGroup->save();
 
 				// Clear the ACL cache for current user
-				Cache::tags("user.{$request->user_id}.security")->flush();
+				Cache::tags("security.user.{$request->user_id}")->flush();
 
 				// Remove the group request
 				$request->delete();
@@ -547,7 +573,7 @@ class GroupController extends BaseController {
 					);
 
 					// Clear the ACL cache for the selected users
-					Cache::tags("user.{$user->id}.security")->flush();
+					Cache::tags("security.user.{$user->id}")->flush();
 				}
 
 				// Remove these users from the group to avoid duplicate entries
@@ -589,7 +615,7 @@ class GroupController extends BaseController {
 		// Clear the ACL cache for all members of the group
 		foreach ($members as $member)
 		{
-			Cache::tags("user.{$member}.security")->flush();
+			Cache::tags("security.user.{$member}")->flush();
 		}
 
 		// Delete the group

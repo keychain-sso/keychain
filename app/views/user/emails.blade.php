@@ -12,7 +12,13 @@
 		<ul class="list-group">
 			<li class="list-group-item">
 				<div class="pull-right">
-					<a class="btn btn-default btn-xs disabled">{{ Lang::get('user.verified') }}</a>
+					@if ($emails->primary->verified)
+						<a class="btn btn-default btn-xs disabled">{{ Lang::get('user.verified') }}</a>
+					@else
+						<a href="{{ url("user/emails/{$user->hash}/verify/{$emails->primary->id}") }}" class="btn btn-xs btn-default">
+							{{ Lang::get('user.verify') }}
+						</a>
+					@endif
 
 					<div title="{{ Lang::get('user.primary_cant_remove') }}" class="show-inline-table" data-toggle="tooltip">
 						<a class="btn btn-xs btn-danger disabled">

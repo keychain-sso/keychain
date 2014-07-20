@@ -1,8 +1,8 @@
-<p>{{ Lang::get('email.salutation', array('name' => $user['name'])) }}</p>
+<p>{{ Lang::get('email.salutation', array('user' => $user['name'])) }}</p>
 
 <p>
 	{{ $action }}
-	{{ Lang::get('email.click_link') }}
+	{{ Lang::get('email.link_email') }}
 </p>
 
 <p>{{ $token }}</p>

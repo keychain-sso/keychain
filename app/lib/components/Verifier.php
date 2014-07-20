@@ -79,7 +79,7 @@ class Verifier {
 		// Finally, we send the email to the user
 		Mail::queue('emails/verify', $data, function($message) use ($email)
 		{
-			$message->to($email->address)->subject(Lang::get('email.mail_subject'));
+			$message->to($email->address)->subject(Lang::get('email.subject_verify'));
 		});
 	}
 
@@ -143,7 +143,7 @@ class Verifier {
 				}
 
 				// Purge the user field data cache
-				Cache::tags("user.{$email->user_id}.field")->flush();
+				Cache::tags("field.user.{$email->user_id}")->flush();
 
 				// Delete the token
 				$token->delete();
