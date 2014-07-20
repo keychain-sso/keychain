@@ -51,7 +51,7 @@ class Access {
 		$subjectGroups = Auth::groups();
 
 		// Fetch all privileges tied to the subject and store them in the session
-		$acl = Cache::tags("security.user.{$subjectUser->id}")->remember('access.check', 60, function()
+		$acl = Cache::tags("security.user.{$subjectUser->id}")->remember('acl', 60, function()
 		{
 			$acl = array();
 
@@ -178,8 +178,7 @@ class Access {
 	}
 
 	/**
-	 * Fetches a list of users and groups who have permissions on a
-	 * specific object
+	 * Fetches a list of users and groups who have permissions on a specific object
 	 *
 	 * @static
 	 * @access public
@@ -189,81 +188,86 @@ class Access {
 	 * @param  bool  $expand
 	 * @return array
 	 */
-	public static function lists($flag, $object = null, $field = 0, $expand = false)
+	public static function listForObject($flag, $object, $field = 0, $expand = false)
 	{
-		return Cache::tags("security.global")->remember('access.lists', 60, function() use ($flag, $object, $field, $expand)
+		$acl = array(
+			'users'  => array(),
+			'groups' => array(),
+		);
+
+		// Determine object type
+		$class = get_class($object);
+
+		switch ($class)
 		{
-			$acl['users'] = array();
-			$acl['groups'] = array();
+			case 'User':
 
-			// Determine object type
-			$class = get_class($object);
+				$type = ACLTypes::USER;
 
-			switch ($class)
+				break;
+
+			case 'Group':
+
+				$type = ACLTypes::GROUP;
+
+				break;
+
+			default:
+
+				return array();
+		}
+
+		// Query all subjects that have access to this object
+		// We also fetch the subjects who have access to all objects against this flag
+		$list = ACL::where('access', $flag)->where('field_id', $field)->where(function($outer) use ($object, $type)
+		{
+			$outer->where(function($inner) use ($object, $type)
 			{
-				case 'User':
+				$inner->where('object_id', $object->id)->where('object_type', $type);
+			})->orWhere(function($inner)
+			{
+				$inner->where('object_id', 0)->where('object_type', ACLTypes::ALL);
+			});
+		})->get();
 
-					$type = ACLTypes::USER;
+		// Populate the subject IDs
+		foreach ($list as $item)
+		{
+			switch ($item->subject_type)
+			{
+				case ACLTypes::USER:
+
+					$acl['users'][] = $item->subject_id;
 
 					break;
 
-				case 'Group':
+				case ACLTypes::GROUP:
 
-					$type = ACLTypes::GROUP;
+					if ($expand)
+					{
+						$groups[] = $item->subject_id;
+					}
+					else
+					{
+						$acl['groups'][] = $item->subject_id;
+					}
 
 					break;
-
-				default:
-
-					return array();
 			}
+		}
 
-			// Query all subjects that have access to this object
-			// We also fetch the subjects who have access to all objects against this flag
-			$list = ACL::where('access', $flag)->where('field_id', $field)->where(function($outer) use ($object, $type)
-			{
-				$outer->where(function($inner) use ($object, $type)
-				{
-					$inner->where('object_id', $object->id)->where('object_type', $type);
-				})->orWhere(function($inner)
-				{
-					$inner->where('object_id', 0)->where('object_type', ACLTypes::ALL);
-				});
-			})->get();
+		// Populate expanded IDs
+		if (isset($groups))
+		{
+			$users = UserGroup::whereIn('group_id', $groups)->lists('user_id');
+			$acl['users'] = array_merge($acl['users'], $users);
+		}
 
-			// Populate the subject IDs
-			foreach ($list as $item)
-			{
-				switch ($item->subject_type)
-				{
-					case ACLTypes::USER:
+		// Remove duplicate entries
+		$acl['users'] = array_unique($acl['users']);
+		$acl['groups'] = array_unique($acl['groups']);
 
-						$acl['users'][] = $item->subject_id;
-
-						break;
-
-					case ACLTypes::GROUP:
-
-						if ($expand)
-						{
-							$users = UserGroup::where('group_id', $item->subject_id)->lists('user_id');
-							$acl['users'] = array_merge($acl['users'], $users);
-						}
-						else
-						{
-							$acl['groups'][] = $item->subject_id;
-						}
-
-						break;
-				}
-			}
-
-			// Remove duplicate entries
-			$acl['users'] = array_unique($acl['users']);
-			$acl['groups'] = array_unique($acl['groups']);
-
-			return $acl;
-		});
+		return $acl;
 	}
 
 }
