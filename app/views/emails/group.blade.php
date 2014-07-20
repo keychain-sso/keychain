@@ -6,13 +6,8 @@
 	<p>{{{ $justification }}}</p>
 @endif
 
-@if (isset($link))
-	<p>{{ Lang::get('email.link_group') }}</p>
-@endif
-
-@if (isset($link))
-	<p>{{ url("group/requests/{$group['hash']}") }}</p>
-@endif
+<p>{{ Lang::get('email.link_login', array('title', Config::get('app.title'))) }}</p>
+<p>{{ url('user/login') }}</p>
 
 <hr />
 <em>{{ Lang::get('email.system_generated') }}</em>

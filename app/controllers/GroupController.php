@@ -352,7 +352,6 @@ class GroupController extends BaseController {
 						'justification' => Input::get('justification'),
 						'user'          => $editor,
 						'group'         => $group,
-						'link'          => true,
 					);
 
 					Mail::queue('emails/group', $data, function($message) use ($editor)
@@ -480,6 +479,18 @@ class GroupController extends BaseController {
 				// Remove the group request
 				$request->delete();
 
+				// Send approval notification to user
+				$data = array(
+					'action' => Lang::get('email.request_approved'),
+					'user'   => $request->user,
+					'group'  => $group,
+				);
+
+				Mail::queue('emails/group', $data, function($message) use ($request)
+				{
+					$message->to($request->user->primaryEmail[0]->address)->subject(Lang::get('email.subject_group'));
+				});
+
 				// Redirect to previous URL
 				Session::flash('messages.success', Lang::get('group.request_approved'));
 
@@ -489,6 +500,18 @@ class GroupController extends BaseController {
 
 				// Remove the group request
 				$request->delete();
+
+				// Send rejection notification to user
+				$data = array(
+					'action' => Lang::get('email.request_rejected'),
+					'user'   => $request->user,
+					'group'  => $group,
+				);
+
+				Mail::queue('emails/group', $data, function($message) use ($request)
+				{
+					$message->to($request->user->primaryEmail[0]->address)->subject(Lang::get('email.subject_group'));
+				});
 
 				// Redirect to previous URL
 				Session::flash('messages.success', Lang::get('group.request_rejected'));

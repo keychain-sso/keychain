@@ -19,10 +19,12 @@ return array(
 	'address_verify'      => 'You requested verification of your email address for your SSO account.',
 	'register'            => 'You recently registered for a new SSO account.',
 	'forgot_password'     => 'You recently requested a password reset for your SSO account.',
-	'link_email'          => 'Please click on the following link to validate your email:',
-	'link_group'          => 'Please click the following link to see pending membership requests:',
+	'link_email'          => 'Please navigate to the following link to validate your email:',
+	'link_login'          => 'Please navigate to the following link to log into :title:',
 	'system_generated'    => 'This is a system generated email. Please do not respond to it.',
 	'join_request'        => ':user has requested membership to the :group group; the justification '.
 	                         'provided by the user is as follows:',
+	'request_approved'    => 'Your membership request to the :group group has been approved.',
+	'request_rejected'    => 'Your membership request to the :group group has been rejected.',
 
 );
