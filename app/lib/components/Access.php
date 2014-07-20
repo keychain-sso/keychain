@@ -17,7 +17,9 @@ use ACL;
 use ACLTypes;
 use App;
 use Cache;
+use Group;
 use HTTPStatus;
+use User;
 use UserGroup;
 
 use Keychain\Facades\Auth;
@@ -188,13 +190,8 @@ class Access {
 	 * @param  bool  $expand
 	 * @return array
 	 */
-	public static function listForObject($flag, $object, $field = 0, $expand = false)
+	public static function lists($flag, $object, $field = 0, $expand = false)
 	{
-		$acl = array(
-			'users'  => array(),
-			'groups' => array(),
-		);
-
 		// Determine object type
 		$class = get_class($object);
 
@@ -230,44 +227,36 @@ class Access {
 			});
 		})->get();
 
-		// Populate the subject IDs
-		foreach ($list as $item)
+		// Get the user_ids and group_ids
+		$userIds = $list->filter(function($item)
 		{
-			switch ($item->subject_type)
-			{
-				case ACLTypes::USER:
+			return $item->subject_type == ACLTypes::USER;
+		})->lists('subject_id');
 
-					$acl['users'][] = $item->subject_id;
+		$groupIds = $list->filter(function($item)
+		{
+			return $item->subject_type == ACLTypes::GROUP;
+		})->lists('subject_id');
 
-					break;
-
-				case ACLTypes::GROUP:
-
-					if ($expand)
-					{
-						$groups[] = $item->subject_id;
-					}
-					else
-					{
-						$acl['groups'][] = $item->subject_id;
-					}
-
-					break;
-			}
+		// If set to expand, get the user's against the groupIds
+		if ($expand)
+		{
+			$userIds = array_merge($userIds, UserGroup::whereIn('group_id', $groupIds)->lists('user_id'));
+			$groupIds = array();
 		}
 
-		// Populate expanded IDs
-		if (isset($groups))
+		// Finally, get the list of users and groups
+		if (count($userIds) > 0)
 		{
-			$users = UserGroup::whereIn('group_id', $groups)->lists('user_id');
-			$acl['users'] = array_merge($acl['users'], $users);
+			$acl['users'] = User::whereIn('id', $userIds)->with('primaryEmail')->get();
 		}
 
-		// Remove duplicate entries
-		$acl['users'] = array_unique($acl['users']);
-		$acl['groups'] = array_unique($acl['groups']);
+		if (count($groupIds) > 0)
+		{
+			$acl['groups'] = Group::whereIn('id', $groupIds)->get();
+		}
 
-		return $acl;
+		return (object) $acl;
 	}
 
 }
