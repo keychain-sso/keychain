@@ -645,10 +645,17 @@ class UserController extends BaseController {
 	 */
 	private function getUserListData()
 	{
+		// Fetch the user list
 		$length = Config::get('view.icon_length');
 		$users = User::with('emails')->orderBy('name')->paginate($length);
 
-		return array('users' => $users);
+		// Check if current user is a manager
+		$manager = Access::check(Permissions::USER_MANAGE);
+
+		return array(
+			'users'   => $users,
+			'manager' => $manager,
+		);
 	}
 
 	/**

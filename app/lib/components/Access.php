@@ -17,6 +17,7 @@ use ACL;
 use ACLTypes;
 use App;
 use Cache;
+use Field;
 use Group;
 use HTTPStatus;
 use User;
@@ -42,15 +43,21 @@ class Access {
 	 * @access public
 	 * @param  string  $flag
 	 * @param  User|Group  $object
-	 * @param  int  $field
+	 * @param  Field  $field
 	 * @return bool
 	 */
-	public static function check($flag, $object = null, $field = 0)
+	public static function check($flag, $object = null, $field = null)
 	{
 		// Fetch all data related to the subject, which is always
 		// the currently logged in user
 		$subjectUser = Auth::user();
 		$subjectGroups = Auth::groups();
+
+		// Set field ID to 0 if no field was passed
+		if (is_null($field))
+		{
+			$field = (object) array('id' => 0);
+		}
 
 		// Fetch all privileges tied to the subject and store them in the session
 		$acl = Cache::tags("security.user.{$subjectUser->id}")->remember('acl', 60, function()
@@ -103,19 +110,19 @@ class Access {
 			case 'User':
 
 				// Does the user have access to his/her own field?
-				if ($object->id == $subjectUser->id && isset($acl[ACLTypes::SELF.".{$field}.{$flag}"]))
+				if ($object->id == $subjectUser->id && isset($acl[ACLTypes::SELF.".{$field->id}.{$flag}"]))
 				{
 					return true;
 				}
 
 				// Does the subject have access to all users?
-				if (isset($acl[ACLTypes::ALL.".{$field}.{$flag}"]))
+				if (isset($acl[ACLTypes::ALL.".{$field->id}.{$flag}"]))
 				{
 					return true;
 				}
 
 				// Does the subject have access to this specific object user?
-				if (isset($acl["{$object->id}.".ACLTypes::USER.".{$field}.{$flag}"]))
+				if (isset($acl["{$object->id}.".ACLTypes::USER.".{$field->id}.{$flag}"]))
 				{
 					return true;
 				}
@@ -123,7 +130,7 @@ class Access {
 				// Does the subject have access to any of the object user's groups?
 				foreach ($object->groups as $group)
 				{
-					if (isset($acl["{$group->group_id}.".ACLTypes::GROUP.".{$field}.{$flag}"]))
+					if (isset($acl["{$group->group_id}.".ACLTypes::GROUP.".{$field->id}.{$flag}"]))
 					{
 						return true;
 					}
@@ -134,13 +141,13 @@ class Access {
 			case 'Group':
 
 				// Does the subject have access to all groups?
-				if (isset($acl[ACLTypes::ALL.".{$field}.{$flag}"]))
+				if (isset($acl[ACLTypes::ALL.".{$field->id}.{$flag}"]))
 				{
 					return true;
 				}
 
 				// Does the subject have access directly to the group?
-				if (isset($acl["{$object->id}.".ACLTypes::GROUP.".{$field}.{$flag}"]))
+				if (isset($acl["{$object->id}.".ACLTypes::GROUP.".{$field->id}.{$flag}"]))
 				{
 					return true;
 				}
@@ -150,7 +157,7 @@ class Access {
 			default:
 
 				// Does the subject have access to all objects?
-				if (isset($acl[ACLTypes::ALL.".{$field}.{$flag}"]))
+				if (isset($acl[ACLTypes::ALL.".{$field->id}.{$flag}"]))
 				{
 					return true;
 				}
@@ -169,9 +176,9 @@ class Access {
 	 * @access public
 	 * @param  string  $flag
 	 * @param  User|Group  $object
-	 * @param  int  $field
+	 * @param  Field  $field
 	 */
-	public static function restrict($flag, $object = null, $field = 0)
+	public static function restrict($flag, $object = null, $field = null)
 	{
 		if ( ! static::check($flag, $object, $field))
 		{
@@ -180,17 +187,17 @@ class Access {
 	}
 
 	/**
-	 * Fetches a list of users and groups who have permissions on a specific object
+	 * Fetches all subjects who have permissions on a specific object
 	 *
 	 * @static
 	 * @access public
 	 * @param  string  $flag
 	 * @param  User|Group  $object
-	 * @param  int  $field
+	 * @param  Field  $field
 	 * @param  bool  $expand
-	 * @return array
+	 * @return object
 	 */
-	public static function lists($flag, $object, $field = 0, $expand = false)
+	public static function getByObject($flag, $object, $field = null, $expand = false)
 	{
 		// Determine object type
 		$class = get_class($object);
@@ -214,9 +221,15 @@ class Access {
 				return array();
 		}
 
+		// Set field ID to 0 if no field was passed
+		if (is_null($field))
+		{
+			$field = (object) array('id' => 0);
+		}
+
 		// Query all subjects that have access to this object
 		// We also fetch the subjects who have access to all objects against this flag
-		$list = ACL::where('access', $flag)->where('field_id', $field)->where(function($outer) use ($object, $type)
+		$list = ACL::where('access', $flag)->where('field_id', $field->id)->where(function($outer) use ($object, $type)
 		{
 			$outer->where(function($inner) use ($object, $type)
 			{
@@ -257,6 +270,19 @@ class Access {
 		}
 
 		return (object) $acl;
+	}
+
+	/**
+	 * Fetches all objects on which a specific subject has access to
+	 *
+	 * @static
+	 * @access public
+	 * @param  string  $flag
+	 * @param  User|Group  $subject
+	 * @return object
+	 */
+	public static function getBySubject($flag, $subject)
+	{
 	}
 
 }

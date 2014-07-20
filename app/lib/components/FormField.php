@@ -73,7 +73,7 @@ class FormField {
 			// Compile custom fields for display
 			foreach ($fieldInfo as $field)
 			{
-				if (Access::check(Permissions::FIELD_VIEW, $user, $field->id))
+				if (Access::check(Permissions::FIELD_VIEW, $user, $field))
 				{
 					// Parse the field for display
 					if (isset($userFieldInfo[$field->id]))
@@ -126,7 +126,7 @@ class FormField {
 		// Compile user field controls
 		foreach ($fieldInfo as $field)
 		{
-			if (Access::check(Permissions::FIELD_EDIT, $user, $field->id))
+			if (Access::check(Permissions::FIELD_EDIT, $user, $field))
 			{
 				// Parse the field for display
 				$value = isset($userFieldInfo[$field->id]) ? $userFieldInfo[$field->id]->value : null;
@@ -137,7 +137,7 @@ class FormField {
 					'machine_name' => "custom_{$field->machine_name}",
 					'value'        => $parsed[FieldParser::VALUE],
 					'options'      => $parsed[FieldParser::OPTIONS],
-					'disabled'     => Access::check(Permissions::FIELD_EDIT, $user, $field->id) ? null : 'disabled',
+					'disabled'     => Access::check(Permissions::FIELD_EDIT, $user, $field) ? null : 'disabled',
 				);
 
 				$fields->{$field->category}[$field->order] = View::make("controls/{$fieldTypes[$field->type]}", null, $data)->render();

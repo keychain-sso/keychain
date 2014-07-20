@@ -336,7 +336,7 @@ class GroupController extends BaseController {
 				$request->save();
 
 				// Get a list of users who has group_edit rights
-				$editors = Access::lists(Permissions::GROUP_EDIT, $group, 0, true)->users;
+				$editors = Access::getByObject(Permissions::GROUP_EDIT, $group, 0, true)->users;
 
 				// Send the join notification to each editor
 				foreach ($editors as $editor)
