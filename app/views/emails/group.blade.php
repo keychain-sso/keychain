@@ -7,7 +7,7 @@
 @endif
 
 <p>{{ Lang::get('email.link_login', array('title', Config::get('app.title'))) }}</p>
-<p>{{ url('user/login') }}</p>
+<p>{{ url('auth/login') }}</p>
 
 <hr />
 <em>{{ Lang::get('email.system_generated') }}</em>

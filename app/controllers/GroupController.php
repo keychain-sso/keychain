@@ -481,7 +481,7 @@ class GroupController extends BaseController {
 
 				// Send approval notification to user
 				$data = array(
-					'action' => Lang::get('email.request_approved'),
+					'action' => Lang::get('email.request_approved', array('group' => $group->name)),
 					'user'   => $request->user,
 					'group'  => $group,
 				);
@@ -503,7 +503,7 @@ class GroupController extends BaseController {
 
 				// Send rejection notification to user
 				$data = array(
-					'action' => Lang::get('email.request_rejected'),
+					'action' => Lang::get('email.request_rejected', array('group' => $group->name)),
 					'user'   => $request->user,
 					'group'  => $group,
 				);

@@ -98,8 +98,8 @@ class Verifier {
 		$token = Token::where('token', $hash)->firstOrFail();
 
 		// Get the associated user and email
-		$email = UserEmail::find($token->permits_id);
-		$user = User::find($email->user_id);
+		$email = UserEmail::findOrFail($token->permits_id);
+		$user = User::findOrFail($email->user_id);
 
 		// Perform validation based on token type
 		switch ($token->permits_type)
