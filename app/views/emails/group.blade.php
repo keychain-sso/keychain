@@ -1,21 +1,17 @@
 <p>{{ Lang::get('email.salutation', array('user' => $user['name'])) }}</p>
 
-<p>
-	{{ $action }}
+<p>{{ $action }}</p>
 
-	@if (isset($justification))
-		{{ $justification }}
-	@endif
-
-	@if (isset($link))
-		{{ Lang::get('email.link_group') }}
-	@endif
-</p>
+@if (isset($justification))
+	<p>{{{ $justification }}}</p>
+@endif
 
 @if (isset($link))
-	<p>
-		{{ url("group/requests/{$group['hash']}") }}
-	</p>
+	<p>{{ Lang::get('email.link_group') }}</p>
+@endif
+
+@if (isset($link))
+	<p>{{ url("group/requests/{$group['hash']}") }}</p>
 @endif
 
 <hr />

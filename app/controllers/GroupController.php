@@ -305,6 +305,7 @@ class GroupController extends BaseController {
 		if (Input::has('_submit'))
 		{
 			$userId = Auth::id();
+			$userName = Auth::user()->name;
 
 			// Fetch the associated group
 			$hash = Input::get('hash');
@@ -342,7 +343,7 @@ class GroupController extends BaseController {
 				foreach ($editors as $editor)
 				{
 					$action = Lang::get('email.join_request', array(
-						'user'  => $editor->name,
+						'user'  => $userName,
 						'group' => $group->name,
 					));
 
