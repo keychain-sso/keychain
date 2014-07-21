@@ -185,7 +185,7 @@
 						@endif
 					</a>
 
-					<a href="{{ url("user/view/{$userGroup->user->hash}") }}" class="show-block">{{ $userGroup->user->name }}</a>
+					<a href="{{ url("user/view/{$userGroup->user->hash}") }}" class="show-block">{{{ $userGroup->user->name }}}</a>
 					<small class="text-muted">{{ $userGroup->emails[0]->address }}</small>
 				</div>
 			</div>

@@ -8,8 +8,8 @@
 			<img src="{{ asset('img/default-avatar.png') }}" class="img-circle img-thumbnail" alt="" />
 		@endif
 
-		<h1>{{ $user->name }}</h1>
-		<p>{{ $user->title }}</p>
+		<h1>{{{ $user->name }}}</h1>
+		<p>{{{ $user->title }}}</p>
 	</div>
 
 	@if ($editor || $manager)

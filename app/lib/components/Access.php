@@ -283,15 +283,15 @@ class Access {
 			$groupIds = array();
 		}
 
-		// Split the ACL into global and local permissions
+		// Split the ACL into global and scope-based permissions
 		$global = $list->filter(function($item)
 		{
-			$item->object_id == 0;
+			return str_contains($item->access, 'manage');
 		});
 
-		$local = $list->filter(function($item)
+		$scope = $list->filter(function($item)
 		{
-			$item->object_id > 0;
+			return ! str_contains($item->access, 'manage');
 		});
 
 		// Add the raw ACL data
@@ -299,7 +299,7 @@ class Access {
 
 		$acl->permissions = new stdClass;
 		$acl->permissions->global = $global;
-		$acl->permissions->local = $local;
+		$acl->permissions->scope = $scope;
 
 		$acl->subjects = new stdClass;
 		$acl->subjects->users = array();
@@ -378,15 +378,15 @@ class Access {
 			return $item->field_id > 0;
 		})->lists('field_id');
 
-		// Split the ACL into global and local permissions
+		// Split the ACL into global and scope-based permissions
 		$global = $list->filter(function($item)
 		{
-			$item->object_id == 0;
+			return str_contains($item->access, 'manage');
 		});
 
-		$local = $list->filter(function($item)
+		$scope = $list->filter(function($item)
 		{
-			$item->object_id > 0;
+			return ! str_contains($item->access, 'manage');
 		});
 
 		// Add the raw ACL data
@@ -394,7 +394,7 @@ class Access {
 
 		$acl->permissions = new stdClass;
 		$acl->permissions->global = $global;
-		$acl->permissions->local = $local;
+		$acl->permissions->scope = $scope;
 
 		$acl->objects = new stdClass;
 		$acl->objects->users = array();

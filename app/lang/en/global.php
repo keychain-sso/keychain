@@ -39,5 +39,11 @@ return array(
 	'return_login'       => 'Click here to go to the login screen',
 	'search_user'        => 'Search by name or email',
 	'global_permissions' => 'Global permissions',
+	'scope_permissions'  => 'Scope-based permissions',
+	'permission'         => 'Permission',
+	'scope'              => 'Scope',
+	'everyone'           => 'Everyone',
+	'self'               => 'Self',
+	'no_permissions'     => 'No permissions to display',
 
 );

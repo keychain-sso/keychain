@@ -13,7 +13,7 @@
 				@endif
 			</a>
 
-			<a href="{{ url("user/view/{$user->hash}") }}">{{ $user->name }}</a>
+			<a href="{{ url("user/view/{$user->hash}") }}">{{{ $user->name }}}</a>
 			<small class="text-muted">{{ $user->primaryEmail[0]->address }}</small>
 		</div>
 	</div>
