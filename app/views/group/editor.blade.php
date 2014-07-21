@@ -26,7 +26,6 @@
 		</div>
 	</fieldset>
 
-
 	<fieldset>
 		<legend>
 			<span class="glyphicon glyphicon-bullhorn"></span>

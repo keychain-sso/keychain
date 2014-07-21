@@ -16,14 +16,14 @@
 use ACL;
 use ACLTypes;
 use App;
+use Auth;
 use Cache;
 use Field;
 use Group;
 use HTTPStatus;
+use stdClass;
 use User;
 use UserGroup;
-
-use Keychain\Facades\Auth;
 
 /**
  * Access class
@@ -191,17 +191,149 @@ class Access {
 	 *
 	 * @static
 	 * @access public
-	 * @param  string  $flag
 	 * @param  User|Group  $object
+	 * @param  string  $flag
 	 * @param  Field  $field
 	 * @param  bool  $expand
 	 * @return object
 	 */
-	public static function getByObject($flag, $object, $field = null, $expand = false)
+	public static function getByObject($object, $flag = null, $field = null, $expand = false)
 	{
-		// Determine object type
+		$acl = ACL::query();
 		$class = get_class($object);
 
+		// Determine object type
+		switch ($class)
+		{
+			case 'User':
+
+				$type = ACLTypes::USER;
+				$self = $object->id == Auth::id();
+
+				break;
+
+			case 'Group':
+
+				$type = ACLTypes::GROUP;
+				$self = false;
+
+				break;
+
+			default:
+
+				return array();
+		}
+
+		// Set the flag filter
+		if ( ! is_null($flag))
+		{
+			$acl->where('access', $flag);
+		}
+
+		// Set field filter, if one was passed
+		if ( ! is_null($field))
+		{
+			$acl->where('field_id', $field->id);
+		}
+		else
+		{
+			$acl->where('field_id', 0);
+		}
+
+		// Query for subjects
+		$list = $acl->where(function($outer) use ($object, $type, $self)
+		{
+			// Get all subjects with direct access on this object
+			$outer->where(function($inner) use ($object, $type)
+			{
+				$inner->where('object_id', $object->id)->where('object_type', $type);
+			});
+
+			// Get all subjects with access to all objects
+			$outer->orWhere(function($inner)
+			{
+				$inner->where('object_id', 0)->where('object_type', ACLTypes::ALL);
+			});
+
+			// Get all subjects with access to itself, if applicable
+			if ($self)
+			{
+				$outer->orWhere(function($inner)
+				{
+					$inner->where('object_id', 0)->where('object_type', ACLTypes::SELF);
+				});
+			}
+		})->get();
+
+		// Get the user IDs and group IDs
+		$userIds = $list->filter(function($item)
+		{
+			return $item->subject_type == ACLTypes::USER;
+		})->lists('subject_id');
+
+		$groupIds = $list->filter(function($item)
+		{
+			return $item->subject_type == ACLTypes::GROUP;
+		})->lists('subject_id');
+
+		// If set to expand, get the user's against the groupIds
+		if ($expand)
+		{
+			$userIds = array_merge($userIds, UserGroup::whereIn('group_id', $groupIds)->lists('user_id'));
+			$groupIds = array();
+		}
+
+		// Split the ACL into global and local permissions
+		$global = $list->filter(function($item)
+		{
+			$item->object_id == 0;
+		});
+
+		$local = $list->filter(function($item)
+		{
+			$item->object_id > 0;
+		});
+
+		// Add the raw ACL data
+		$acl = new stdClass;
+
+		$acl->permissions = new stdClass;
+		$acl->permissions->global = $global;
+		$acl->permissions->local = $local;
+
+		$acl->subjects = new stdClass;
+		$acl->subjects->users = array();
+		$acl->subjects->groups = array();
+
+		// Finally, get the list of users and groups
+		if (count($userIds) > 0)
+		{
+			$acl->subjects->users = User::whereIn('id', $userIds)->with('primaryEmail')->get();
+		}
+
+		if (count($groupIds) > 0)
+		{
+			$acl->subjects->groups = Group::whereIn('id', $groupIds)->get();
+		}
+
+		return $acl;
+	}
+
+	/**
+	 * Fetches all objects on which a specific subject has access to
+	 *
+	 * @static
+	 * @access public
+	 * @param  User|Group  $subject
+	 * @param  string  $flag
+	 * @return object
+	 */
+	public static function getBySubject($subject, $flag = null)
+	{
+		$acl = ACL::query();
+		$class = get_class($subject);
+
+		// Determine subject type
 		switch ($class)
 		{
 			case 'User':
@@ -221,68 +353,71 @@ class Access {
 				return array();
 		}
 
-		// Set field ID to 0 if no field was passed
-		if (is_null($field))
+		// Set the flag filter
+		if ( ! is_null($flag))
 		{
-			$field = (object) array('id' => 0);
+			$acl->where('access', $flag);
 		}
 
-		// Query all subjects that have access to this object
-		// We also fetch the subjects who have access to all objects against this flag
-		$list = ACL::where('access', $flag)->where('field_id', $field->id)->where(function($outer) use ($object, $type)
-		{
-			$outer->where(function($inner) use ($object, $type)
-			{
-				$inner->where('object_id', $object->id)->where('object_type', $type);
-			})->orWhere(function($inner)
-			{
-				$inner->where('object_id', 0)->where('object_type', ACLTypes::ALL);
-			});
-		})->get();
+		// Query all objects to which this subject has access to
+		$list = $acl->where('subject_id', $subject->id)->where('subject_type', $type)->get();
 
-		// Get the user_ids and group_ids
+		// Get the user IDs, group IDs and field IDs
 		$userIds = $list->filter(function($item)
 		{
-			return $item->subject_type == ACLTypes::USER;
-		})->lists('subject_id');
+			return $item->object_type == ACLTypes::USER && $item->field_id == 0;
+		})->lists('object_id');
 
 		$groupIds = $list->filter(function($item)
 		{
-			return $item->subject_type == ACLTypes::GROUP;
-		})->lists('subject_id');
+			return $item->object_type == ACLTypes::GROUP && $item->field_id == 0;
+		})->lists('object_id');
 
-		// If set to expand, get the user's against the groupIds
-		if ($expand)
+		$fieldIds = $list->filter(function($item)
 		{
-			$userIds = array_merge($userIds, UserGroup::whereIn('group_id', $groupIds)->lists('user_id'));
-			$groupIds = array();
-		}
+			return $item->field_id > 0;
+		})->lists('field_id');
 
-		// Finally, get the list of users and groups
+		// Split the ACL into global and local permissions
+		$global = $list->filter(function($item)
+		{
+			$item->object_id == 0;
+		});
+
+		$local = $list->filter(function($item)
+		{
+			$item->object_id > 0;
+		});
+
+		// Add the raw ACL data
+		$acl = new stdClass;
+
+		$acl->permissions = new stdClass;
+		$acl->permissions->global = $global;
+		$acl->permissions->local = $local;
+
+		$acl->objects = new stdClass;
+		$acl->objects->users = array();
+		$acl->objects->groups = array();
+		$acl->objects->fields = array();
+
+		// Finally, get the list of users, groups and fields
 		if (count($userIds) > 0)
 		{
-			$acl['users'] = User::whereIn('id', $userIds)->with('primaryEmail')->get();
+			$acl->objects->users = User::whereIn('id', $userIds)->with('primaryEmail')->get();
 		}
 
 		if (count($groupIds) > 0)
 		{
-			$acl['groups'] = Group::whereIn('id', $groupIds)->get();
+			$acl->objects->groups = Group::whereIn('id', $groupIds)->get();
 		}
 
-		return (object) $acl;
-	}
+		if (count($fieldIds) > 0)
+		{
+			$acl->objects->fields = Field::whereIn('id', $fieldIds)->get();
+		}
 
-	/**
-	 * Fetches all objects on which a specific subject has access to
-	 *
-	 * @static
-	 * @access public
-	 * @param  string  $flag
-	 * @param  User|Group  $subject
-	 * @return object
-	 */
-	public static function getBySubject($flag, $subject)
-	{
+		return $acl;
 	}
 
 }

@@ -583,7 +583,7 @@ class UserController extends BaseController {
 	 *
 	 * @access public
 	 * @param  string  $hash
-	 * @return View
+	 * @return Redirect
 	 */
 	public function getDelete($hash)
 	{
