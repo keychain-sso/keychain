@@ -94,7 +94,7 @@
 						<td>
 							@if ($permission->object_type == ACLTypes::ALL)
 								<span class="glyphicon glyphicon-asterisk"></span>
-								{{ Lang::get('global.everyone') }}
+								{{ Lang::get('global.global') }}
 							@elseif ($permission->object_type == ACLTypes::SELF)
 								<span class="glyphicon glyphicon-bookmark"></span>
 								{{ Lang::get('global.self') }}

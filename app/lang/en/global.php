@@ -42,7 +42,7 @@ return array(
 	'scope_permissions'  => 'Scope-based permissions',
 	'permission'         => 'Permission',
 	'scope'              => 'Scope',
-	'everyone'           => 'Everyone',
+	'global'             => 'Global',
 	'self'               => 'Self',
 	'no_permissions'     => 'No permissions to display',
 
