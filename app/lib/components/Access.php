@@ -197,7 +197,7 @@ class Access {
 	 * @param  bool  $expand
 	 * @return object
 	 */
-	public static function getByObject($object, $flag = null, $field = null, $expand = false)
+	public static function getByObject($object = null, $flag = null, $field = null, $expand = false)
 	{
 		$acl = ACL::query();
 		$class = get_class($object);
@@ -218,10 +218,6 @@ class Access {
 				$self = false;
 
 				break;
-
-			default:
-
-				return array();
 		}
 
 		// Set the flag filter
@@ -230,7 +226,7 @@ class Access {
 			$acl->where('access', $flag);
 		}
 
-		// Set field filter, if one was passed
+		// Set the field filter
 		if ( ! is_null($field))
 		{
 			$acl->where('field_id', $field->id);
@@ -240,30 +236,36 @@ class Access {
 			$acl->where('field_id', 0);
 		}
 
-		// Query for subjects
-		$list = $acl->where(function($outer) use ($object, $type, $self)
+		// Set the object filter
+		if ( ! is_null($object))
 		{
-			// Get all subjects with direct access on this object
-			$outer->where(function($inner) use ($object, $type)
+			$acl->where(function($outer) use ($object, $type, $self)
 			{
-				$inner->where('object_id', $object->id)->where('object_type', $type);
-			});
+				// Get all subjects with direct access on this object
+				$outer->where(function($inner) use ($object, $type)
+				{
+					$inner->where('object_id', $object->id)->where('object_type', $type);
+				});
 
-			// Get all subjects with access to all objects
-			$outer->orWhere(function($inner)
-			{
-				$inner->where('object_id', 0)->where('object_type', ACLTypes::ALL);
-			});
-
-			// Get all subjects with access to itself, if applicable
-			if ($self)
-			{
+				// Get all subjects with access to all objects
 				$outer->orWhere(function($inner)
 				{
-					$inner->where('object_id', 0)->where('object_type', ACLTypes::SELF);
+					$inner->where('object_id', 0)->where('object_type', ACLTypes::ALL);
 				});
-			}
-		})->get();
+
+				// Get all subjects with access to itself, if applicable
+				if ($self)
+				{
+					$outer->orWhere(function($inner)
+					{
+						$inner->where('object_id', 0)->where('object_type', ACLTypes::SELF);
+					});
+				}
+			});
+		}
+
+		// Fetch the permission list
+		$list = $acl->get();
 
 		// Get the user IDs and group IDs
 		$userIds = $list->filter(function($item)
@@ -276,7 +278,7 @@ class Access {
 			return $item->subject_type == ACLTypes::GROUP;
 		})->lists('subject_id');
 
-		// If set to expand, get the user's against the groupIds
+		// If set to expand, get the users against the groupIds
 		if ($expand)
 		{
 			$userIds = array_merge($userIds, UserGroup::whereIn('group_id', $groupIds)->lists('user_id'));
@@ -326,9 +328,10 @@ class Access {
 	 * @access public
 	 * @param  User|Group  $subject
 	 * @param  string  $flag
+	 * @param  bool  $expand
 	 * @return object
 	 */
-	public static function getBySubject($subject, $flag = null)
+	public static function getBySubject($subject = null, $flag = null, $expand = false)
 	{
 		$acl = ACL::query();
 		$class = get_class($subject);
@@ -347,10 +350,6 @@ class Access {
 				$type = ACLTypes::GROUP;
 
 				break;
-
-			default:
-
-				return array();
 		}
 
 		// Set the flag filter
@@ -359,8 +358,14 @@ class Access {
 			$acl->where('access', $flag);
 		}
 
-		// Query all objects to which this subject has access to
-		$list = $acl->where('subject_id', $subject->id)->where('subject_type', $type)->get();
+		// Set the subject filter
+		if ( ! is_null($subject))
+		{
+			$acl->where('subject_id', $subject->id)->where('subject_type', $type)->get();
+		}
+
+		// Fetch the permission list
+		$list = $acl->get();
 
 		// Get the user IDs, group IDs and field IDs
 		$userIds = $list->filter(function($item)
@@ -377,6 +382,13 @@ class Access {
 		{
 			return $item->field_id > 0;
 		})->lists('field_id');
+
+		// If set to expand, get the users against the groupIds
+		if ($expand)
+		{
+			$userIds = array_merge($userIds, UserGroup::whereIn('group_id', $groupIds)->lists('user_id'));
+			$groupIds = array();
+		}
 
 		// Split the ACL into global and scope-based permissions
 		$global = $list->filter(function($item)
