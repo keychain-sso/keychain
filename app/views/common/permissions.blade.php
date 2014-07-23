@@ -34,7 +34,7 @@
 							<td>{{ Lang::get("permissions.{$permission->access}") }}</td>
 
 							<td>
-								<a href="{{ url("group/{$group->hash}/permissions/remove/{$permission->id}") }}"
+								<a href="{{ url("admin/permissions/remove/{$permission->id}") }}"
 								   title="{{ Lang::get('global.remove') }}" data-toggle="tooltip">
 									<span class="glyphicon glyphicon-remove text-danger"></span>
 								</a>
@@ -61,13 +61,13 @@
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
-					@if ($show->subject)
+					@if ($show->subjects)
 						<th>{{ Lang::get('global.user_group') }}</th>
 					@endif
 
 					<th>{{ Lang::get('global.permission') }}</th>
 
-					@if ($show->object)
+					@if ($show->objects)
 						<th>{{ Lang::get('global.scope') }}</th>
 					@endif
 
@@ -78,7 +78,7 @@
 			<tbody>
 				@foreach ($acl->scope as $permission)
 					<tr>
-						@if ($show->subject)
+						@if ($show->subjects)
 							<td>
 								@if ($permission->subject_type == ACLTypes::USER)
 									{? $subject = $acl->users->find($permission->subject_id) ?}
@@ -96,7 +96,7 @@
 
 						@if ($permission->field_id > 0)
 							<td>
-								@if ($show->field)
+								@if ($show->fields)
 									{{
 										Lang::get("permissions.{$permission->access}", array(
 											'field' => ": <em>".$acl->fields->find($permission->field_id)->name.'</em>',
@@ -114,7 +114,7 @@
 							<td>{{ Lang::get("permissions.{$permission->access}") }}</td>
 						@endif
 
-						@if ($show->object)
+						@if ($show->objects)
 							<td>
 								@if ($permission->object_type == ACLTypes::ALL)
 									<span class="glyphicon glyphicon-asterisk"></span>
@@ -137,7 +137,7 @@
 						@endif
 
 						<td>
-							<a href="{{ url("group/{$group->hash}/permissions/remove/{$permission->id}") }}"
+							<a href="{{ url("admin/permissions/remove/{$permission->id}") }}"
 							   title="{{ Lang::get('global.remove') }}" data-toggle="tooltip">
 								<span class="glyphicon glyphicon-remove text-danger"></span>
 							</a>

@@ -53,4 +53,14 @@ class Permissions {
 
 }
 
+/**
+ * Defines acl query methods
+ */
+class QueryMethods {
+
+	const BY_SUBJECT = 1;
+	const BY_OBJECT = 2;
+
+}
+
 ?>
