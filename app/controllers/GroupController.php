@@ -336,7 +336,7 @@ class GroupController extends BaseController {
 				$request->save();
 
 				// Get a list of users who has group_edit rights
-				$editors = Access::getByObject($group, Permissions::GROUP_EDIT, null, true)->subjects->users;
+				$editors = Access::getByObject($group, Permissions::GROUP_EDIT, null, true)->users;
 
 				// Send the join notification to each editor
 				foreach ($editors as $editor)
@@ -635,11 +635,20 @@ class GroupController extends BaseController {
 		// Validate acl_manage rights
 		Access::restrict(Permissions::ACL_MANAGE);
 
+		// Set display flags
+		$show = (object) array(
+			'site'    => true,
+			'subject' => false,
+			'object'  => true,
+			'field'   => true,
+		);
+
 		// Merge the group data with view data
 		$data = array_merge($data, array(
 			'acl'    => Access::getBySubject($group),
 			'token'  => Form::hidden('hash', $group->hash),
 			'return' => url("group/view/{$group->hash}"),
+			'show'   => $show,
 			'modal'  => 'common.permissions',
 		));
 

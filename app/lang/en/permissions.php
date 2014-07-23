@@ -12,8 +12,8 @@ return array(
 	*/
 
 	'acl_manage'   => 'Add or remove ACL entries',
-	'field_view'   => 'View field: <em>:field</em>',
-	'field_edit'   => 'Modify field: <em>:field</em>',
+	'field_view'   => 'View field:field',
+	'field_edit'   => 'Modify field:field',
 	'group_edit'   => 'Modify group settings; add or remove group members',
 	'group_manage' => 'Create or delete groups',
 	'user_edit'    => 'Modify user profiles',

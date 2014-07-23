@@ -267,7 +267,7 @@ class Access {
 		// Fetch the permission list
 		$list = $acl->get();
 
-		// Get the user IDs and group IDs
+		// Get the user IDs, group IDs and fieldIDs
 		$userIds = $list->filter(function($item)
 		{
 			return $item->subject_type == ACLTypes::USER;
@@ -278,6 +278,11 @@ class Access {
 			return $item->subject_type == ACLTypes::GROUP;
 		})->lists('subject_id');
 
+		$fieldIds = $list->filter(function($item)
+		{
+			return $item->field_id > 0;
+		})->lists('field_id');
+
 		// If set to expand, get the users against the groupIds
 		if ($expand)
 		{
@@ -285,38 +290,24 @@ class Access {
 			$groupIds = array();
 		}
 
+		// Build the raw ACL data
+		$acl = new stdClass;
+
 		// Split the ACL into global and scope-based permissions
-		$global = $list->filter(function($item)
+		$acl->site = $list->filter(function($item)
 		{
 			return str_contains($item->access, 'manage');
 		});
 
-		$scope = $list->filter(function($item)
+		$acl->scope = $list->filter(function($item)
 		{
 			return ! str_contains($item->access, 'manage');
 		});
 
-		// Add the raw ACL data
-		$acl = new stdClass;
-
-		$acl->permissions = new stdClass;
-		$acl->permissions->global = $global;
-		$acl->permissions->scope = $scope;
-
-		$acl->subjects = new stdClass;
-		$acl->subjects->users = array();
-		$acl->subjects->groups = array();
-
-		// Finally, get the list of users and groups
-		if (count($userIds) > 0)
-		{
-			$acl->subjects->users = User::whereIn('id', $userIds)->with('primaryEmail')->get();
-		}
-
-		if (count($groupIds) > 0)
-		{
-			$acl->subjects->groups = Group::whereIn('id', $groupIds)->get();
-		}
+		// Set the user, group and field data
+		$acl->users = count($userIds) > 0 ? User::whereIn('id', $userIds)->with('primaryEmail')->get() : array();
+		$acl->groups = count($groupIds) > 0 ? Group::whereIn('id', $groupIds)->get() : array();
+		$acl->fields = count($fieldIds) > 0 ? Field::whereIn('id', $fieldIds)->get() : array();
 
 		return $acl;
 	}
@@ -390,44 +381,24 @@ class Access {
 			$groupIds = array();
 		}
 
+		// Build the raw ACL data
+		$acl = new stdClass;
+
 		// Split the ACL into global and scope-based permissions
-		$global = $list->filter(function($item)
+		$acl->site = $list->filter(function($item)
 		{
 			return str_contains($item->access, 'manage');
 		});
 
-		$scope = $list->filter(function($item)
+		$acl->scope = $list->filter(function($item)
 		{
 			return ! str_contains($item->access, 'manage');
 		});
 
-		// Add the raw ACL data
-		$acl = new stdClass;
-
-		$acl->permissions = new stdClass;
-		$acl->permissions->global = $global;
-		$acl->permissions->scope = $scope;
-
-		$acl->objects = new stdClass;
-		$acl->objects->users = array();
-		$acl->objects->groups = array();
-		$acl->objects->fields = array();
-
-		// Finally, get the list of users, groups and fields
-		if (count($userIds) > 0)
-		{
-			$acl->objects->users = User::whereIn('id', $userIds)->with('primaryEmail')->get();
-		}
-
-		if (count($groupIds) > 0)
-		{
-			$acl->objects->groups = Group::whereIn('id', $groupIds)->get();
-		}
-
-		if (count($fieldIds) > 0)
-		{
-			$acl->objects->fields = Field::whereIn('id', $fieldIds)->get();
-		}
+		// Set the user, group and field data
+		$acl->users = count($userIds) > 0 ? User::whereIn('id', $userIds)->with('primaryEmail')->get() : array();
+		$acl->groups = count($groupIds) > 0 ? Group::whereIn('id', $groupIds)->get() : array();
+		$acl->fields = count($fieldIds) > 0 ? Field::whereIn('id', $fieldIds)->get() : array();
 
 		return $acl;
 	}
