@@ -22,16 +22,26 @@
 		<div class="form-group">
 			{{ Form::label('gender', Lang::get('user.gender'), array('class' => 'control-label')) }}
 
-			{{
-				Form::select('gender', array(
-					null => '',
-					'M'  => Lang::get('user.male'),
-					'F'  => Lang::get('user.female'),
-					'O'  => Lang::get('user.other'),
-				), $user->gender, array(
-					'class' => 'form-control',
-				))
-			}}
+			<div class="radio">
+				<label>
+					{{ Form::radio('gender', 'M', $user->gender == 'M') }}
+					{{ Lang::get('user.male') }}
+				</label>
+			</div>
+
+			<div class="radio">
+				<label>
+					{{ Form::radio('gender', 'F', $user->gender == 'F') }}
+					{{ Lang::get('user.female') }}
+				</label>
+			</div>
+
+			<div class="radio">
+				<label>
+					{{ Form::radio('gender', 'N', $user->gender == 'N') }}
+					{{ Lang::get('user.not_set') }}
+				</label>
+			</div>
 		</div>
 
 		<div class="form-group  has-feedback">

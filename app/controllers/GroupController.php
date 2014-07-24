@@ -660,7 +660,7 @@ class GroupController extends BaseController {
 			'show'   => $show,
 			'token'  => Form::hidden('hash', $group->hash),
 			'return' => url("group/view/{$group->hash}"),
-			'modal'  => 'common.permissions',
+			'modal'  => 'acl.modal',
 		));
 
 		return View::make('group/view', 'group.group_permissions', $data);

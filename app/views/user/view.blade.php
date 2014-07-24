@@ -100,7 +100,7 @@
 								@elseif ($user->gender == 'F')
 									{{ Lang::get('user.female') }}
 								@else
-									{{ Lang::get('user.other') }}
+									{{ Lang::get('user.not_set') }}
 								@endif
 							</p>
 						</li>

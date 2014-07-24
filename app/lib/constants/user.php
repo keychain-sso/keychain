@@ -13,6 +13,14 @@
  * @filesource
  */
 
+class Genders {
+
+	const MALE = 'M';
+	const FEMALE = 'F';
+	const NOT_SET = 'N';
+
+}
+
 /**
  * Defines various user account states
  */

@@ -16,7 +16,7 @@ return array(
 	'gender'                 => 'Gender',
 	'male'                   => 'Male',
 	'female'                 => 'Female',
-	'other'                  => 'Other',
+	'not_set'                => 'Not set',
 	'title'                  => 'Title',
 	'date_of_birth'          => 'Date of birth',
 	'timezone'               => 'Timezone',
