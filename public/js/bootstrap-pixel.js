@@ -34,6 +34,9 @@ function init()
 
 	// Generate confirmation actions
 	confirmPrompts();
+
+	// Load bootstrap dropdowns
+	bootstrapDropdowns();
 }
 
 /**
@@ -89,7 +92,7 @@ function clickableIcons()
  */
 function itemSearch()
 {
-	$('[data-toggle=user-search]').keyup(function(e)
+	$('[data-toggle=user-search]').off('keyup').on('keyup', function(e)
 	{
 		// Set the search instance
 		search = $(this);
@@ -216,7 +219,7 @@ function itemSearch()
  */
 function confirmPrompts()
 {
-	$('[data-toggle=confirm]').click(function(e)
+	$('[data-toggle=confirm]').off('click').on('click', function(e)
 	{
 		// Set the link instance
 		link = $(this);
@@ -285,5 +288,50 @@ function confirmPrompts()
 
 		e.preventDefault();
 		e.stopPropagation();
+	});
+}
+
+/**
+ * Converts bootstrap dropdowns to actual dropdowns
+ *
+ * @access public
+ * @return void
+ */
+function bootstrapDropdowns()
+{
+	$('.dropdown-menu a').off('click').on('click', function(e)
+	{
+		button = $(this).parents().eq(2).find('[data-toggle=dropdown]');
+
+		if (button.length == 1)
+		{
+			target = button.attr('data-select');
+			focus = button.attr('data-focus');
+			text = $(this).text();
+			value = $(this).attr('data-value');
+
+			// Check if the dropdown has enabled selection
+			if (target !== undefined)
+			{
+				// Default the value, if one is not set it
+				// to the link's text
+				if (value === undefined)
+				{
+					value = text;
+				}
+
+				// Select the clicked value
+				$(target).val(value);
+				$(button).html(text + ' <span class="caret"></span>');
+
+				// Focus the post-selection control
+				if (focus !== undefined)
+				{
+					$(focus).focus();
+				}
+
+				e.preventDefault();
+			}
+		}
 	});
 }

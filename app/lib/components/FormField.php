@@ -13,6 +13,7 @@
  * @filesource
  */
 
+use ACLFlags;
 use App;
 use Auth;
 use Cache;
@@ -25,7 +26,6 @@ use FieldTypes;
 use Flags;
 use HTTPStatus;
 use Lang;
-use Permissions;
 use stdClass;
 use Session;
 use UserField;
@@ -73,7 +73,7 @@ class FormField {
 			// Compile custom fields for display
 			foreach ($fieldInfo as $field)
 			{
-				if (Access::check(Permissions::FIELD_VIEW, $user, $field))
+				if (Access::check(ACLFlags::FIELD_VIEW, $user, $field))
 				{
 					// Parse the field for display
 					if (isset($userFieldInfo[$field->id]))
@@ -126,7 +126,7 @@ class FormField {
 		// Compile user field controls
 		foreach ($fieldInfo as $field)
 		{
-			if (Access::check(Permissions::FIELD_EDIT, $user, $field))
+			if (Access::check(ACLFlags::FIELD_EDIT, $user, $field))
 			{
 				// Parse the field for display
 				$value = isset($userFieldInfo[$field->id]) ? $userFieldInfo[$field->id]->value : null;
@@ -137,7 +137,7 @@ class FormField {
 					'machine_name' => "custom_{$field->machine_name}",
 					'value'        => $parsed[FieldParser::VALUE],
 					'options'      => $parsed[FieldParser::OPTIONS],
-					'disabled'     => Access::check(Permissions::FIELD_EDIT, $user, $field) ? null : 'disabled',
+					'disabled'     => Access::check(ACLFlags::FIELD_EDIT, $user, $field) ? null : 'disabled',
 				);
 
 				$fields->{$field->category}[$field->order] = View::make("controls/{$fieldTypes[$field->type]}", null, $data)->render();
@@ -192,7 +192,7 @@ class FormField {
 			$value = isset($data['custom_'.$field->machine_name]) ? $data['custom_'.$field->machine_name] : '';
 
 			// Validate if user can edit this field
-			Access::restrict(Permissions::FIELD_EDIT, $user, $field->id);
+			Access::restrict(ACLFlags::FIELD_EDIT, $user, $field);
 
 			// Set the initial rule
 			$rules = $field->required ? 'required|' : '';

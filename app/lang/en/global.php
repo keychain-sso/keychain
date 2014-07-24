@@ -43,7 +43,7 @@ return array(
 	'search_user'        => 'Search by name or email',
 	'site_permissions'   => 'Site-wide permissions',
 	'scope_permissions'  => 'Scope-based permissions',
-	'space_data'         => ' data',
+	'space_data'         => 'data',
 	'user_group'         => 'User or group',
 	'permission'         => 'Permission',
 	'permissions'        => 'Permissions',

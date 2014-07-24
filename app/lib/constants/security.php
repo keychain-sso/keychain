@@ -14,6 +14,24 @@
  */
 
 /**
+ * Defines all ACL permissions
+ */
+class ACLFlags {
+
+	// Global permissions
+	const ACL_MANAGE = 'acl_manage';
+	const USER_MANAGE = 'user_manage';
+	const GROUP_MANAGE = 'group_manage';
+
+	// Object based permissions
+	const FIELD_VIEW = 'field_view';
+	const FIELD_EDIT = 'field_edit';
+	const USER_EDIT = 'user_edit';
+	const GROUP_EDIT = 'group_edit';
+
+}
+
+/**
  * Various types controlled by the ACL
  */
 class ACLTypes {
@@ -32,24 +50,6 @@ class TokenTypes {
 
 	const EMAIL = 1;
 	const PASSWORD = 2;
-
-}
-
-/**
- * Defines all ACL permissions
- */
-class Permissions {
-
-	// Global permissions
-	const ACL_MANAGE = 'acl_manage';
-	const USER_MANAGE = 'user_manage';
-	const GROUP_MANAGE = 'group_manage';
-
-	// Object based permissions
-	const FIELD_VIEW = 'field_view';
-	const FIELD_EDIT = 'field_edit';
-	const USER_EDIT = 'user_edit';
-	const GROUP_EDIT = 'group_edit';
 
 }
 

@@ -99,7 +99,7 @@ class CoupledSessionHandler implements SessionHandlerInterface, ExistenceAwareIn
 			'payload'    => base64_encode($data),
 			'user_id'    => 0,
 			'ip_address' => Request::getClientIp(),
-			'updated_at' => date('Y-m-d h:i:s a'),
+			'updated_at' => date('Y-m-d H:i:s'),
 		);
 
 		// If user is logged in, set the user_id as well
@@ -159,7 +159,7 @@ class CoupledSessionHandler implements SessionHandlerInterface, ExistenceAwareIn
 	 */
 	public function gc($lifetime)
 	{
-		$threshold = date('Y-m-d h:i:s a', time() - $lifetime * 60);
+		$threshold = date('Y-m-d H:i:s', time() - $lifetime * 60);
 
 		DB::table('user_sessions')->where('updated_at', '<', $threshold)->delete();
 	}

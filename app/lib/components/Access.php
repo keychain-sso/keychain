@@ -14,6 +14,7 @@
  */
 
 use ACL;
+use ACLFlag;
 use ACLTypes;
 use App;
 use Auth;
@@ -21,6 +22,7 @@ use Cache;
 use Field;
 use Group;
 use HTTPStatus;
+use Lang;
 use QueryMethods;
 use stdClass;
 use User;
@@ -36,6 +38,43 @@ use UserGroup;
  * @subpackage  Components
  */
 class Access {
+
+	/**
+	 * Filter and return ACL flags
+	 *
+	 * @static
+	 * @access public
+	 * @param  object  $filter
+	 * @return array
+	 */
+	public static function flags($filter = null)
+	{
+		$flags = ACLFlag::query();
+
+		if ( ! is_null($filter))
+		{
+			// Apply site-wide permission filters
+			if ( ! $filter->site)
+			{
+				$flags->where('name', 'not like', '%manage%');
+			}
+
+			// Apply field permission filters
+			if ( ! $filter->fields)
+			{
+				$flags->where('name', 'not like', '%field%');
+			}
+		}
+
+		// Fetch the flags that match the filter
+		$filtered = $flags->lists('name', 'name');
+
+		// Get the complete list of flags and descriptions
+		$all = Lang::get('permissions');
+
+		// Filter and return the flags
+		return array_intersect_key($all, $filtered);
+	}
 
 	/**
 	 * Queries the ACL for permission flags on an object (user/group)
@@ -92,11 +131,11 @@ class Access {
 				// Object ID will be 0 if type is [self] or [all]
 				if ($item->object_id > 0)
 				{
-					$acl["{$item->object_id}.{$item->object_type}.{$item->field_id}.{$item->access}"] = true;
+					$acl["{$item->object_id}.{$item->object_type}.{$item->field_id}.{$item->flag}"] = true;
 				}
 				else
 				{
-					$acl["{$item->object_type}.{$item->field_id}.{$item->access}"] = true;
+					$acl["{$item->object_type}.{$item->field_id}.{$item->flag}"] = true;
 				}
 			}
 
@@ -340,12 +379,12 @@ class Access {
 		// Split the ACL into global and scope-based permissions
 		$acl->site = $list->filter(function($item)
 		{
-			return str_contains($item->access, 'manage');
+			return str_contains($item->flag, 'manage');
 		});
 
 		$acl->scope = $list->filter(function($item)
 		{
-			return ! str_contains($item->access, 'manage');
+			return ! str_contains($item->flag, 'manage');
 		});
 
 		// Set the user, group and field data

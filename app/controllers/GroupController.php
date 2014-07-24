@@ -46,7 +46,7 @@ class GroupController extends BaseController {
 		$data = $this->getGroupListData();
 
 		// Validate manage rights
-		Access::restrict(Permissions::GROUP_MANAGE);
+		Access::restrict(ACLFlags::GROUP_MANAGE);
 
 		// Merge the list data with view data
 		$data = array_merge($data, array(
@@ -68,7 +68,7 @@ class GroupController extends BaseController {
 		if (Input::has('_save'))
 		{
 			// Validate manage rights
-			Access::restrict(Permissions::GROUP_MANAGE);
+			Access::restrict(ACLFlags::GROUP_MANAGE);
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
@@ -134,7 +134,7 @@ class GroupController extends BaseController {
 			$group = Group::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			Access::restrict(Permissions::GROUP_EDIT, $group);
+			Access::restrict(ACLFlags::GROUP_EDIT, $group);
 
 			// Check if users were selected
 			if (Input::has('users'))
@@ -177,7 +177,7 @@ class GroupController extends BaseController {
 		$data = $this->getGroupViewData($group);
 
 		// Validate edit rights
-		Access::restrict(Permissions::GROUP_EDIT, $group);
+		Access::restrict(ACLFlags::GROUP_EDIT, $group);
 
 		return View::make('group/view', 'group.edit_group', array_merge($data, array('modal'  => 'group.editor')));
 	}
@@ -197,7 +197,7 @@ class GroupController extends BaseController {
 			$group = Group::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			Access::restrict(Permissions::GROUP_EDIT, $group);
+			Access::restrict(ACLFlags::GROUP_EDIT, $group);
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
@@ -257,7 +257,7 @@ class GroupController extends BaseController {
 		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
 
 		// Does the user have group_edit rights?
-		$editor = Access::check(Permissions::GROUP_EDIT, $group);
+		$editor = Access::check(ACLFlags::GROUP_EDIT, $group);
 
 		// Only non-member can join open and request-only groups
 		// Users with group_edit rights can join any group
@@ -338,7 +338,7 @@ class GroupController extends BaseController {
 				// Build the ACL query
 				$query = new stdClass;
 				$query->entity = $group;
-				$query->flag = Permissions::GROUP_EDIT;
+				$query->flag = ACLFlags::GROUP_EDIT;
 
 				// Get a list of users who has group_edit rights
 				$editors = Access::query(QueryMethods::BY_OBJECT, $query, true)->users;
@@ -394,7 +394,7 @@ class GroupController extends BaseController {
 		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
 
 		// Does the user have group_edit rights?
-		$editor = Access::check(Permissions::GROUP_EDIT, $group);
+		$editor = Access::check(ACLFlags::GROUP_EDIT, $group);
 
 		// Only members may leave an open group
 		// Users with group_edit rights can leave any type of group
@@ -464,7 +464,7 @@ class GroupController extends BaseController {
 		$request = GroupRequest::find($request);
 
 		// Validate edit rights
-		Access::restrict(Permissions::GROUP_EDIT, $group);
+		Access::restrict(ACLFlags::GROUP_EDIT, $group);
 
 		// Perform the requested action
 		switch ($action)
@@ -551,7 +551,7 @@ class GroupController extends BaseController {
 		$data = $this->getGroupViewData($group);
 
 		// Validate edit rights
-		Access::restrict(Permissions::GROUP_EDIT, $group);
+		Access::restrict(ACLFlags::GROUP_EDIT, $group);
 
 		// Get users that are not already members
 		$length = Config::get('view.icon_length');
@@ -582,7 +582,7 @@ class GroupController extends BaseController {
 			$group = Group::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			Access::restrict(Permissions::GROUP_EDIT, $group);
+			Access::restrict(ACLFlags::GROUP_EDIT, $group);
 
 			// Check if users were selected
 			if (Input::has('users'))
@@ -638,7 +638,7 @@ class GroupController extends BaseController {
 		$data = $this->getGroupViewData($group);
 
 		// Validate acl_manage rights
-		Access::restrict(Permissions::ACL_MANAGE);
+		Access::restrict(ACLFlags::ACL_MANAGE);
 
 		// Build the ACL query
 		$query = new stdClass;
@@ -652,15 +652,17 @@ class GroupController extends BaseController {
 		$show->site = true;
 		$show->subjects = false;
 		$show->objects = true;
-		$show->fields = true;
+		$show->fields = false;
 
 		// Merge the group data with view data
 		$data = array_merge($data, array(
 			'acl'    => $acl,
 			'show'   => $show,
 			'token'  => Form::hidden('hash', $group->hash),
+			'flags'  => Access::flags($show),
 			'return' => url("group/view/{$group->hash}"),
 			'modal'  => 'acl.modal',
+			'subject' => $group,
 		));
 
 		return View::make('group/view', 'group.group_permissions', $data);
@@ -680,7 +682,7 @@ class GroupController extends BaseController {
 		$members = UserGroup::where('group_id', $group->id)->lists('user_id');
 
 		// Validate group_manage rights
-		Access::restrict(Permissions::GROUP_MANAGE);
+		Access::restrict(ACLFlags::GROUP_MANAGE);
 
 		// Clear the ACL cache for all members of the group
 		foreach ($members as $member)
@@ -767,7 +769,7 @@ class GroupController extends BaseController {
 		$userGroups = UserGroup::where('user_id', Auth::id())->lists('group_id');
 
 		// Check if user has group manage rights
-		$manager = Access::check(Permissions::GROUP_MANAGE);
+		$manager = Access::check(ACLFlags::GROUP_MANAGE);
 
 		// Return the list data
 		return array(
@@ -816,19 +818,19 @@ class GroupController extends BaseController {
 		$actions = false;
 
 		// Display if user can manage the group
-		if ($manager = Access::check(Permissions::GROUP_MANAGE))
+		if ($manager = Access::check(ACLFlags::GROUP_MANAGE))
 		{
 			$actions = true;
 		}
 
 		// Display if user can modify the ACL
-		if ($access = Access::check(Permissions::ACL_MANAGE))
+		if ($access = Access::check(ACLFlags::ACL_MANAGE))
 		{
 			$actions = true;
 		}
 
 		// Display if user can edit the group
-		if ($editor = Access::check(Permissions::GROUP_EDIT, $group))
+		if ($editor = Access::check(ACLFlags::GROUP_EDIT, $group))
 		{
 			$actions = true;
 		}

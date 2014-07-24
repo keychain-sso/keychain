@@ -18,7 +18,7 @@
 			<tbody>
 				@foreach ($acl->site as $permission)
 					<tr>
-						<td>{{ Lang::get("permissions.{$permission->access}") }}</td>
+						<td>{{ Lang::get("permissions.{$permission->flag}") }}</td>
 
 						<td>
 							<a href="{{ url("admin/permissions/remove/{$permission->id}") }}"
@@ -80,25 +80,17 @@
 						</td>
 					@endif
 
-					@if ($permission->field_id > 0)
-						<td>
+					<td>
+						{{ Lang::get("permissions.{$permission->flag}") }}
+
+						@if ($permission->field_id > 0)
 							@if ($show->fields)
-								{{
-									Lang::get("permissions.{$permission->access}", array(
-										'field' => ": <em>".$acl->fields->find($permission->field_id)->name.'</em>',
-									))
-								}}
+								{{ Lang::get('global.data') }}
 							@else
-								{{
-									Lang::get("permissions.{$permission->access}", array(
-										'field' => Lang::get('global.space_data'),
-									))
-								}}
+								&rarr; <em>{{ $acl->fields->find($permission->field_id)->name }}</em>
 							@endif
-						</td>
-					@else
-						<td>{{ Lang::get("permissions.{$permission->access}") }}</td>
-					@endif
+						@endif
+					</td>
 
 					@if ($show->objects)
 						<td>

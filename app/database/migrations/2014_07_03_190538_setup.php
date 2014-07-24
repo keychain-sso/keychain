@@ -207,8 +207,15 @@ class Setup extends Migration {
 			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
 		});
 
-		// Create the ACL subject types table
+		// Create the ACL subject/object types table
 		Schema::create('acl_types', function($table)
+		{
+			$table->increments('id');
+			$table->string('name', 80)->unique();
+		});
+
+		// Create the ACL subject/object types table
+		Schema::create('acl_flags', function($table)
 		{
 			$table->increments('id');
 			$table->string('name', 80)->unique();
@@ -218,18 +225,19 @@ class Setup extends Migration {
 		Schema::create('acl', function($table)
 		{
 			$table->increments('id');
-			$table->integer('object_id')->unsigned()->default(0);
-			$table->integer('object_type')->unsigned()->default(1);
+			$table->string('flag', 80);
 			$table->integer('subject_id')->unsigned();
 			$table->integer('subject_type')->unsigned();
+			$table->integer('object_id')->unsigned()->default(0);
+			$table->integer('object_type')->unsigned()->default(1);
 			$table->integer('field_id')->unsigned()->default(0);
-			$table->string('access', 20);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamp('updated_at');
 
 			$table->index(array('subject_id', 'subject_type'));
-			$table->foreign('object_type')->references('id')->on('acl_types')->onDelete('cascade');
+			$table->foreign('flag')->references('name')->on('acl_flags')->onDelete('cascade');
 			$table->foreign('subject_type')->references('id')->on('acl_types')->onDelete('cascade');
+			$table->foreign('object_type')->references('id')->on('acl_types')->onDelete('cascade');
 		});
 
 		// Create the token types table
@@ -259,6 +267,17 @@ class Setup extends Migration {
 			array('name' => 'All'),
 			array('name' => 'User'),
 			array('name' => 'Group'),
+		));
+
+		// Insert ACL flags
+		DB::table('acl_flags')->insert(array(
+			array('name' => 'acl_manage'),
+			array('name' => 'field_edit'),
+			array('name' => 'field_view'),
+			array('name' => 'group_edit'),
+			array('name' => 'group_manage'),
+			array('name' => 'user_edit'),
+			array('name' => 'user_manage'),
 		));
 
 		// Insert field categories
@@ -526,165 +545,165 @@ class Setup extends Migration {
 
 		// Give sysadmins access to view/edit all fields
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_VIEW,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 1,
-			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_EDIT,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 1,
-			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_VIEW,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 2,
-			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_EDIT,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 2,
-			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_VIEW,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 3,
-			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_EDIT,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 3,
-			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_VIEW,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 4,
-			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_EDIT,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 4,
-			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_VIEW,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 5,
-			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_EDIT,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 5,
-			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_VIEW,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 6,
-			'access'       => Permissions::FIELD_VIEW,
 		));
 
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::FIELD_EDIT,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 			'field_id'     => 6,
-			'access'       => Permissions::FIELD_EDIT,
 		));
 
 		// Allow sysadmins to edit all users
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::USER_EDIT,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => Permissions::USER_EDIT,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 		));
 
 		// Allow registered users to edit their own profiles
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::SELF,
+			'flag'         => ACLFlags::USER_EDIT,
 			'subject_id'   => 1,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => Permissions::USER_EDIT,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::SELF,
 		));
 
 		// Allow sysadmins to manage all users
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::USER_MANAGE,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => Permissions::USER_MANAGE,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 		));
 
 		// Allow sysadmins to edit all groups
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::GROUP_EDIT,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => Permissions::GROUP_EDIT,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 		));
 
 		// Allow sysadmins to manage all groups
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::GROUP_MANAGE,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => Permissions::GROUP_MANAGE,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 		));
 
 		// Allow sysadmins to manage ACLs
 		DB::table('acl')->insert(array(
-			'object_id'    => 0,
-			'object_type'  => ACLTypes::ALL,
+			'flag'         => ACLFlags::ACL_MANAGE,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
-			'access'       => Permissions::ACL_MANAGE,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
 		));
 	}
 

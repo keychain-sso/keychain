@@ -46,7 +46,7 @@ class UserController extends BaseController {
 		$data = $this->getUserListData();
 
 		// Validate manage rights
-		Access::restrict(Permissions::USER_MANAGE);
+		Access::restrict(ACLFlags::USER_MANAGE);
 
 		// Merge the list data with the view data
 		$data = array_merge($data, array(
@@ -69,7 +69,7 @@ class UserController extends BaseController {
 		if (Input::has('_save'))
 		{
 			// Validate manage rights
-			Access::restrict(Permissions::USER_MANAGE);
+			Access::restrict(ACLFlags::USER_MANAGE);
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
@@ -141,7 +141,7 @@ class UserController extends BaseController {
 		$data = $this->getUserViewData($user);
 
 		// Validate edit rights
-		Access::restrict(Permissions::USER_EDIT, $user);
+		Access::restrict(ACLFlags::USER_EDIT, $user);
 
 		// Merge the user data with editor data
 		$data = array_merge($data, array(
@@ -168,7 +168,7 @@ class UserController extends BaseController {
 			$user = User::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			Access::restrict(Permissions::USER_EDIT, $user);
+			Access::restrict(ACLFlags::USER_EDIT, $user);
 
 			// Save the form data and show the status
 			$status = FormField::save($user, Input::all());
@@ -202,7 +202,7 @@ class UserController extends BaseController {
 		$data = $this->getUserViewData($user);
 
 		// Validate edit rights
-		Access::restrict(Permissions::USER_EDIT, $user);
+		Access::restrict(ACLFlags::USER_EDIT, $user);
 
 		// Get the associated email
 		if ($id > 0)
@@ -235,7 +235,7 @@ class UserController extends BaseController {
 				// If logged in user has manager rights, we mark the email as
 				// verified right away. Otherwise, we send a verification token to
 				// the email address
-				if (Access::check(Permissions::USER_MANAGE))
+				if (Access::check(ACLFlags::USER_MANAGE))
 				{
 					$email->verified = Flags::YES;
 					$email->save();
@@ -296,10 +296,10 @@ class UserController extends BaseController {
 			$user = User::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			Access::restrict(Permissions::USER_EDIT, $user);
+			Access::restrict(ACLFlags::USER_EDIT, $user);
 
 			// Does the user have manager access?
-			$manager = Access::check(Permissions::USER_MANAGE);
+			$manager = Access::check(ACLFlags::USER_MANAGE);
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array('email' => 'required|email|max:80|unique:user_emails,address'));
@@ -352,7 +352,7 @@ class UserController extends BaseController {
 		$data = $this->getUserViewData($user);
 
 		// Validate edit rights
-		Access::restrict(Permissions::USER_EDIT, $user);
+		Access::restrict(ACLFlags::USER_EDIT, $user);
 
 		// Perform the requested action
 		switch ($action)
@@ -394,7 +394,7 @@ class UserController extends BaseController {
 			$user = User::where('hash', $hash)->firstOrFail();
 
 			// Validate edit rights
-			Access::restrict(Permissions::USER_EDIT, $user);
+			Access::restrict(ACLFlags::USER_EDIT, $user);
 
 			// Validate posted fields
 			$validator = Validator::make(Input::all(), array(
@@ -450,7 +450,7 @@ class UserController extends BaseController {
 		$data = $this->getUserViewData($user);
 
 		// Validate edit rights
-		Access::restrict(Permissions::USER_EDIT, $user);
+		Access::restrict(ACLFlags::USER_EDIT, $user);
 
 		// Perform the requested action
 		switch ($action)
@@ -502,11 +502,11 @@ class UserController extends BaseController {
 			// Fetch the associated user
 			$hash = Input::get('hash');
 			$user = User::where('hash', $hash)->firstOrFail();
-			$manager = Access::check(Permissions::USER_MANAGE);
+			$manager = Access::check(ACLFlags::USER_MANAGE);
 			$save = false;
 
 			// Validate edit rights
-			Access::restrict(Permissions::USER_EDIT, $user);
+			Access::restrict(ACLFlags::USER_EDIT, $user);
 
 			// Define the validation rules
 			$rules = array(
@@ -591,7 +591,7 @@ class UserController extends BaseController {
 		$user = User::where('hash', $hash)->firstOrFail();
 
 		// Validate user_manage rights
-		Access::restrict(Permissions::USER_MANAGE);
+		Access::restrict(ACLFlags::USER_MANAGE);
 
 		// Delete the user
 		$user->delete();
@@ -650,7 +650,7 @@ class UserController extends BaseController {
 		$users = User::with('emails')->orderBy('name')->paginate($length);
 
 		// Check if current user is a manager
-		$manager = Access::check(Permissions::USER_MANAGE);
+		$manager = Access::check(ACLFlags::USER_MANAGE);
 
 		return array(
 			'users'   => $users,
@@ -686,9 +686,9 @@ class UserController extends BaseController {
 		$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
 
 		// Get user permissions
-		$editor = Access::check(Permissions::USER_EDIT, $user);
-		$manager = Access::check(Permissions::USER_MANAGE);
-		$access = Access::check(Permissions::ACL_MANAGE);
+		$editor = Access::check(ACLFlags::USER_EDIT, $user);
+		$manager = Access::check(ACLFlags::USER_MANAGE);
+		$access = Access::check(ACLFlags::ACL_MANAGE);
 
 		// Build the user data
 		return array(

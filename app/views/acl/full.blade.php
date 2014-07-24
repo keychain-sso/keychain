@@ -11,7 +11,7 @@
 
 	{{ Form::open(array('role' => 'form')) }}
 
-	@include('acl.editor')
+	@include('acl.list')
 
 	{{ Form::close() }}
 @stop
