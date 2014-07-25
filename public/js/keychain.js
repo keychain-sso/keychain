@@ -21,7 +21,7 @@ $(function()
 		url = searchbox.attr('data-url');
 		value = $(this).text().toLowerCase();
 
-		if (value != 'self' && value != 'all')
+		if (value != 'self' && value != 'global')
 		{
 			// Enable the search box and focus it
 			searchbox.removeAttr('disabled').focus();
