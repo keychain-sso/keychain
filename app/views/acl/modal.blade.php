@@ -61,7 +61,7 @@
 		</div>
 
 		@if (isset($fields))
-			<div class="form-group">
+			<div id="permission-field" class="form-group @if ( ! str_contains(array_keys($flags)[0], 'field')) hide @endif">
 				{{ Form::label('field', Lang::get('global.field')) }}
 
 				{{
@@ -73,7 +73,7 @@
 			</div>
 		@endif
 
-		<div id="search-object" class="form-group has-feedback hide">
+		<div id="permission-object" class="form-group has-feedback hide">
 			{{ Form::label('object', Lang::get('global.scope'), array('class' => 'control-label')) }}
 
 			<div class="input-group">
@@ -85,6 +85,8 @@
 					</button>
 
 					<ul class="dropdown-menu">
+						<li><a href="#" data-value="self">{{ Lang::get('global.self') }}</a></li>
+						<li><a href="#" data-value="all">{{ Lang::get('global.global') }}</a></li>
 						<li><a href="#" data-value="user">{{ Lang::get('global.user') }}</a></li>
 						<li><a href="#" data-value="group">{{ Lang::get('global.group') }}</a></li>
 					</ul>

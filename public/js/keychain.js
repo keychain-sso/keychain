@@ -31,11 +31,40 @@ $(function()
 	{
 		if ($(this).val().indexOf('manage') != -1)
 		{
-			$('#search-object').addClass('hide');
+			$('#permission-object').addClass('hide');
 		}
 		else
 		{
-			$('#search-object').removeClass('hide');
+			$('#permission-object').removeClass('hide');
+		}
+
+		if ($(this).val().indexOf('field') != -1)
+		{
+			$('#permission-field').removeClass('hide');
+		}
+		else
+		{
+			$('#permission-field').addClass('hide');
+		}
+	});
+
+	// For the objects filter box, if the user selects 'self' or 'global', we
+	// disable the textbox
+	$('#permission-object .input-group').on('hidden.bs.dropdown', function(e)
+	{
+		value = $('[name=object_type]').val();
+
+		if (value == 'self' || value == 'all')
+		{
+			$('#permission-object input[type=text]')
+				.attr('disabled', 'disabled')
+				.val('');
+		}
+		else
+		{
+			$('#permission-object input[type=text]')
+				.removeAttr('disabled')
+				.focus();
 		}
 	});
 });

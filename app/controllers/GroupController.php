@@ -658,9 +658,10 @@ class GroupController extends BaseController {
 		$data = array_merge($data, array(
 			'acl'    => $acl,
 			'show'   => $show,
-			'token'  => Form::hidden('hash', $group->hash),
-			'flags'  => Access::flags($show),
 			'return' => url("group/view/{$group->hash}"),
+			'token'  => Form::hidden('hash', $group->hash),
+			'fields' => Field::lists('name', 'id'),
+			'flags'  => Access::flags(),
 			'modal'  => 'acl.modal',
 			'subject' => $group,
 		));
