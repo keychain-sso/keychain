@@ -58,12 +58,17 @@ class Auth extends \Illuminate\Support\Facades\Auth {
 	{
 		$token = str_random(60);
 
+		// Update the token
 		$user->remember_token = $token;
 		$user->save();
 
+		// Set the token cookie and make sure the user stays
+		// logged in
 		if ($user->id == parent::id())
 		{
 			Cookie::forever(parent::getRecallerName(), $token);
+
+			parent::login($user);
 		}
 	}
 
