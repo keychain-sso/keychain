@@ -670,6 +670,17 @@ class GroupController extends BaseController {
 	}
 
 	/**
+	 * Handles POST events for the permissions screen
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postPermissions()
+	{
+
+	}
+
+	/**
 	 * Deletes a specific group
 	 *
 	 * @access public

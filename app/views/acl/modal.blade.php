@@ -31,8 +31,8 @@
 					</button>
 
 					<ul class="dropdown-menu">
-						<li><a href="#" data-value="user">{{ Lang::get('global.user') }}</a></li>
-						<li><a href="#" data-value="group">{{ Lang::get('global.group') }}</a></li>
+						<li><a href="#" data-value="3">{{ Lang::get('global.user') }}</a></li>
+						<li><a href="#" data-value="4">{{ Lang::get('global.group') }}</a></li>
 					</ul>
 				</div>
 
@@ -52,7 +52,7 @@
 			<span id="search-icon-subject" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
 
 			{{ Form::hidden('subject_id', null) }}
-			{{ Form::hidden('subject_type', 'user') }}
+			{{ Form::hidden('subject_type', 3) }}
 		</div>
 
 		<div class="form-group">
@@ -85,10 +85,10 @@
 					</button>
 
 					<ul class="dropdown-menu">
-						<li><a href="#" data-value="self">{{ Lang::get('global.self') }}</a></li>
-						<li><a href="#" data-value="all">{{ Lang::get('global.global') }}</a></li>
-						<li><a href="#" data-value="user">{{ Lang::get('global.user') }}</a></li>
-						<li><a href="#" data-value="group">{{ Lang::get('global.group') }}</a></li>
+						<li><a href="#" data-value="1">{{ Lang::get('global.self') }}</a></li>
+						<li><a href="#" data-value="2">{{ Lang::get('global.global') }}</a></li>
+						<li><a href="#" data-value="3">{{ Lang::get('global.user') }}</a></li>
+						<li><a href="#" data-value="4">{{ Lang::get('global.group') }}</a></li>
 					</ul>
 				</div>
 
@@ -107,7 +107,7 @@
 			<span id="search-icon-object" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
 
 			{{ Form::hidden('object_id', null) }}
-			{{ Form::hidden('object_type', 'user') }}
+			{{ Form::hidden('object_type', 3) }}
 		</div>
 	</fieldset>
 

@@ -13,17 +13,28 @@
 
 $(function()
 {
-	// Bind to the permissions dropdown and change the search URL of the textbox
-	// based on the selected value on the dropdown
+	// Bind to the permissions dropdown and change the search URL and state of
+	// the search textbox based on the selected value of the dropdown
 	$('#permissions-add .dropdown-menu a[data-value]').on('click', function(e)
 	{
 		searchbox = $(this).parents().eq(3).find('input[type=text]');
 		url = searchbox.attr('data-url');
+		value = $(this).text().toLowerCase();
 
-		from = value == 'user' ? 'group' : 'user';
-		to = $(this).attr('data-value');
+		if (value != 'self' && value != 'all')
+		{
+			// Enable the search box and focus it
+			searchbox.removeAttr('disabled').focus();
 
-		searchbox.attr('data-url', url.replace(from, to));
+			// Set the URL for the auto complete box
+			old = value != 'user' ? 'user' : 'group';
+			searchbox.attr('data-url', url.replace(old, value));
+		}
+		else
+		{
+			// Disable and clear the search box
+			searchbox.attr('disabled', 'disabled').val('');
+		}
 	});
 
 	// Hide the object entry field if a manage permission is selected
@@ -45,26 +56,6 @@ $(function()
 		else
 		{
 			$('#permission-field').addClass('hide');
-		}
-	});
-
-	// For the objects filter box, if the user selects 'self' or 'global', we
-	// disable the textbox
-	$('#permission-object .input-group').on('hidden.bs.dropdown', function(e)
-	{
-		value = $('[name=object_type]').val();
-
-		if (value == 'self' || value == 'all')
-		{
-			$('#permission-object input[type=text]')
-				.attr('disabled', 'disabled')
-				.val('');
-		}
-		else
-		{
-			$('#permission-object input[type=text]')
-				.removeAttr('disabled')
-				.focus();
 		}
 	});
 });
