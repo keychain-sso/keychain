@@ -11,13 +11,13 @@
 
 	{{ Form::open(array('role' => 'form')) }}
 
-	<fieldset>
+	<fieldset id="permissions-add">
 		<legend>
 			<span class="glyphicon glyphicon-import"></span>
 			{{ Lang::get('global.add_permissions') }}
 		</legend>
 
-		<div class="form-group">
+		<div class="form-group has-feedback">
 			{? $type = isset($subject) ? strtolower(get_class($subject)) : 'user' ?}
 
 			{{ Form::label('subject', Lang::get('global.user_group'), array('class' => 'control-label')) }}
@@ -38,14 +38,21 @@
 
 				{{
 					Form::text('subject', isset($subject) ? $subject->name : null, array(
-						'class'    => 'form-control',
-						'disabled' => isset($subject) ? 'disabled' : null,
+						'class'       => 'form-control',
+						'disabled'    => isset($subject) ? 'disabled' : null,
+						'data-toggle'  => 'autocomplete',
+						'data-icon'    => '#search-icon-subject',
+						'data-target'  => '[name=subject_id]',
+						'data-url'     => url('user/search/list'),
+						'autocomplete' => 'off',
 					))
 				}}
 			</div>
 
-			{{ Form::hidden('subject_id', isset($subject) ? $subject->id : null) }}
-			{{ Form::hidden('subject_type', $type) }}
+			<span id="search-icon-subject" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
+
+			{{ Form::hidden('subject_id', null) }}
+			{{ Form::hidden('subject_type', 'user') }}
 		</div>
 
 		<div class="form-group">
@@ -66,7 +73,7 @@
 			</div>
 		@endif
 
-		<div class="form-group">
+		<div class="form-group has-feedback">
 			{{ Form::label('object', Lang::get('global.scope'), array('class' => 'control-label')) }}
 
 			<div class="input-group">
@@ -83,8 +90,19 @@
 					</ul>
 				</div>
 
-				{{ Form::text('object', null, array('class' => 'form-control')) }}
+				{{
+					Form::text('object', null, array(
+						'class'        => 'form-control',
+						'data-toggle'  => 'autocomplete',
+						'data-icon'    => '#search-icon-object',
+						'data-target'  => '[name=object_id]',
+						'data-url'     => url('user/search/list'),
+						'autocomplete' => 'off',
+					))
+				}}
 			</div>
+
+			<span id="search-icon-object" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
 
 			{{ Form::hidden('object_id', null) }}
 			{{ Form::hidden('object_type', 'user') }}

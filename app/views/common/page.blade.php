@@ -83,6 +83,7 @@
 	<script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/bootstrap-pixel.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/keychain.js') }}"></script>
 
 	@if ($appconfig['locale'] != 'en')
 		<script type="text/javascript" src="{{ asset("js/locales/bootstrap-datepicker.{$appconfig['locale']}.js") }}"></script>

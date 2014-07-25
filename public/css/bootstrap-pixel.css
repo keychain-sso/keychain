@@ -105,6 +105,17 @@
   display: block;
 }
 
+/* Position helpers */
+.pos-relative {
+  position: relative;
+}
+.pos-absolute {
+  position: absolute;
+}
+.pos-fixed {
+  position: fixed;
+}
+
 /* Jumbotron customs */
 .jumbotron .text-xl {
   font-size: 110px;

@@ -606,29 +606,46 @@ class UserController extends BaseController {
 	 * Performs user search on a query via AJAX
 	 *
 	 * @access public
+	 * @param  string  $format
 	 * @return View
 	 */
-	public function getSearch()
+	public function getSearch($format)
 	{
 		if (Request::ajax())
 		{
-			// Get the search criteria
 			$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
-			$max = Config::get('view.icon_length') - count($exclude);
 
-			if ($max > 0)
+			// Respond in the requested format
+			switch ($format)
 			{
-				// Get the results of the search
-				$users = User::search()->take($max)->get();
+				case 'icons':
 
-				// Build the view data
-				$data = array(
-					'users'    => $users,
-					'checkbox' => Input::get('checkbox'),
-				);
+					// Return a maximum count of icon_length users
+					$max = Config::get('view.icon_length') - count($exclude);
 
-				// Return the icon set
-				return View::make('common/icon', null, $data);
+					if ($max > 0)
+					{
+						$users = User::search()->take($max)->get();
+
+						$data = array(
+							'users'    => $users,
+							'checkbox' => Input::get('checkbox'),
+						);
+
+						return View::make('common/icon', null, $data);
+					}
+
+				case 'list':
+
+					// Return a maximum count of list_length users
+					$max = Config::get('view.list_length') - count($exclude);
+
+					if ($max > 0)
+					{
+						$users = User::search()->take($max)->get();
+
+						return View::make('common/list', null, array('items' => $users));
+					}
 			}
 		}
 		else

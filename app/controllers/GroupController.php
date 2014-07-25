@@ -700,13 +700,41 @@ class GroupController extends BaseController {
 	}
 
 	/**
-	 * Performs user search on a query via AJAX
+	 * Performs group search on a query via AJAX
+	 *
+	 * @access public
+	 * @return View
+	 */
+	public function getSearch()
+	{
+		if (Request::ajax())
+		{
+			// Get the search criteria
+			$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
+			$max = Config::get('view.list_length') - count($exclude);
+
+			// Search the group and return the results
+			if ($max > 0)
+			{
+				$groups = Group::search()->take($max)->get();
+
+				return View::make('common/list', null, array('items' => $groups));
+			}
+		}
+		else
+		{
+			App::abort(HTTPStatus::NOTFOUND);
+		}
+	}
+
+	/**
+	 * Performs member search on a query via AJAX
 	 *
 	 * @access public
 	 * @param  string  $hash
 	 * @return View
 	 */
-	public function getSearch($hash)
+	public function getMemberSearch($hash)
 	{
 		if (Request::ajax())
 		{

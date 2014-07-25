@@ -28,6 +28,9 @@ Route::controller('token', 'TokenController');
 // Authentication route
 Route::controller('auth', 'AuthController');
 
+// API route
+Route::controller('api', 'APIController');
+
 // Global authentication check
 Route::when('*', 'auth');
 
