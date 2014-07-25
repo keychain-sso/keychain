@@ -25,4 +25,17 @@ $(function()
 
 		searchbox.attr('data-url', url.replace(from, to));
 	});
+
+	// Hide the object entry field if a manage permission is selected
+	$('#permissions-add [name=flag]').on('change', function(e)
+	{
+		if ($(this).val().indexOf('manage') != -1)
+		{
+			$('#search-object').addClass('hide');
+		}
+		else
+		{
+			$('#search-object').removeClass('hide');
+		}
+	});
 });

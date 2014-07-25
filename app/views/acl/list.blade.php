@@ -131,18 +131,3 @@
 		</tbody>
 	</table>
 </fieldset>
-
-<div class="modal-footer">
-	{{ $token }}
-
-	{{
-		Form::submit(Lang::get('global.save'), array(
-			'name'     => '_save',
-			'class'    => 'btn btn-primary',
-		))
-	}}
-
-	<a href="{{ $return }}" class="btn btn-default">
-		{{ Lang::get('global.close') }}
-	</a>
-</div>

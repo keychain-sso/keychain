@@ -73,7 +73,7 @@
 			</div>
 		@endif
 
-		<div class="form-group has-feedback">
+		<div id="search-object" class="form-group has-feedback hide">
 			{{ Form::label('object', Lang::get('global.scope'), array('class' => 'control-label')) }}
 
 			<div class="input-group">
@@ -119,4 +119,19 @@
 	@include('acl.list')
 
 	{{ Form::close() }}
+</div>
+
+<div class="modal-footer">
+	{{ $token }}
+
+	{{
+		Form::submit(Lang::get('global.save'), array(
+			'name'     => '_save',
+			'class'    => 'btn btn-primary',
+		))
+	}}
+
+	<a href="{{ $return }}" class="btn btn-default">
+		{{ Lang::get('global.close') }}
+	</a>
 </div>
