@@ -116,14 +116,14 @@
 			{{ Form::hidden('object_id', null) }}
 			{{ Form::hidden('object_type', ACLTypes::USER) }}
 		</div>
-	</fieldset>
 
-	{{
-		Form::submit(Lang::get('global.submit'), array(
-			'name'  => '_submit',
-			'class' => 'btn btn-primary',
-		))
-	}}
+		{{
+			Form::submit(Lang::get('global.submit'), array(
+				'name'  => '_submit',
+				'class' => 'btn btn-primary',
+			))
+		}}
+	</fieldset>
 
 	@include('acl.list')
 </div>

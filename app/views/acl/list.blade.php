@@ -1,4 +1,4 @@
-@if ($show->site && count($acl->site) > 0)
+@if ($show->site)
 	<fieldset>
 		<legend>
 			<span class="glyphicon glyphicon-comment"></span>
@@ -26,6 +26,12 @@
 						</td>
 					</tr>
 				@endforeach
+
+				@if (count($acl->site) == 0)
+					<tr>
+						<td colspan="3">{{ Lang::get('global.no_permissions') }}</td>
+					</tr>
+				@endif
 			</tbody>
 		</table>
 	</fieldset>
