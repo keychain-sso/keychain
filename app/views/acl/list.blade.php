@@ -1,5 +1,3 @@
-@include('common.alerts')
-
 @if ($show->site && count($acl->site) > 0)
 	<fieldset>
 		<legend>

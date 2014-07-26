@@ -27,6 +27,7 @@ use QueryMethods;
 use stdClass;
 use User;
 use UserGroup;
+use Validator;
 
 /**
  * Access class
@@ -393,6 +394,168 @@ class Access {
 		$acl->fields = count($fieldIds) > 0 ? Field::whereIn('id', $fieldIds)->get() : array();
 
 		return $acl;
+	}
+
+	/**
+	 * Creates an entry in the ACL based on the posted data
+	 *
+	 * @static
+	 * @access public
+	 * @param  array  $data
+	 * @return string|bool
+	 */
+	public static function save($data)
+	{
+		$entry = (object) $data;
+
+		// Set up the validation rules
+		$rules = array(
+			'subject_type' => 'required',
+			'field'        => 'required|exists:fields,id',
+			'flag'         => 'required|exists:acl_flags,name',
+		);
+
+		// Determine the subject lookup rules
+		if (isset($entry->subject_type))
+		{
+			switch ($entry->subject_type)
+			{
+				case ACLTypes::USER:
+
+					$rules['subject_id'] = 'required|exists:users,id';
+
+					break;
+
+				case ACLTypes::GROUP:
+
+					$rules['subject_id'] = 'required|exists:groups,id';
+
+					break;
+
+				default:
+
+					return Lang::get('global.invalid_subject');
+			}
+		}
+
+		// Based on the flag, determine whether we need the object
+		if (isset($entry->flag))
+		{
+			// We need the object_type for field and non-manage permissions
+			if (str_contains($entry->flag, 'field') || ! str_contains($entry->flag, 'manage'))
+			{
+				$rules['object_type'] = 'required|exists:acl_types,id';
+
+				// Determine the object lookup rules
+				if (isset($entry->object_type))
+				{
+					switch ($entry->object_type)
+					{
+						case ACLTypes::USER:
+
+							$rules['object_id'] = 'required|exists:users,id';
+
+							break;
+
+						case ACLTypes::GROUP:
+
+							$rules['object_id'] = 'required|exists:groups,id';
+
+							break;
+					}
+				}
+			}
+		}
+
+		// Create the validator
+		$validator = Validator::make($data, $rules);
+
+		// Run the validator
+		if ($validator->fails())
+		{
+			return $validator->messages()->all('<p>:message</p>');
+		}
+
+		// Set field to 0 for non-field permissions
+		if ( ! str_contains($entry->flag, 'field'))
+		{
+			$entry->field = 0;
+		}
+
+		// Set object to 'all' for manage permissions
+		if (str_contains($entry->flag, 'manage'))
+		{
+			$entry->object_id = 0;
+			$entry->object_type = ACLTypes::ALL;
+		}
+
+		// Create the ACL entry, if it doesn't already exist
+		$acl = ACL::firstOrCreate(array(
+			'flag'         => $entry->flag,
+			'subject_id'   => $entry->subject_id,
+			'subject_type' => $entry->subject_type,
+			'object_id'    => $entry->object_id,
+			'object_type'  => $entry->object_type,
+			'field_id'     => $entry->field,
+		));
+
+		// Clear the ACL cache for this entity
+		static::refresh($entry->subject_id, $entry->subject_type);
+
+		// All OK!
+		return true;
+	}
+
+	/**
+	 * Removes a specific ACL entry
+	 *
+	 * @static
+	 * @access public
+	 * @param  int  $id
+	 * @return void
+	 */
+	public static function remove($id)
+	{
+		// Fetch the ACL entry
+		$acl = ACL::findOrFail($id);
+
+		// Clear cached against the subject
+		static::refresh($acl->subject_id, $acl->subject_type);
+
+		// Remove the ACL entry
+		$acl->delete();
+	}
+
+	/**
+	 * Refreshes the cache for a certain ACL entity
+	 *
+	 * @static
+	 * @access private
+	 * @param  int  $id
+	 * @param  int  $type
+	 * @return void
+	 */
+	private static function refresh($id, $type)
+	{
+		switch ($type)
+		{
+			case ACLTypes::USER:
+
+				Cache::tags("security.user.{$id}")->flush();
+
+				break;
+
+			case ACLTypes::GROUP:
+
+				$users = UserGroup::where('group_id', $id)->lists('user_id');
+
+				foreach ($users as $user)
+				{
+					Cache::tags("security.user.{$user}")->flush();
+				}
+
+				break;
+		}
 	}
 
 }

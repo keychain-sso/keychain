@@ -89,13 +89,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 * Searches for a specific user by name/email address
 	 *
 	 * @access public
+	 * @param  User  $user
+	 * @param  array  $filter
 	 * @return User
 	 */
-	public function scopeSearch($users)
+	public function scopeSearch($user, $filter)
 	{
-		$query = Input::get('query');
-		$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
+		$filter = (object) $filter;
 		$results = array();
+
+		$query = $filter->query;
+		$exclude = isset($filter->exclude) ? explode(',', $filter->exclude) : array();
 
 		// If user is searching by email address
 		if (filter_var($query, FILTER_VALIDATE_EMAIL))
@@ -109,7 +113,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			// Look up user by IDs
 			if (count($userIds) > 0)
 			{
-				$users->whereIn('id', $userIds);
+				$user->whereIn('id', $userIds);
 			}
 		}
 
@@ -117,17 +121,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		else
 		{
 			// We do not use %query% to allow the index to be utilized
-			$users->where('name', 'like', "{$query}%");
+			$user->where('name', 'like', "{$query}%");
 		}
 
 		// Remove excluded users
 		if (count($exclude) > 0)
 		{
-			$users->whereNotIn('hash', $exclude);
+			$user->whereNotIn('hash', $exclude);
 		}
 
 		// Return the results of the search
-		return $users->with('primaryEmail')->orderBy('name');
+		return $user->with('primaryEmail')->orderBy('name');
 	}
 
 }

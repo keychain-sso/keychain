@@ -64,12 +64,36 @@ $(function()
 		if ($(this).val() == 'group_edit')
 		{
 			$('#permission-object .dropdown-menu').find('[data-value=1],[data-value=3]').hide();
-			$('#permission-object .dropdown-menu a[data-value=4]').click();
+
+			if (e.originalEvent !== undefined)
+			{
+				$('#permission-object .dropdown-menu a[data-value=4]').click();
+			}
 		}
 		else
 		{
 			$('#permission-object .dropdown-menu').find('[data-value=1],[data-value=3]').show();
-			$('#permission-object .dropdown-menu a[data-value=3]').click();
+
+			if (e.originalEvent !== undefined)
+			{
+				$('#permission-object .dropdown-menu a[data-value=3]').click();
+			}
 		}
 	});
+
+	// Retain the dropdown state based on the hidden field data
+	subjectType = $('[name=subject_type]');
+	objectType = $('[name=object_type]');
+
+	if (subjectType.length == 1 && objectType.length == 1)
+	{
+		$('#permission-add [name=flag]').change();
+
+		if ( ! $('#permission-subject [name=subject]').is(':disabled'))
+		{
+			$('#permission-subject .dropdown-menu a[data-value=' + subjectType.val() + ']').click();
+		}
+
+		$('#permission-object .dropdown-menu a[data-value=' + objectType.val() + ']').click();
+	}
 });

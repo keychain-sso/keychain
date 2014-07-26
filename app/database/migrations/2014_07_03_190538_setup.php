@@ -718,6 +718,7 @@ class Setup extends Migration {
 		Schema::drop('token_types');
 		Schema::drop('acl');
 		Schema::drop('acl_types');
+		Schema::drop('acl_flags');
 		Schema::drop('user_groups');
 		Schema::drop('user_fields');
 		Schema::drop('group_requests');

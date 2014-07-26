@@ -625,7 +625,7 @@ class UserController extends BaseController {
 
 					if ($max > 0)
 					{
-						$users = User::search()->take($max)->get();
+						$users = User::search(Input::all())->take($max)->get();
 
 						$data = array(
 							'users'    => $users,
@@ -642,7 +642,7 @@ class UserController extends BaseController {
 
 					if ($max > 0)
 					{
-						$users = User::search()->take($max)->get();
+						$users = User::search(Input::all())->take($max)->get();
 
 						return View::make('common/list', null, array('items' => $users));
 					}

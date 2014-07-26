@@ -9,7 +9,7 @@ return array(
 	|
 	| The following language lines contain the default error messages used by
 	| the validator class. Some of these rules have multiple versions such
-	| as the size rules. Feel free to tweak each of these messages here.
+	| as the size rules.
 	|
 	*/
 
@@ -78,29 +78,24 @@ return array(
 	| Custom Validation Language Lines
 	|--------------------------------------------------------------------------
 	|
-	| Here you may specify custom validation messages for attributes using the
-	| convention 'attribute.rule' to name the lines. This makes it quick to
-	| specify a specific custom language line for a given attribute rule.
+	| This defines custom validation language lines suited for specific use
+	| cases.
 	|
 	*/
 
 	'custom' => array(
-		'attribute-name' => array(
-			'rule-name' => 'custom-message',
+		'subject_id'   => array(
+			'required' => 'Please select a valid user or group',
+		),
+		'subject_type' => array(
+			'required' => 'Please select a valid user or group',
+		),
+		'object_id'   => array(
+			'required' => 'Please select a valid scope',
+		),
+		'object_type' => array(
+			'required' => 'Please select a valid scope',
 		),
 	),
-
-	/*
-	|--------------------------------------------------------------------------
-	| Custom Validation Attributes
-	|--------------------------------------------------------------------------
-	|
-	| The following language lines are used to swap attribute place-holders
-	| with something more reader friendly such as E-Mail Address instead
-	| of 'email'. This simply helps us make messages a little cleaner.
-	|
-	*/
-
-	'attributes' => array(),
 
 );

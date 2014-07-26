@@ -29,7 +29,7 @@ Route::controller('token', 'TokenController');
 Route::controller('auth', 'AuthController');
 
 // API route
-Route::controller('api', 'APIController');
+Route::controller('admin', 'AdminController');
 
 // Global authentication check
 Route::when('*', 'auth');

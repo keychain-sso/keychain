@@ -27,25 +27,29 @@ class Group extends Eloquent {
 	 * Searches for a specific group by name
 	 *
 	 * @access public
+	 * @param  Group  $group
+	 * @param  array  $filter
 	 * @return Group
 	 */
-	public function scopeSearch($groups)
+	public function scopeSearch($group, $filter)
 	{
-		$query = Input::get('query');
-		$exclude = Input::has('exclude') ? explode(',', Input::get('exclude')) : array();
+		$filter = (object) $filter;
 		$results = array();
 
+		$query = $filter->query;
+		$exclude = isset($filter->exclude) ? explode(',', $filter->exclude) : array();
+
 		// We do not use %query% to allow the index to be utilized
-		$groups->where('name', 'like', "{$query}%");
+		$group->where('name', 'like', "{$query}%");
 
 		// Remove excluded groups
 		if (count($exclude) > 0)
 		{
-			$groups->whereNotIn('hash', $exclude);
+			$group->whereNotIn('hash', $exclude);
 		}
 
 		// Return the results of the search
-		return $groups->orderBy('name');
+		return $group->orderBy('name');
 	}
 
 }

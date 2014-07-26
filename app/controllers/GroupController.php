@@ -454,14 +454,14 @@ class GroupController extends BaseController {
 	 * @access public
 	 * @param  string  $hash
 	 * @param  string  $action
-	 * @param  int  $request
+	 * @param  int  $id
 	 * @return Redirect
 	 */
-	public function getRequests($hash, $action = null, $request = 0)
+	public function getRequests($hash, $action = null, $id = 0)
 	{
 		// Get the group and request details
 		$group = Group::where('hash', $hash)->firstOrFail();
-		$request = GroupRequest::find($request);
+		$request = GroupRequest::find($id);
 
 		// Validate edit rights
 		Access::restrict(ACLFlags::GROUP_EDIT, $group);
@@ -670,17 +670,6 @@ class GroupController extends BaseController {
 	}
 
 	/**
-	 * Handles POST events for the permissions screen
-	 *
-	 * @access public
-	 * @return Redirect
-	 */
-	public function postPermissions()
-	{
-
-	}
-
-	/**
 	 * Deletes a specific group
 	 *
 	 * @access public
@@ -728,7 +717,7 @@ class GroupController extends BaseController {
 			// Search the group and return the results
 			if ($max > 0)
 			{
-				$groups = Group::search()->take($max)->get();
+				$groups = Group::search(Input::all())->take($max)->get();
 
 				return View::make('common/list', null, array('items' => $groups));
 			}
@@ -757,7 +746,7 @@ class GroupController extends BaseController {
 			// Do the search only if we need to return any users
 			if ($max > 0)
 			{
-				$users = User::search();
+				$users = User::search(Input::all());
 
 				// Apply group membership filter
 				$group = Group::where('hash', $hash)->firstOrFail();

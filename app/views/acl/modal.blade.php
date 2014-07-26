@@ -1,3 +1,10 @@
+{{
+	Form::open(array(
+		'action' => 'AdminController@postPermissions',
+		'role'   => 'form'
+	))
+}}
+
 <div class="modal-body">
 	<nav class="navbar navbar-default navbar-static-top navbar-modal">
 		<div class="container-fluid">
@@ -9,7 +16,7 @@
 		</div>
 	</nav>
 
-	{{ Form::open(array('role' => 'form')) }}
+	@include('common.alerts')
 
 	<fieldset id="permission-add">
 		<legend>
@@ -17,7 +24,7 @@
 			{{ Lang::get('global.add_permissions') }}
 		</legend>
 
-		<div class="form-group has-feedback">
+		<div id="permission-subject" class="form-group has-feedback">
 			{? $type = isset($subject) ? strtolower(get_class($subject)) : 'user' ?}
 
 			{{ Form::label('subject', Lang::get('global.user_group'), array('class' => 'control-label')) }}
@@ -51,8 +58,8 @@
 
 			<span id="search-icon-subject" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
 
-			{{ Form::hidden('subject_id', null) }}
-			{{ Form::hidden('subject_type', 3) }}
+			{{ Form::hidden('subject_id', isset($subject) ? $subject->id : null) }}
+			{{ Form::hidden('subject_type', get_class($subject) == 'Group' ? ACLTypes::GROUP : ACLTypes::USER) }}
 		</div>
 
 		<div class="form-group">
@@ -107,7 +114,7 @@
 			<span id="search-icon-object" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
 
 			{{ Form::hidden('object_id', null) }}
-			{{ Form::hidden('object_type', 3) }}
+			{{ Form::hidden('object_type', ACLTypes::USER) }}
 		</div>
 	</fieldset>
 
@@ -119,8 +126,6 @@
 	}}
 
 	@include('acl.list')
-
-	{{ Form::close() }}
 </div>
 
 <div class="modal-footer">
@@ -137,3 +142,5 @@
 		{{ Lang::get('global.close') }}
 	</a>
 </div>
+
+{{ Form::close() }}

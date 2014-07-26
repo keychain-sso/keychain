@@ -176,12 +176,15 @@ class FormField {
 			return $validator->messages()->all('<p>:message</p>');
 		}
 
+		// Convert the data to an object
+		$data = (object) $data;
+
 		// Update basic field data
-		$user->name          = $data['name'];
-		$user->gender        = $data['gender'];
-		$user->date_of_birth = $data['date_of_birth'];
-		$user->timezone      = $data['timezone'];
-		$user->title         = $data['title'];
+		$user->name = $data->name;
+		$user->gender = $data->gender;
+		$user->date_of_birth = $data->date_of_birth;
+		$user->timezone = $data->timezone;
+		$user->title = $data->title;
 		$user->save();
 
 		// Get all available custom fields
