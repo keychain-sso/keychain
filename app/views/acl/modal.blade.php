@@ -120,7 +120,7 @@
 		{{
 			Form::submit(Lang::get('global.submit'), array(
 				'name'  => '_submit',
-				'class' => 'btn btn-primary',
+				'class' => 'btn btn-primary spacer-lg-bottom',
 			))
 		}}
 	</fieldset>
