@@ -64,20 +64,7 @@ $(function()
 		if ($(this).val() == 'group_edit')
 		{
 			$('#permission-object .dropdown-menu').find('[data-value=1],[data-value=3]').hide();
-
-			if (e.originalEvent !== undefined)
-			{
-				$('#permission-object .dropdown-menu a[data-value=4]').click();
-			}
-		}
-		else
-		{
-			$('#permission-object .dropdown-menu').find('[data-value=1],[data-value=3]').show();
-
-			if (e.originalEvent !== undefined)
-			{
-				$('#permission-object .dropdown-menu a[data-value=3]').click();
-			}
+			$('#permission-object .dropdown-menu a[data-value=4]').click();
 		}
 	});
 
