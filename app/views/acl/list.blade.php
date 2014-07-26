@@ -1,7 +1,7 @@
 @if ($show->site)
 	<fieldset>
 		<legend>
-			<span class="glyphicon glyphicon-comment"></span>
+			<span class="glyphicon glyphicon-retweet"></span>
 			{{ Lang::get('global.site_permissions') }}
 		</legend>
 
@@ -99,7 +99,7 @@
 					@if ($show->objects)
 						<td>
 							@if ($permission->object_type == ACLTypes::ALL)
-								<span class="glyphicon glyphicon-asterisk"></span>
+								<span class="glyphicon glyphicon-globe"></span>
 								{{ Lang::get('global.global') }}
 							@elseif ($permission->object_type == ACLTypes::SELF)
 								<span class="glyphicon glyphicon-bookmark"></span>
