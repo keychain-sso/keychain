@@ -11,7 +11,7 @@
 
 	{{ Form::open(array('role' => 'form')) }}
 
-	<fieldset id="permissions-add">
+	<fieldset id="permission-add">
 		<legend>
 			<span class="glyphicon glyphicon-import"></span>
 			{{ Lang::get('global.add_permissions') }}

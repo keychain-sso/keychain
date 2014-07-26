@@ -15,7 +15,7 @@ $(function()
 {
 	// Bind to the permissions dropdown and change the search URL and state of
 	// the search textbox based on the selected value of the dropdown
-	$('#permissions-add .dropdown-menu a[data-value]').on('click', function(e)
+	$('#permission-add .dropdown-menu a[data-value]').on('click', function(e)
 	{
 		searchbox = $(this).parents().eq(3).find('input[type=text]');
 		url = searchbox.attr('data-url');
@@ -37,9 +37,10 @@ $(function()
 		}
 	});
 
-	// Hide the object entry field if a manage permission is selected
-	$('#permissions-add [name=flag]').on('change', function(e)
+	// Show/hide fields on the permissions screens
+	$('#permission-add [name=flag]').on('change', function(e)
 	{
+		// Hide the object box if a manage permission is selected
 		if ($(this).val().indexOf('manage') != -1)
 		{
 			$('#permission-object').addClass('hide');
@@ -49,6 +50,7 @@ $(function()
 			$('#permission-object').removeClass('hide');
 		}
 
+		// Show the field box if a field permission is selected
 		if ($(this).val().indexOf('field') != -1)
 		{
 			$('#permission-field').removeClass('hide');
@@ -56,6 +58,18 @@ $(function()
 		else
 		{
 			$('#permission-field').addClass('hide');
+		}
+
+		// Hide 'self' and 'user' objects if group_edit permission is selected
+		if ($(this).val() == 'group_edit')
+		{
+			$('#permission-object .dropdown-menu').find('[data-value=1],[data-value=3]').hide();
+			$('#permission-object .dropdown-menu a[data-value=4]').click();
+		}
+		else
+		{
+			$('#permission-object .dropdown-menu').find('[data-value=1],[data-value=3]').show();
+			$('#permission-object .dropdown-menu a[data-value=3]').click();
 		}
 	});
 });
