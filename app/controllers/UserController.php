@@ -579,6 +579,50 @@ class UserController extends BaseController {
 	}
 
 	/**
+	 * Fetches the permissions for the user
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return View
+	 */
+	public function getPermissions($hash)
+	{
+		// Fetch the user's profile
+		$user = User::where('hash', $hash)->firstOrFail();
+		$data = $this->getUserViewData($user);
+
+		// Validate acl_manage rights
+		Access::restrict(ACLFlags::ACL_MANAGE);
+
+		// Build the ACL query
+		$query = new stdClass;
+		$query->entity = $user;
+
+		// Query the ACL for user permissions
+		$acl = Access::query(QueryMethods::BY_SUBJECT, $query);
+
+		// Set display flags
+		$show = new stdClass;
+		$show->site = true;
+		$show->subjects = false;
+		$show->objects = true;
+		$show->fields = false;
+
+		// Merge the user data with view data
+		$data = array_merge($data, array(
+			'acl'    => $acl,
+			'show'   => $show,
+			'return' => url("user/view/{$user->hash}"),
+			'fields' => Field::lists('name', 'id'),
+			'flags'  => Access::flags(),
+			'modal'  => 'acl.modal',
+			'subject' => $user,
+		));
+
+		return View::make('user/view', 'user.user_permissions', $data);
+	}
+
+	/**
 	 * Deletes a specific user
 	 *
 	 * @access public

@@ -659,7 +659,6 @@ class GroupController extends BaseController {
 			'acl'    => $acl,
 			'show'   => $show,
 			'return' => url("group/view/{$group->hash}"),
-			'token'  => Form::hidden('hash', $group->hash),
 			'fields' => Field::lists('name', 'id'),
 			'flags'  => Access::flags(),
 			'modal'  => 'acl.modal',

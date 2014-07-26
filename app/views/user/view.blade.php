@@ -118,10 +118,10 @@
 						<p class="list-group-item-text">{{ Utilities::cleanString($user->timezone) }}</p>
 					</li>
 
-					@foreach ($fieldView->{FieldCategories::BASIC} as $field)
+					@foreach ($fieldView->{FieldCategories::BASIC} as $view)
 						<li class="list-group-item">
-							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{ nl2br($field->value) }}</p>
+							<h4 class="list-group-item-heading">{{ $view->name }}</h4>
+							<p class="list-group-item-text">{{ nl2br($view->value) }}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -167,10 +167,10 @@
 						</li>
 					@endif
 
-					@foreach ($fieldView->{FieldCategories::CONTACT} as $field)
+					@foreach ($fieldView->{FieldCategories::CONTACT} as $view)
 						<li class="list-group-item">
-							<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-							<p class="list-group-item-text">{{ nl2br($field->value) }}</p>
+							<h4 class="list-group-item-heading">{{ $view->name }}</h4>
+							<p class="list-group-item-text">{{ nl2br($view->value) }}</p>
 						</li>
 					@endforeach
 				</ul>
@@ -213,10 +213,10 @@
 					</div>
 
 					<ul class="list-group">
-						@foreach ($fieldView->{FieldCategories::OTHER} as $field)
+						@foreach ($fieldView->{FieldCategories::OTHER} as $view)
 							<li class="list-group-item">
-								<h4 class="list-group-item-heading">{{ $field->name }}</h4>
-								<p class="list-group-item-text">{{ nl2br($field->value) }}</p>
+								<h4 class="list-group-item-heading">{{ $view->name }}</h4>
+								<p class="list-group-item-text">{{ nl2br($view->value) }}</p>
 							</li>
 						@endforeach
 					</ul>

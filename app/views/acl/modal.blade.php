@@ -129,8 +129,6 @@
 </div>
 
 <div class="modal-footer">
-	{{ $token }}
-
 	{{
 		Form::submit(Lang::get('global.save'), array(
 			'name'     => '_save',

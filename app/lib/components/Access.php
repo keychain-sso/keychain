@@ -489,15 +489,26 @@ class Access {
 			$entry->object_type = ACLTypes::ALL;
 		}
 
-		// Create the ACL entry, if it doesn't already exist
-		$acl = ACL::firstOrCreate(array(
-			'flag'         => $entry->flag,
-			'subject_id'   => $entry->subject_id,
-			'subject_type' => $entry->subject_type,
-			'object_id'    => $entry->object_id,
-			'object_type'  => $entry->object_type,
-			'field_id'     => $entry->field,
-		));
+		// Check if an existing entry already exists
+		$acl = ACL::where('flag', $entry->flag)
+		          ->where('subject_id', $entry->subject_id)
+		          ->where('subject_type', $entry->subject_type)
+		          ->where('object_id', $entry->object_id)
+		          ->where('object_type', $entry->object_type)
+		          ->where('field_id', $entry->field)
+		          ->first();
+
+		if ($acl == null)
+		{
+			$acl = new ACL;
+			$acl->flag = $entry->flag;
+			$acl->subject_id = $entry->subject_id;
+			$acl->subject_type = $entry->subject_type;
+			$acl->object_id = $entry->object_id;
+			$acl->object_type = $entry->object_type;
+			$acl->field_id = $entry->field;
+			$acl->save();
+		}
 
 		// Clear the ACL cache for this entity
 		static::refresh($entry->subject_id, $entry->subject_type);
