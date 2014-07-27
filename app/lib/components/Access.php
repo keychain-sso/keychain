@@ -15,6 +15,7 @@
 
 use ACL;
 use ACLFlag;
+use ACLFlags;
 use ACLTypes;
 use App;
 use Auth;
@@ -225,6 +226,26 @@ class Access {
 		{
 			App::abort(HTTPStatus::FORBIDDEN);
 		}
+	}
+
+	/**
+	 * Returns all manager flags for the user
+	 *
+	 * @static
+	 * @access public
+	 * @return bool
+	 */
+	public static function manager()
+	{
+		return Cache::tags('security.user.'.Auth::id())->remember('admin', 60, function()
+		{
+			return (object) array(
+				'acl' => static::check(ACLFlags::ACL_MANAGE),
+				'field' => static::check(ACLFlags::FIELD_MANAGE),
+				'group' => static::check(ACLFlags::GROUP_MANAGE),
+				'user' => static::check(ACLFlags::USER_MANAGE),
+			);
+		});
 	}
 
 	/**

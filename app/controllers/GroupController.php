@@ -781,14 +781,10 @@ class GroupController extends BaseController {
 		// Get a list of current user's memberships
 		$userGroups = UserGroup::where('user_id', Auth::id())->lists('group_id');
 
-		// Check if user has group manage rights
-		$manager = Access::check(ACLFlags::GROUP_MANAGE);
-
 		// Return the list data
 		return array(
 			'groupItems' => $groupItems,
 			'userGroups' => $userGroups,
-			'manager'    => $manager,
 		);
 	}
 
@@ -830,14 +826,14 @@ class GroupController extends BaseController {
 		// Determine if the group actions bar should be displayed
 		$actions = false;
 
-		// Display if user can manage the group
-		if ($manager = Access::check(ACLFlags::GROUP_MANAGE))
+		// Display if user can modify the ACL
+		if (Access::check(ACLFlags::ACL_MANAGE))
 		{
 			$actions = true;
 		}
 
-		// Display if user can modify the ACL
-		if ($access = Access::check(ACLFlags::ACL_MANAGE))
+		// Display if user can manage the group
+		if (Access::check(ACLFlags::GROUP_MANAGE))
 		{
 			$actions = true;
 		}
@@ -868,8 +864,6 @@ class GroupController extends BaseController {
 			'canAdd'       => $canAdd,
 			'actions'      => $actions,
 			'editor'       => $editor,
-			'manager'      => $manager,
-			'access'       => $access,
 			'requestCount' => $requestCount,
 			'pending'      => $pending,
 			'remove'       => count($userGroups) > 0,

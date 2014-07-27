@@ -78,7 +78,7 @@
 						</li>
 					@endif
 
-					@if ($manager && $canAdd)
+					@if ($editor && $canAdd)
 						<li>
 							<a href="{{ url("group/add-user/{$group->hash}") }}">
 								<span class="glyphicon glyphicon-plus-sign"></span>
@@ -88,7 +88,7 @@
 					@endif
 				</ul>
 
-				@if ($access || $manager)
+				@if ($manager->acl || $manager->group)
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -98,7 +98,7 @@
 							</a>
 
 							<ul class="dropdown-menu">
-								@if ($access)
+								@if ($manager->acl)
 									<li>
 										<a href="{{ url("group/permissions/{$group->hash}") }}">
 											{{ Lang::get('group.group_permissions') }}
@@ -106,7 +106,7 @@
 									</li>
 								@endif
 
-								@if ($manager)
+								@if ($manager->group)
 									<li>
 										<a href="#" data-toggle="confirm" data-href="{{ url("group/delete/{$group->hash}") }}"
 										   data-prompt="{{ Lang::get('global.click_again') }}"

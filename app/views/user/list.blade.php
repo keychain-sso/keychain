@@ -3,7 +3,7 @@
 @section('body')
 	<div class="row">
 		<div class="col-xs-12">
-			@if ($manager)
+			@if ($manager->user)
 				<a href="{{ url('user/create') }}" class="btn btn-default pull-right">
 					<span class="glyphicon glyphicon-plus"></span>
 					{{ Lang::get('user.create_new_user') }}

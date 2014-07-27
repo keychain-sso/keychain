@@ -23,7 +23,7 @@
 		<p>{{{ $user->title }}}</p>
 	</div>
 
-	@if ($editor || $manager)
+	@if ($editor || $manager->user)
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="container-fluid">
 				@if ($editor)
@@ -58,7 +58,7 @@
 					</ul>
 				@endif
 
-				@if ($access || $manager)
+				@if ($manager->acl || $manager->user)
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -68,7 +68,7 @@
 							</a>
 
 							<ul class="dropdown-menu">
-								@if ($access)
+								@if ($manager->acl)
 									<li>
 										<a href="{{ url("user/permissions/{$user->hash}") }}">
 											{{ Lang::get('user.user_permissions') }}
@@ -76,7 +76,7 @@
 									</li>
 								@endif
 
-								@if ($manager)
+								@if ($manager->user)
 									<li>
 										<a href="#" data-toggle="confirm" data-href="{{ url("user/delete/{$user->hash}") }}"
 										   data-prompt="{{ Lang::get('global.click_again') }}"

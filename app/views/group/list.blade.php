@@ -3,7 +3,7 @@
 @section('body')
 	<div class="row">
 		<div class="col-xs-12">
-			@if ($manager)
+			@if ($manager->group)
 				<a href="{{ url('group/create') }}" class="btn btn-default pull-right">
 					<span class="glyphicon glyphicon-plus"></span>
 					{{ Lang::get('group.create_new_group') }}

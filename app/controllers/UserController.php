@@ -897,13 +897,7 @@ class UserController extends BaseController {
 		$length = Config::get('view.icon_length');
 		$users = User::with('emails')->orderBy('name')->paginate($length);
 
-		// Check if current user is a manager
-		$manager = Access::check(ACLFlags::USER_MANAGE);
-
-		return array(
-			'users'   => $users,
-			'manager' => $manager,
-		);
+		return array('users' => $users);
 	}
 
 	/**
@@ -935,8 +929,6 @@ class UserController extends BaseController {
 
 		// Get user permissions
 		$editor = Access::check(ACLFlags::USER_EDIT, $user);
-		$manager = Access::check(ACLFlags::USER_MANAGE);
-		$access = Access::check(ACLFlags::ACL_MANAGE);
 
 		// Build the user data
 		return array(
@@ -945,8 +937,6 @@ class UserController extends BaseController {
 			'fieldView'   => FormField::getView($user),
 			'memberships' => $memberships,
 			'editor'      => $editor,
-			'manager'     => $manager,
-			'access'      => $access,
 		);
 	}
 

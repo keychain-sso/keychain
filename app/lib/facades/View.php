@@ -13,6 +13,7 @@
  * @filesource
  */
 
+use Access;
 use Lang;
 use Session;
 
@@ -46,14 +47,23 @@ class View extends \Illuminate\Support\Facades\View {
 	{
 		if (is_null(static::$defaults))
 		{
+			// Assign default keys
 			static::$defaults = array(
 				'error'     => Session::get('messages.error'),
 				'success'   => Session::get('messages.success'),
 				'info'      => Session::get('messages.info'),
 				'appconfig' => Config::get('app'),
-				'auth'      => Auth::user(),
 				'title'     => null,
 			);
+
+			// Assign keys for logged in users
+			if (Auth::check())
+			{
+				static::$defaults = array_merge(static::$defaults, array(
+					'auth'    => Auth::user(),
+					'manager' => Access::manager(),
+				));
+			}
 		}
 
 		return static::$defaults;

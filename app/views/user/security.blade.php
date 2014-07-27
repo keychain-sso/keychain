@@ -88,7 +88,7 @@
 		@endif
 	</fieldset>
 
-	@if ($manager && $user->id != $auth->id)
+	@if ($manager->user)
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-cog"></span>
