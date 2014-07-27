@@ -51,11 +51,11 @@ return array(
 	'global'             => 'Global',
 	'self'               => 'Self',
 	'field'              => 'Field',
-	'no_permissions'     => 'No permissions to display',
+	'no_permissions'     => 'No permissions to display.',
 	'add_permissions'    => 'Add permissions',
-	'invalid_subject'    => 'Please select a valid user or group',
-	'invalid_object'     => 'Please select a valid scope',
-	'permission_added'   => 'Permission has been added',
-	'permission_removed' => 'Permission has been removed',
+	'invalid_subject'    => 'Please select a valid user or group.',
+	'invalid_object'     => 'Please select a valid scope.',
+	'permission_added'   => 'Permission has been added.',
+	'permission_removed' => 'Permission has been removed.',
 
 );

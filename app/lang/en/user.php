@@ -31,6 +31,8 @@ return array(
 	'security_settings'      => 'Security settings',
 	'user_permissions'       => 'User permissions',
 	'delete_user'            => 'Delete user',
+	'avatar_invalid'         => 'The avatar file was invalid.',
+	'avatar_resize'          => 'Resize the image using the guides and click save to upload it.',
 	'basic_info'             => 'Basic information',
 	'contact_info'           => 'Contact information',
 	'group_memberships'      => 'Group memberships',

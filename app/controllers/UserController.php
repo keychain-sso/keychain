@@ -139,8 +139,14 @@ class UserController extends BaseController {
 		// Validate edit rights
 		Access::restrict(ACLFlags::USER_EDIT, $user);
 
-		// Validate posted fields
-		$validator = Validator::make(Input::all(), array('avatar' => 'required|image'));
+		// Build the avatar information
+		$avatar = Input::file('avatar');
+		$input = array('avatar' => $avatar);
+		$name = str_random(15);
+		$size = Config::get('view.icon_size');
+
+		// Validate the avatar field
+		$validator = Validator::make($input, array('avatar' => 'required|image'));
 
 		// Run the validator
 		if ($validator->fails())
@@ -150,23 +156,48 @@ class UserController extends BaseController {
 			return Redirect::to(URL::previous());
 		}
 
-		// Save the file temporarily to a staging folder
-		if (Input::hasFile('avatar'))
+		// Validate the image itself
+		if ($avatar->isValid())
 		{
-			$name = str_random(20);
-			$avatar = Input::file('avatar');
+			// Parse the image
+			$image = Image::make($avatar->getRealPath());
+			$width = $image->width();
+			$height = $image->height();
 
-			if ($avatar->isValid())
+			// If image size is less than $size X $size, we save it right away
+			// Otherwise, we show the resize dialog
+			if ($width <= $size && $height <= $size)
 			{
-				$avatar->move(public_path().'/uploads/avatars', $name);
-			}
+				// Resize the avatar to $size X $size
+				$image->resize($size, $size);
+				$image->save();
 
-			// Save the file name in session
-			Session::put('user.avatar', $name);
+				// Link the avatar to the user
+				$user->avatar = $name;
+				$user->save();
+
+				// Move the avatar to the upload folder
+				$avatar->move(public_path().'/uploads/avatars', $name);
+
+				return Redirect::to("user/view/{$user->hash}");
+			}
+			else
+			{
+				// Save the file name in session
+				Session::put('user.avatar', $name);
+
+				// Move the avatar to the upload folder
+				$avatar->move(public_path().'/uploads/avatars', $name);
+
+				// Take the user to the avatar resizing utility
+				return Redirect::to("user/avatar/{$user->hash}");
+			}
 		}
 
-		// Take the user to the avatar resizing utility
-		return Redirect::to("user/avatar/{$user->hash}");
+		// Input file was invalid
+		Session::flash('messages.error', Lang::get('user.avatar_invalid'));
+
+		return Redirect::to("user/view/{$user->hash}");
 	}
 
 	/**
@@ -178,6 +209,7 @@ class UserController extends BaseController {
 	 */
 	public function getAvatar($hash)
 	{
+		// Check if the file name was set in the session
 		if (Session::has('user.avatar'))
 		{
 			// Fetch the user's profile
@@ -195,6 +227,91 @@ class UserController extends BaseController {
 
 			return View::make('user/view', 'user.change_avatar', $data);
 		}
+
+		// Trigger a 404 as we have nothing to do here
+		App::abort(HTTPStatus::NOTFOUND);
+	}
+
+	/**
+	 * Handle POST events for the avatar dialog
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postAvatar()
+	{
+		// Check if the file name was set in the session
+		if (Session::has('user.avatar'))
+		{
+			// Fetch the associated user
+			$hash = Input::get('hash');
+			$user = User::where('hash', $hash)->firstOrFail();
+
+			// Validate edit rights
+			Access::restrict(ACLFlags::USER_EDIT, $user);
+
+			// Validate posted fields
+			$validator = Validator::make(Input::all(), array(
+				'screen_width'  => 'required|integer|min:1',
+				'screen_height' => 'required|integer|min:1',
+				'width'         => 'required|integer|min:0',
+				'height'        => 'required|integer|min:0',
+				'x'             => 'required|integer|min:0',
+				'y'             => 'required|integer|min:0',
+			));
+
+			// Run the validator
+			if ($validator->fails())
+			{
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Get the size and the image and load it
+			$name = Session::get('user.avatar');
+			$image = Image::make(public_path()."/uploads/avatars/{$name}");
+			$size = Config::get('view.icon_size');
+
+			// Calculate the screen vs actual size ratio
+			$ratio_width = floatval($image->width() / Input::get('screen_width'));
+			$ratio_height = floatval($image->height() / Input::get('screen_height'));
+
+			// Get the requested image dimensions
+			$dim = new stdClass;
+			$dim->width = intval(Input::get('width') * $ratio_width);
+			$dim->height = intval(Input::get('height') * $ratio_height);
+			$dim->x = intval(Input::get('x') * $ratio_width);
+			$dim->y = intval(Input::get('y') * $ratio_height);
+
+			$endx = $dim->x + $dim->width;
+			$endy = $dim->y + $dim->height;
+
+			// Verify selection falls within the X and Y bounds of the image
+			if ($endx > $image->width() || $endy > $image->height())
+			{
+				Session::flash('messages.error', Lang::get('user.avatar_invalid'));
+
+				return Redirect::to(URL::previous())->withInput();
+			}
+
+			// Crop and resize the image
+			$image->crop($dim->width, $dim->height, $dim->x, $dim->y);
+			$image->resize($size, $size);
+			$image->save();
+
+			// Link the avatar to the user
+			$user->avatar = $name;
+			$user->save();
+
+			// Redirect back to the user profile
+			Session::forget('user.avatar');
+
+			return Redirect::to("user/view/{$user->hash}");
+		}
+
+		// Trigger a 404 as we have nothing to do here
+		App::abort(HTTPStatus::NOTFOUND);
 	}
 
 	/**

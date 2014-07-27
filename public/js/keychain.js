@@ -13,6 +13,21 @@
 
 $(function()
 {
+	// Set-up avatar upload
+	avatarUpload();
+
+	// Set-up the permissions screens
+	permissionModals();
+});
+
+/**
+ * Sets up avatar upload gestures
+ *
+ * @access public
+ * @return void
+ */
+function avatarUpload()
+{
 	// Handle change avatar button click
 	$('#change-avatar').on('click', function(e)
 	{
@@ -24,6 +39,70 @@ $(function()
 	{
 		$(this).parent().submit();
 	});
+
+	// Initialize Jcrop
+	$('#avatar-resize').on('load', function(e)
+	{
+		avatar = $(this);
+
+		// Save the screen width and height
+		$('[name=screen_width]').val(avatar.width());
+		$('[name=screen_height]').val(avatar.height());
+
+		// Get the X and Y offsets based on image size
+		x = avatar.width() / 2 - 100;
+		y = avatar.height() / 2 - 100;
+
+		// Trigger Jcrop for the image
+		avatar.Jcrop({
+			bgColor: 'black',
+			bgOpacity: .4,
+			aspectRatio: 1,
+			minSize: [50, 50],
+			setSelect: [x, y, x + 200, y + 200],
+			onChange: function(c)
+			{
+				$('[name=width]').val(c.w);
+				$('[name=height]').val(c.h);
+				$('[name=x]').val(c.x);
+				$('[name=y]').val(c.y);
+			}
+		});
+	});
+
+	// Invoke image load event manually
+	$('#avatar-resize').each(function()
+	{
+		if (this.complete)
+		{
+			$(this).load();
+		}
+	});
+}
+
+/**
+ * Initializes the permission modals
+ *
+ * @access public
+ * @return void
+ */
+function permissionModals()
+{
+	// Retain the dropdown state based on the hidden field data
+	subjectType = $('[name=subject_type]');
+	objectType = $('[name=object_type]');
+
+	if (subjectType.length == 1 && objectType.length == 1)
+	{
+		$('#permission-add [name=flag]').change();
+
+		if ( ! $('#permission-subject [name=subject]').is(':disabled'))
+		{
+			$('#permission-subject .dropdown-menu a[data-value=' + subjectType.val() + ']').click();
+		}
+
+		$('#permission-object .dropdown-menu a[data-value=' + objectType.val() + ']').click();
+	}
 
 	// Bind to the permissions dropdown and change the search URL and state of
 	// the search textbox based on the selected value of the dropdown
@@ -79,20 +158,4 @@ $(function()
 			$('#permission-object .dropdown-menu a[data-value=4]').click();
 		}
 	});
-
-	// Retain the dropdown state based on the hidden field data
-	subjectType = $('[name=subject_type]');
-	objectType = $('[name=object_type]');
-
-	if (subjectType.length == 1 && objectType.length == 1)
-	{
-		$('#permission-add [name=flag]').change();
-
-		if ( ! $('#permission-subject [name=subject]').is(':disabled'))
-		{
-			$('#permission-subject .dropdown-menu a[data-value=' + subjectType.val() + ']').click();
-		}
-
-		$('#permission-object .dropdown-menu a[data-value=' + objectType.val() + ']').click();
-	}
-});
+}
