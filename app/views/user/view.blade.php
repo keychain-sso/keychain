@@ -6,8 +6,8 @@
 	@endif
 
 	<div class="text-center">
-		@if ( ! empty($user->avatar))
-			<img src="{{ asset("uploads/avatars/{$user->avatar}") }}" class="img-circle img-thumbnail" alt="" />
+		@if ($user->avatar)
+			<img src="{{ asset("uploads/avatars/{$user->hash}") }}" class="img-circle img-thumbnail" alt="" />
 		@else
 			<img src="{{ asset('img/default-avatar.png') }}" class="img-circle img-thumbnail" alt="" />
 		@endif
@@ -238,6 +238,7 @@
 
 	{{
 		Form::open(array(
+			'class' => 'hide',
 			'role'  => 'form',
 			'files' => true,
 		))

@@ -74,7 +74,7 @@
 		</div>
 	@endif
 
-	<footer class="text-center">
+	<footer class="text-center spacer-lg">
 		&copy; <a href="https://github.com/keychain-sso">Keychain Developers</a>
 	</footer>
 

@@ -6,8 +6,8 @@
 			<div class="row">
 				<div class="col-xs-2">
 					<span class="thumbnail thumbnail-thread">
-						@if ( ! empty($request->user->avatar))
-							<img src="{{ asset("uploads/avatars{$request->user->avatar}") }}" alt="" />
+						@if ($request->user->avatar)
+							<img src="{{ asset("uploads/avatars{$request->user->hash}") }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif

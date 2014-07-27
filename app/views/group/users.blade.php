@@ -44,8 +44,8 @@
 					{{ Form::checkbox('users[]', $user->hash, false, array('class' => 'inlay')) }}
 
 					<a href="#" class="thumbnail spacer-sm-bottom">
-						@if ( ! empty($user->avatar))
-							<img src="{{ asset("uploads/avatars/{$user->avatar}") }}" alt="" />
+						@if ($user->avatar)
+							<img src="{{ asset("uploads/avatars/{$user->hash}") }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif

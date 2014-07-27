@@ -16,8 +16,8 @@
 	<div class="text-center spacer-lg-bottom">
 		<p>{{ Lang::get('user.avatar_resize') }}</p>
 
-		<span class="thumbnail">
-			<img id="avatar-resize" src="{{ asset("uploads/avatars/{$avatar}") }}" />
+		<span class="img-thumbnail">
+			<img id="avatar-resize" src="{{ asset("uploads/avatars/{$user->hash}") }}" class="stretch" />
 		</span>
 	</div>
 
@@ -30,12 +30,12 @@
 </div>
 
 <div class="modal-footer">
+	<a href="{{ url("user/view/{$user->hash}") }}" class="btn btn-danger pull-left">
+		{{ Lang::get('user.remove_avatar') }}
+	</a>
+
 	{{ Form::hidden('hash', $user->hash) }}
 	{{ Form::submit(Lang::get('global.save'), array('class' => 'btn btn-primary')) }}
-
-	<a href="{{ url("user/view/{$user->hash}") }}" class="btn btn-default">
-		{{ Lang::get('global.close') }}
-	</a>
 </div>
 
 {{ Form::close() }}

@@ -33,6 +33,7 @@ return array(
 	'delete_user'            => 'Delete user',
 	'avatar_invalid'         => 'The avatar file was invalid.',
 	'avatar_resize'          => 'Resize the image using the guides and click save to upload it.',
+	'remove_avatar'          => 'Remove avatar',
 	'basic_info'             => 'Basic information',
 	'contact_info'           => 'Contact information',
 	'group_memberships'      => 'Group memberships',

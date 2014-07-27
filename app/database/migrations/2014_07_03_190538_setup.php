@@ -53,7 +53,7 @@ class Setup extends Migration {
 			$table->enum('gender', array('M', 'F', 'N'))->nullable();
 			$table->timestamp('date_of_birth')->nullable();
 			$table->string('timezone', 80)->default('UTC');
-			$table->string('avatar', 15)->nullable();
+			$table->boolean('avatar')->default(Flags::NO);
 			$table->string('title', 80)->nullable();
 			$table->integer('status')->unsigned()->index();
 			$table->string('hash', 8)->unique()->index();

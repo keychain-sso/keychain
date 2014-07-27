@@ -24,6 +24,11 @@
   }
 }
 
+/* Width helper */
+.stretch {
+  width: 100%;
+}
+
 /* Spacer helpers */
 .spacer {
   margin: 10px;
@@ -195,7 +200,7 @@
   position: absolute;
   margin-left: -160px;
   margin-top: 160px;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 .btn-overlay:hover {
   opacity: 1;

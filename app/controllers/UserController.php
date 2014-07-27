@@ -142,7 +142,6 @@ class UserController extends BaseController {
 		// Build the avatar information
 		$avatar = Input::file('avatar');
 		$input = array('avatar' => $avatar);
-		$name = str_random(15);
 		$size = Config::get('view.icon_size');
 
 		// Validate the avatar field
@@ -173,21 +172,27 @@ class UserController extends BaseController {
 				$image->save();
 
 				// Link the avatar to the user
-				$user->avatar = $name;
+				$user->avatar = Flags::YES;
 				$user->save();
 
 				// Move the avatar to the upload folder
-				$avatar->move(public_path().'/uploads/avatars', $name);
+				$avatar->move(public_path().'/uploads/avatars', $user->hash);
 
 				return Redirect::to("user/view/{$user->hash}");
 			}
 			else
 			{
 				// Save the file name in session
-				Session::put('user.avatar', $name);
+				Session::put('user.avatar.resize', true);
+
+				// Remove the existing avatar
+				File::delete(public_path()."/uploads/avatars/{$user->hash}");
+
+				$user->avatar = Flags::NO;
+				$user->save();
 
 				// Move the avatar to the upload folder
-				$avatar->move(public_path().'/uploads/avatars', $name);
+				$avatar->move(public_path().'/uploads/avatars/', $user->hash);
 
 				// Take the user to the avatar resizing utility
 				return Redirect::to("user/avatar/{$user->hash}");
@@ -209,27 +214,35 @@ class UserController extends BaseController {
 	 */
 	public function getAvatar($hash)
 	{
-		// Check if the file name was set in the session
-		if (Session::has('user.avatar'))
+		// Fetch the user's profile
+		$user = User::where('hash', $hash)->firstOrFail();
+		$data = $this->getUserViewData($user);
+
+		// Validate edit rights
+		Access::restrict(ACLFlags::USER_EDIT, $user);
+
+		// Show the resize dialog if the file name was set in the session
+		if (Session::has('user.avatar.resize'))
 		{
-			// Fetch the user's profile
-			$user = User::where('hash', $hash)->firstOrFail();
-			$data = $this->getUserViewData($user);
-
-			// Validate edit rights
-			Access::restrict(ACLFlags::USER_EDIT, $user);
-
-			// Merge the user data with editor data
+			// Merge the user data with the view data
 			$data = array_merge($data, array(
-				'avatar' => Session::get('user.avatar'),
-				'modal'  => 'user.avatar',
+				'title' => Lang::get('user.change_avatar'),
+				'modal' => 'user.avatar'
 			));
 
-			return View::make('user/view', 'user.change_avatar', $data);
+			// Make the response
+			return Response::view('user/view', $data);
+
+			// We disable the browser cache to avoid displaying the old avatar
+			$response->header('Cache-Control', 'nocache, no-store, max-age=0, must-revalidate');
+			$response->header('Pragma', 'no-cache');
+			$response->header('Expires', 'Fri, 01 Jan 1990 00:00:00 GMT');
+
+			return $response;
 		}
 
-		// Trigger a 404 as we have nothing to do here
-		App::abort(HTTPStatus::NOTFOUND);
+		// Illegal resource access
+		App::abort(HTTPStatus::FORBIDDEN);
 	}
 
 	/**
@@ -241,7 +254,7 @@ class UserController extends BaseController {
 	public function postAvatar()
 	{
 		// Check if the file name was set in the session
-		if (Session::has('user.avatar'))
+		if (Session::has('user.avatar.resize'))
 		{
 			// Fetch the associated user
 			$hash = Input::get('hash');
@@ -269,8 +282,7 @@ class UserController extends BaseController {
 			}
 
 			// Get the size and the image and load it
-			$name = Session::get('user.avatar');
-			$image = Image::make(public_path()."/uploads/avatars/{$name}");
+			$image = Image::make(public_path()."/uploads/avatars/{$user->hash}");
 			$size = Config::get('view.icon_size');
 
 			// Calculate the screen vs actual size ratio
@@ -301,11 +313,11 @@ class UserController extends BaseController {
 			$image->save();
 
 			// Link the avatar to the user
-			$user->avatar = $name;
+			$user->avatar = Flags::YES;
 			$user->save();
 
 			// Redirect back to the user profile
-			Session::forget('user.avatar');
+			Session::forget('user.avatar.resize');
 
 			return Redirect::to("user/view/{$user->hash}");
 		}

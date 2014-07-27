@@ -60,8 +60,8 @@
 			<div class="col-xs-3 col-md-2 search-item">
 				<div class="profile-icon">
 					<a href="{{ url("user/view/{$user->hash}") }}" class="thumbnail spacer-sm-bottom">
-						@if ( ! empty($user->avatar))
-							<img src="{{ asset("uploads/avatars/{$user->avatar}") }}" alt="" />
+						@if ($user->avatar)
+							<img src="{{ asset("uploads/avatars/{$user->hash}") }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif

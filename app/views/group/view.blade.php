@@ -178,8 +178,8 @@
 
 				<div class="profile-icon">
 					<a href="#" class="thumbnail spacer-sm-bottom">
-						@if ( ! empty($userGroup->user->avatar))
-							<img src="{{ asset("uploads/avatars/{$userGroup->user->avatar}") }}" alt="" />
+						@if ($userGroup->user->avatar)
+							<img src="{{ asset("uploads/avatars/{$userGroup->user->hash}") }}" alt="" />
 						@else
 							<img src="{{ asset('img/default-avatar.png') }}" alt="" />
 						@endif
