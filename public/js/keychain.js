@@ -55,8 +55,8 @@ function avatarUpload()
 
 		// Trigger Jcrop for the image
 		avatar.Jcrop({
-			bgColor: 'black',
-			bgOpacity: .4,
+			bgColor: 'white',
+			bgOpacity: .3,
 			aspectRatio: 1,
 			minSize: [50, 50],
 			setSelect: [x, y, x + 200, y + 200],
