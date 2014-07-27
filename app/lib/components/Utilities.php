@@ -163,19 +163,4 @@ class Utilities {
 		return $select;
 	}
 
-	/**
-	 * Injects no-cache response headers to an existing response
-	 *
-	 * @static
-	 * @access public
-	 * @param  Response  $response
-	 * @return void
-	 */
-	public static function noCache($response)
-	{
-		$response->header('Cache-Control', 'nocache, no-store, max-age=0, must-revalidate');
-		$response->header('Pragma', 'no-cache');
-		$response->header('Expires', 'Fri, 01 Jan 1990 00:00:00 GMT');
-	}
-
 }

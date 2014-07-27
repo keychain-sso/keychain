@@ -120,16 +120,8 @@ class UserController extends BaseController {
 		// Set the page title
 		$title = Lang::get('user.viewing_profile', array('name' => $user->name));
 
-		// Make the response
-		$response = Response::layout('user/view', $title, $data);
-
-		// Purge view cache, if instructed to
-		if (Session::has('global.nocache'))
-		{
-			Utilities::noCache($response);
-		}
-
-		return $response;
+		// Generate the view
+		return View::make('user/view', $title, $data);
 	}
 
 	/**
@@ -187,7 +179,7 @@ class UserController extends BaseController {
 				$avatar->move(public_path().'/uploads/avatars', $user->hash);
 
 				// Direct the browser to flush its cache
-				Session::flash('global.nocache', true);
+				Session::flash('user.nocache', true);
 
 				return Redirect::to("user/view/{$user->hash}");
 			}
@@ -221,10 +213,14 @@ class UserController extends BaseController {
 	 *
 	 * @access public
 	 * @param  string  $hash
+	 * @param  string  $action
 	 * @return View
 	 */
-	public function getAvatar($hash)
+	public function getAvatar($hash, $action = null)
 	{
+		// Set the no-cache directive
+		Session::flash('user.nocache', true);
+
 		// Fetch the user's profile
 		$user = User::where('hash', $hash)->firstOrFail();
 		$data = $this->getUserViewData($user);
@@ -232,16 +228,23 @@ class UserController extends BaseController {
 		// Validate edit rights
 		Access::restrict(ACLFlags::USER_EDIT, $user);
 
-		// Show the resize dialog if the file name was set in the session
+		// Perform the requested action
 		if (Session::has('user.avatar.resize'))
 		{
-			// Make the response
-			$response = Response::layout('user/view', 'user.change_avatar', array_merge($data, array('modal' => 'user.avatar')));
+			switch ($action)
+			{
+				case 'remove':
 
-			// We disable the browser cache to avoid displaying the old avatar
-			Utilities::noCache($response);
+					File::delete(public_path()."/uploads/avatars/{$user->hash}");
 
-			return $response;
+					Session::forget('user.avatar.resize');
+
+					return Redirect::to("user/view/{$user->hash}");
+
+				default:
+
+					return View::make('user/view', 'user.change_avatar', array_merge($data, array('modal' => 'user.avatar')));
+			}
 		}
 
 		// Illegal resource access
@@ -927,6 +930,9 @@ class UserController extends BaseController {
 			}
 		}
 
+		// Build the avatar hash
+		$avatarHash = Session::has('user.nocache') ? md5(time()) : null;
+
 		// Get user-group data
 		$memberships = UserGroup::where('user_id', $user->id)->with('group')->get();
 
@@ -937,9 +943,10 @@ class UserController extends BaseController {
 		return array(
 			'user'        => $user,
 			'emails'      => $emails,
-			'fieldView'   => FormField::getView($user),
 			'memberships' => $memberships,
 			'editor'      => $editor,
+			'avatarHash'  => $avatarHash,
+			'fieldView'   => FormField::getView($user),
 		);
 	}
 

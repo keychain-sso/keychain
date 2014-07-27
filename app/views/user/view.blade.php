@@ -14,7 +14,7 @@
 		@endif
 
 		@if ($user->avatar)
-			<img src="{{ asset("uploads/avatars/{$user->hash}") }}" class="img-circle img-thumbnail" alt="" />
+			<img src="{{ asset("uploads/avatars/{$user->hash}?{$avatarHash}") }}" class="img-circle img-thumbnail" alt="" />
 		@else
 			<img src="{{ asset('img/default-avatar.png') }}" class="img-circle img-thumbnail" alt="" />
 		@endif
