@@ -141,8 +141,8 @@ function permissionModals()
 			$('#permission-object').removeClass('hide');
 		}
 
-		// Show the field box if a field permission is selected
-		if ($(this).val().indexOf('field') != -1)
+		// Show the field box if a field view/edit permission is selected
+		if ($(this).val() == 'field_edit' || $(this).val() == 'field_view')
 		{
 			$('#permission-field').removeClass('hide');
 		}

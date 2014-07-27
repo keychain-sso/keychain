@@ -441,8 +441,8 @@ class Access {
 		// Based on the flag, determine whether we need the object
 		if (isset($entry->flag))
 		{
-			// We need the object_type for field and non-manage permissions
-			if (str_contains($entry->flag, 'field') || ! str_contains($entry->flag, 'manage'))
+			// We need the object_type for all view/edit permissions
+			if (str_contains($entry->flag, 'edit') || str_contains($entry->flag, 'view'))
 			{
 				$rules['object_type'] = 'required|exists:acl_types,id';
 
@@ -482,9 +482,10 @@ class Access {
 			$entry->field = 0;
 		}
 
-		// Set object to 'all' for manage permissions
+		// Set field to 0 and object to 'all' for manage permissions
 		if (str_contains($entry->flag, 'manage'))
 		{
+			$entry->field = 0;
 			$entry->object_id = 0;
 			$entry->object_type = ACLTypes::ALL;
 		}

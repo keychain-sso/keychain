@@ -273,6 +273,7 @@ class Setup extends Migration {
 		DB::table('acl_flags')->insert(array(
 			array('name' => 'acl_manage'),
 			array('name' => 'field_edit'),
+			array('name' => 'field_manage'),
 			array('name' => 'field_view'),
 			array('name' => 'group_edit'),
 			array('name' => 'group_manage'),
@@ -691,6 +692,15 @@ class Setup extends Migration {
 		// Allow sysadmins to manage all groups
 		DB::table('acl')->insert(array(
 			'flag'         => ACLFlags::GROUP_MANAGE,
+			'subject_id'   => 2,
+			'subject_type' => ACLTypes::GROUP,
+			'object_id'    => 0,
+			'object_type'  => ACLTypes::ALL,
+		));
+
+		// Allow sysadmins to manage fields
+		DB::table('acl')->insert(array(
+			'flag'         => ACLFlags::FIELD_MANAGE,
 			'subject_id'   => 2,
 			'subject_type' => ACLTypes::GROUP,
 			'object_id'    => 0,

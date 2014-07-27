@@ -20,6 +20,7 @@ class ACLFlags {
 
 	// Global permissions
 	const ACL_MANAGE = 'acl_manage';
+	const FIELD_MANAGE = 'field_manage';
 	const USER_MANAGE = 'user_manage';
 	const GROUP_MANAGE = 'group_manage';
 
