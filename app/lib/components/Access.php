@@ -353,50 +353,44 @@ class Access {
 		// Fetch the permission list
 		$list = $acl->get();
 
-		// Get the user IDs and group IDs
-		switch ($method)
+		// Get the user IDs
+		$subjectUserIds = array_merge(array(0), $list->filter(function($item)
 		{
-			case QueryMethods::BY_SUBJECT:
+			return $item->subject_type == ACLTypes::USER;
+		})->lists('subject_id'));
 
-				$userIds = $list->filter(function($item)
-				{
-					return $item->object_type == ACLTypes::USER;
-				})->lists('object_id');
+		$objectUserIds = array_merge(array(0), $list->filter(function($item)
+		{
+			return $item->object_type == ACLTypes::USER;
+		})->lists('object_id'));
 
-				$groupIds = $list->filter(function($item)
-				{
-					return $item->object_type == ACLTypes::GROUP;
-				})->lists('object_id');
+		// Get the group IDs
+		$subjectGroupIds = array_merge(array(0), $list->filter(function($item)
+		{
+			return $item->subject_type == ACLTypes::GROUP;
+		})->lists('subject_id'));
 
-				break;
-
-			case QueryMethods::BY_OBJECT:
-
-				$userIds = $list->filter(function($item)
-				{
-					return $item->subject_type == ACLTypes::USER;
-				})->lists('subject_id');
-
-				$groupIds = $list->filter(function($item)
-				{
-					return $item->subject_type == ACLTypes::GROUP;
-				})->lists('subject_id');
-
-				break;
-		}
+		$objectGroupIds = array_merge(array(0), $list->filter(function($item)
+		{
+			return $item->object_type == ACLTypes::GROUP;
+		})->lists('object_id'));
 
 		// Get the field IDs
-		$fieldIds = $list->filter(function($item) { return $item->field_id > 0; })->lists('field_id');
+		$fieldIds = array_merge(array(0), $list->filter(function($item) {
+			return $item->field_id > 0;
+		})->lists('field_id'));
 
 		// If set to expand, get the users against the groupIds
 		if ($expand)
 		{
-			$userIds = array_merge($userIds, UserGroup::whereIn('group_id', $groupIds)->lists('user_id'));
-			$groupIds = array();
+			$subjectUserIds = array_merge($subjectUserIds, UserGroup::whereIn('group_id', $subjectGroupIds)->lists('user_id'));
+			$objectUserIds = array_merge($objectUserIds, UserGroup::whereIn('group_id', $objectGroupIds)->lists('user_id'));
 		}
 
 		// Build the raw ACL data
 		$acl = new stdClass;
+		$acl->users = new stdClass;
+		$acl->groups = new stdClass();
 
 		// Split the ACL into global and scope-based permissions
 		$acl->site = $list->filter(function($item)
@@ -409,10 +403,16 @@ class Access {
 			return ! str_contains($item->flag, 'manage');
 		});
 
-		// Set the user, group and field data
-		$acl->users = count($userIds) > 0 ? User::whereIn('id', $userIds)->with('primaryEmail')->get() : array();
-		$acl->groups = count($groupIds) > 0 ? Group::whereIn('id', $groupIds)->get() : array();
-		$acl->fields = count($fieldIds) > 0 ? Field::whereIn('id', $fieldIds)->get() : array();
+		// Set the user data
+		$acl->users->subjects = User::whereIn('id', $subjectUserIds)->with('primaryEmail')->get();
+		$acl->users->objects = User::whereIn('id', $objectUserIds)->with('primaryEmail')->get();
+
+		// Set the group data
+		$acl->groups->subjects = Group::whereIn('id', $subjectGroupIds)->get();
+		$acl->groups->objects = Group::whereIn('id', $objectGroupIds)->get();
+
+		// Set the field data
+		$acl->fields = Field::whereIn('id', $fieldIds)->get();
 
 		return $acl;
 	}

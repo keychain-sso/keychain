@@ -59,7 +59,7 @@
 			<span id="search-icon-subject" class="glyphicon glyphicon-search text-muted form-control-feedback"></span>
 
 			{{ Form::hidden('subject_id', isset($subject) ? $subject->id : null) }}
-			{{ Form::hidden('subject_type', get_class($subject) == 'Group' ? ACLTypes::GROUP : ACLTypes::USER) }}
+			{{ Form::hidden('subject_type', isset($subject) && get_class($subject) == 'Group' ? ACLTypes::GROUP : ACLTypes::USER) }}
 		</div>
 
 		<div class="form-group">

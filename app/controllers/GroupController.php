@@ -330,7 +330,7 @@ class GroupController extends BaseController {
 			$query->flag = ACLFlags::GROUP_EDIT;
 
 			// Get a list of users who has group_edit rights
-			$editors = Access::query(QueryMethods::BY_OBJECT, $query, true)->users;
+			$editors = Access::query(QueryMethods::BY_OBJECT, $query, true)->users->subjects;
 
 			// Send the join notification to each editor
 			foreach ($editors as $editor)
@@ -637,7 +637,7 @@ class GroupController extends BaseController {
 		$show->site = true;
 		$show->subjects = false;
 		$show->objects = true;
-		$show->fields = false;
+		$show->fields = true;
 
 		// Merge the group data with view data
 		$data = array_merge($data, array(

@@ -34,6 +34,9 @@ class AdminController extends BaseController {
 	 */
 	public function getPermissions($action = null, $id = 0)
 	{
+		// Validate acl_manage rights
+		Access::restrict(ACLFlags::ACL_MANAGE);
+
 		// Perform the requested action
 		switch ($action)
 		{
@@ -48,8 +51,26 @@ class AdminController extends BaseController {
 
 			default:
 
-				// Not implemented yet!
-				App::abort(HTTPStatus::NOTFOUND);
+				// Query the ACL for all permissions
+				$acl = Access::query();
+
+				// Set display flags
+				$show = new stdClass;
+				$show->site = true;
+				$show->subjects = true;
+				$show->objects = true;
+				$show->fields = true;
+
+				// Build the view data
+				$data = array(
+					'acl'    => $acl,
+					'show'   => $show,
+					'return' => url(),
+					'fields' => Field::lists('name', 'id'),
+					'flags'  => Lang::get('permissions'),
+				);
+
+				return View::make('acl/full', 'global.modify_acl_entries', $data);
 		}
 	}
 

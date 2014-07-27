@@ -793,7 +793,7 @@ class UserController extends BaseController {
 		$show->site = true;
 		$show->subjects = false;
 		$show->objects = true;
-		$show->fields = false;
+		$show->fields = true;
 
 		// Merge the user data with view data
 		$data = array_merge($data, array(
@@ -801,7 +801,7 @@ class UserController extends BaseController {
 			'show'   => $show,
 			'return' => url("user/view/{$user->hash}"),
 			'fields' => Field::lists('name', 'id'),
-			'flags'  => Access::flags(),
+			'flags'  => Lang::get('permissions'),
 			'modal'  => 'acl.modal',
 			'subject' => $user,
 		));

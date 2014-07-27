@@ -11,6 +11,14 @@
 [class^="col"] .form-control-feedback {
   top: 0;
 }
+.has-justification .form-control-feedback {
+  top: 25px;
+}
+
+/* Fieldsets need margins */
+fieldset {
+  margin-top: 20px;
+}
 
 /* Pagination dosn't need a margin */
 .pagination {
@@ -207,8 +215,8 @@
 }
 
 /* Editor popups */
-.modal-editor fieldset:not(:nth-child(3)) {
-  margin-top: 20px;
+.modal-editor fieldset:nth-child(3) {
+  margin-top: 0;
 }
 .modal-editor .modal-body {
   padding-bottom: 5px;

@@ -43,6 +43,7 @@ return array(
 	'return_profile'     => 'Click here to return to your user profile',
 	'return_login'       => 'Click here to go to the login screen',
 	'return_previous'    => 'Return to the previous page',
+	'return_index'       => 'Return to the index page',
 	'search_user'        => 'Search by name or email',
 	'site_permissions'   => 'Site-wide permissions',
 	'scope_permissions'  => 'Scope-based permissions',

@@ -8,7 +8,7 @@
 	<title>{{ $title }}</title>
 
 	<link href="{{ asset('img/favicon.ico') }}" rel="icon" />
-	<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
+	<link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" />
 	<link href="{{ asset('css/bootstrap-pixel.css') }}" rel="stylesheet" />
 	<link href="{{ asset('css/bootstrap-datepicker.css') }}" rel="stylesheet" />
 	<link href="{{ asset('css/jquery.jcrop.css') }}" rel="stylesheet" />
@@ -111,7 +111,7 @@
 	<script type="text/javascript" src="{{ asset('js/jquery.scrollto.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/jquery.color.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/jquery.jcrop.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/bootstrap-pixel.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('js/keychain.js') }}"></script>

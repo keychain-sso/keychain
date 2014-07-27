@@ -15,9 +15,9 @@ return array(
 	'field_edit'   => 'Modify field',
 	'field_manage' => 'Create or delete profile fields',
 	'field_view'   => 'View field',
-	'group_edit'   => 'Modify group settings; add or remove group members',
+	'group_edit'   => 'Modify group settings; manage group members',
 	'group_manage' => 'Create or delete groups',
 	'user_edit'    => 'Modify user profiles',
-	'user_manage'  => 'Create or delete users; change user account status',
+	'user_manage'  => 'Create or delete users; change account status',
 
 );
