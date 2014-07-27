@@ -17,10 +17,5 @@
 		{{ Form::password('confirm_password', array('class' => 'form-control')) }}
 	</div>
 
-	{{
-		Form::submit(Lang::get('auth.reset_password'), array(
-			'name'  => '_reset',
-			'class' => 'btn btn-primary'
-		))
-	}}
+	{{ Form::submit(Lang::get('auth.reset_password'), array('class' => 'btn btn-primary')) }}
 @stop

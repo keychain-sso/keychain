@@ -61,25 +61,22 @@ class AdminController extends BaseController {
 	 */
 	public function postPermissions()
 	{
-		if (Input::has('_submit'))
+		// Validate manage rights
+		Access::restrict(ACLFlags::ACL_MANAGE);
+
+		// Save the ACL data and show the status
+		$status = Access::save(Input::all());
+
+		if ($status === true)
 		{
-			// Validate manage rights
-			Access::restrict(ACLFlags::ACL_MANAGE);
-
-			// Save the ACL data and show the status
-			$status = Access::save(Input::all());
-
-			if ($status === true)
-			{
-				Session::flash('messages.success', Lang::get('global.permission_added'));
-			}
-			else
-			{
-				Session::flash('messages.error', $status);
-			}
-
-			return Redirect::to(URL::previous())->withInput();
+			Session::flash('messages.success', Lang::get('global.permission_added'));
 		}
+		else
+		{
+			Session::flash('messages.error', $status);
+		}
+
+		return Redirect::to(URL::previous())->withInput();
 	}
 
 }

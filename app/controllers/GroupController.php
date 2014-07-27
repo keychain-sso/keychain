@@ -65,42 +65,39 @@ class GroupController extends BaseController {
 	 */
 	public function postCreate()
 	{
-		if (Input::has('_save'))
+		// Validate manage rights
+		Access::restrict(ACLFlags::GROUP_MANAGE);
+
+		// Validate posted fields
+		$validator = Validator::make(Input::all(), array(
+			'name'        => 'required|alpha_space|max:80|unique:groups,name',
+			'description' => 'required',
+			'type'        => 'required|exists:group_types,id',
+			'notify'      => 'required|in:0,1',
+		));
+
+		// Run the validator
+		if ($validator->fails())
 		{
-			// Validate manage rights
-			Access::restrict(ACLFlags::GROUP_MANAGE);
+			Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
 
-			// Validate posted fields
-			$validator = Validator::make(Input::all(), array(
-				'name'        => 'required|alpha_space|max:80|unique:groups,name',
-				'description' => 'required',
-				'type'        => 'required|exists:group_types,id',
-				'notify'      => 'required|in:0,1',
-			));
-
-			// Run the validator
-			if ($validator->fails())
-			{
-				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
-
-				return Redirect::to(URL::previous())->withInput();
-			}
-
-			// Update the group information
-			$group = new Group;
-			$group->name = Input::get('name');
-			$group->description = Input::get('description');
-			$group->type = Input::get('type');
-			$group->notify = Input::get('notify');
-			$group->hash = Utilities::hash($group);
-			$group->auto_join = Input::has('auto_join');
-			$group->save();
-
-			// Redirect back to the group list
-			Session::flash('messages.success', Lang::get('group.group_created'));
-
-			return Redirect::to('group/list');
+			return Redirect::to(URL::previous())->withInput();
 		}
+
+		// Update the group information
+		$group = new Group;
+		$group->name = Input::get('name');
+		$group->description = Input::get('description');
+		$group->type = Input::get('type');
+		$group->notify = Input::get('notify');
+		$group->hash = Utilities::hash($group);
+		$group->auto_join = Input::has('auto_join');
+		$group->save();
+
+		// Redirect back to the group list
+		Session::flash('messages.success', Lang::get('group.group_created'));
+
+		return Redirect::to('group/list');
 	}
 
 	/**
@@ -127,40 +124,37 @@ class GroupController extends BaseController {
 	 */
 	public function postView()
 	{
-		if (Input::has('_remove'))
+		// Fetch the associated group
+		$hash = Input::get('hash');
+		$group = Group::where('hash', $hash)->firstOrFail();
+
+		// Validate edit rights
+		Access::restrict(ACLFlags::GROUP_EDIT, $group);
+
+		// Check if users were selected
+		if (Input::has('users'))
 		{
-			// Fetch the associated group
-			$hash = Input::get('hash');
-			$group = Group::where('hash', $hash)->firstOrFail();
+			// Populate a list of user_ids to delete
+			$users = User::whereIn('hash', Input::get('users'))->get();
+			$userIds = $users->lists('id');
 
-			// Validate edit rights
-			Access::restrict(ACLFlags::GROUP_EDIT, $group);
-
-			// Check if users were selected
-			if (Input::has('users'))
+			// Clear the ACL cache for the selected users
+			foreach ($users as $user)
 			{
-				// Populate a list of user_ids to delete
-				$users = User::whereIn('hash', Input::get('users'))->get();
-				$userIds = $users->lists('id');
-
-				// Clear the ACL cache for the selected users
-				foreach ($users as $user)
-				{
-					Cache::tags("security.user.{$user->id}")->flush();
-				}
-
-				// Remove these users from the group
-				UserGroup::whereIn('user_id', $userIds)->where('group_id', $group->id)->delete();
-
-				Session::flash('messages.success', Lang::get('group.users_removed'));
-			}
-			else
-			{
-				Session::flash('messages.error', Lang::get('group.users_not_selected'));
+				Cache::tags("security.user.{$user->id}")->flush();
 			}
 
-			return Redirect::to(URL::previous());
+			// Remove these users from the group
+			UserGroup::whereIn('user_id', $userIds)->where('group_id', $group->id)->delete();
+
+			Session::flash('messages.success', Lang::get('group.users_removed'));
 		}
+		else
+		{
+			Session::flash('messages.error', Lang::get('group.users_not_selected'));
+		}
+
+		return Redirect::to(URL::previous());
 	}
 
 	/**
@@ -190,53 +184,50 @@ class GroupController extends BaseController {
 	 */
 	public function postEdit()
 	{
-		if (Input::has('_save'))
+		// Fetch the associated group
+		$hash = Input::get('hash');
+		$group = Group::where('hash', $hash)->firstOrFail();
+
+		// Validate edit rights
+		Access::restrict(ACLFlags::GROUP_EDIT, $group);
+
+		// Validate posted fields
+		$validator = Validator::make(Input::all(), array(
+			'name'        => 'required|alpha_space|max:80|unique:groups,name,'.$group->id,
+			'description' => 'required',
+			'type'        => 'required|exists:group_types,id',
+			'notify'      => 'required|in:0,1',
+		));
+
+		// Run the validator
+		if ($validator->fails())
 		{
-			// Fetch the associated group
-			$hash = Input::get('hash');
-			$group = Group::where('hash', $hash)->firstOrFail();
+			Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
 
-			// Validate edit rights
-			Access::restrict(ACLFlags::GROUP_EDIT, $group);
-
-			// Validate posted fields
-			$validator = Validator::make(Input::all(), array(
-				'name'        => 'required|alpha_space|max:80|unique:groups,name,'.$group->id,
-				'description' => 'required',
-				'type'        => 'required|exists:group_types,id',
-				'notify'      => 'required|in:0,1',
-			));
-
-			// Run the validator
-			if ($validator->fails())
-			{
-				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
-
-				return Redirect::to(URL::previous())->withInput();
-			}
-
-			// If group type is being change to open or closed, and there are open requests,
-			// disallow user to change
-			if (Input::get('type') != GroupTypes::REQUEST && GroupRequest::where('group_id', $group->id)->count() > 0)
-			{
-				Session::flash('messages.error', Lang::get('group.open_requests'));
-
-				return Redirect::to(URL::previous())->withInput();
-			}
-
-			// Update the group information
-			$group->name = Input::get('name');
-			$group->description = Input::get('description');
-			$group->type = Input::get('type');
-			$group->notify = Input::get('notify');
-			$group->auto_join = Input::has('auto_join');
-			$group->save();
-
-			// Redirect back to the previous URL
-			Session::flash('messages.success', Lang::get('group.info_saved'));
-
-			return Redirect::to(URL::previous());
+			return Redirect::to(URL::previous())->withInput();
 		}
+
+		// If group type is being change to open or closed, and there are open requests,
+		// disallow user to change
+		if (Input::get('type') != GroupTypes::REQUEST && GroupRequest::where('group_id', $group->id)->count() > 0)
+		{
+			Session::flash('messages.error', Lang::get('group.open_requests'));
+
+			return Redirect::to(URL::previous())->withInput();
+		}
+
+		// Update the group information
+		$group->name = Input::get('name');
+		$group->description = Input::get('description');
+		$group->type = Input::get('type');
+		$group->notify = Input::get('notify');
+		$group->auto_join = Input::has('auto_join');
+		$group->save();
+
+		// Redirect back to the previous URL
+		Session::flash('messages.success', Lang::get('group.info_saved'));
+
+		return Redirect::to(URL::previous());
 	}
 
 	/**
@@ -302,77 +293,74 @@ class GroupController extends BaseController {
 	 */
 	public function postJoin()
 	{
-		if (Input::has('_submit'))
+		$userId = Auth::id();
+		$userName = Auth::user()->name;
+
+		// Fetch the associated group
+		$hash = Input::get('hash');
+		$group = Group::where('hash', $hash)->firstOrFail();
+
+		// Check if user is already a member of this group
+		$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
+
+		// Only a non-member can request access to a request-only group
+		if ( ! $member && $group->type == GroupTypes::REQUEST)
 		{
-			$userId = Auth::id();
-			$userName = Auth::user()->name;
+			// Validate posted fields
+			$validator = Validator::make(Input::all(), array('justification' => 'required'));
 
-			// Fetch the associated group
-			$hash = Input::get('hash');
-			$group = Group::where('hash', $hash)->firstOrFail();
-
-			// Check if user is already a member of this group
-			$member = UserGroup::where('user_id', $userId)->where('group_id', $group->id)->count() > 0;
-
-			// Only a non-member can request access to a request-only group
-			if ( ! $member && $group->type == GroupTypes::REQUEST)
+			// Run the validator
+			if ($validator->fails())
 			{
-				// Validate posted fields
-				$validator = Validator::make(Input::all(), array('justification' => 'required'));
+				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
 
-				// Run the validator
-				if ($validator->fails())
-				{
-					Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
-
-					return Redirect::to(URL::previous())->withInput();
-				}
-
-				// Insert the group request
-				$request = new GroupRequest;
-				$request->user_id = $userId;
-				$request->group_id = $group->id;
-				$request->justification = Input::get('justification');
-				$request->save();
-
-				// Build the ACL query
-				$query = new stdClass;
-				$query->entity = $group;
-				$query->flag = ACLFlags::GROUP_EDIT;
-
-				// Get a list of users who has group_edit rights
-				$editors = Access::query(QueryMethods::BY_OBJECT, $query, true)->users;
-
-				// Send the join notification to each editor
-				foreach ($editors as $editor)
-				{
-					$action = Lang::get('email.join_request', array(
-						'user'  => $userName,
-						'group' => $group->name,
-					));
-
-					$data = array(
-						'action'        => $action,
-						'justification' => Input::get('justification'),
-						'user'          => $editor,
-						'group'         => $group,
-					);
-
-					Mail::queue('emails/group', $data, function($message) use ($editor)
-					{
-						$message->to($editor->primaryEmail[0]->address)->subject(Lang::get('email.subject_group'));
-					});
-				}
-
-				// Redirect back to the previous URL
-				Session::flash('messages.success', Lang::get('group.join_request_submitted'));
-
-				return Redirect::to("group/view/{$group->hash}");
+				return Redirect::to(URL::previous())->withInput();
 			}
-			else
+
+			// Insert the group request
+			$request = new GroupRequest;
+			$request->user_id = $userId;
+			$request->group_id = $group->id;
+			$request->justification = Input::get('justification');
+			$request->save();
+
+			// Build the ACL query
+			$query = new stdClass;
+			$query->entity = $group;
+			$query->flag = ACLFlags::GROUP_EDIT;
+
+			// Get a list of users who has group_edit rights
+			$editors = Access::query(QueryMethods::BY_OBJECT, $query, true)->users;
+
+			// Send the join notification to each editor
+			foreach ($editors as $editor)
 			{
-				App::abort(HTTPStatus::FORBIDDEN);
+				$action = Lang::get('email.join_request', array(
+					'user'  => $userName,
+					'group' => $group->name,
+				));
+
+				$data = array(
+					'action'        => $action,
+					'justification' => Input::get('justification'),
+					'user'          => $editor,
+					'group'         => $group,
+				);
+
+				Mail::queue('emails/group', $data, function($message) use ($editor)
+				{
+					$message->to($editor->primaryEmail[0]->address)->subject(Lang::get('email.subject_group'));
+				});
 			}
+
+			// Redirect back to the previous URL
+			Session::flash('messages.success', Lang::get('group.join_request_submitted'));
+
+			return Redirect::to("group/view/{$group->hash}");
+		}
+		else
+		{
+			App::abort(HTTPStatus::FORBIDDEN);
 		}
 	}
 
@@ -575,52 +563,49 @@ class GroupController extends BaseController {
 	 */
 	public function postAddUser()
 	{
-		if (Input::has('_add'))
+		// Fetch the associated group
+		$hash = Input::get('hash');
+		$group = Group::where('hash', $hash)->firstOrFail();
+
+		// Validate edit rights
+		Access::restrict(ACLFlags::GROUP_EDIT, $group);
+
+		// Check if users were selected
+		if (Input::has('users'))
 		{
-			// Fetch the associated group
-			$hash = Input::get('hash');
-			$group = Group::where('hash', $hash)->firstOrFail();
+			// Populate a list of user_ids to add
+			$users = User::whereIn('hash', Input::get('users'))->get();
+			$userIds = $users->lists('id');
+			$userGroups = array();
 
-			// Validate edit rights
-			Access::restrict(ACLFlags::GROUP_EDIT, $group);
-
-			// Check if users were selected
-			if (Input::has('users'))
+			foreach ($users as $user)
 			{
-				// Populate a list of user_ids to add
-				$users = User::whereIn('hash', Input::get('users'))->get();
-				$userIds = $users->lists('id');
-				$userGroups = array();
+				// Build the row to be inserted into the table
+				$userGroups[] = array(
+					'user_id'  => $user->id,
+					'group_id' => $group->id,
+				);
 
-				foreach ($users as $user)
-				{
-					// Build the row to be inserted into the table
-					$userGroups[] = array(
-						'user_id'  => $user->id,
-						'group_id' => $group->id,
-					);
-
-					// Clear the ACL cache for the selected users
-					Cache::tags("security.user.{$user->id}")->flush();
-				}
-
-				// Remove these users from the group to avoid duplicate entries
-				UserGroup::whereIn('user_id', $userIds)->where('group_id', $group->id)->delete();
-
-				// Add the users to the group
-				UserGroup::insert($userGroups);
-
-				// Redirect back to the group
-				Session::flash('messages.success', Lang::get('group.users_added'));
-
-				return Redirect::to("group/view/{$group->hash}");
+				// Clear the ACL cache for the selected users
+				Cache::tags("security.user.{$user->id}")->flush();
 			}
-			else
-			{
-				Session::flash('messages.error', Lang::get('group.users_not_selected'));
 
-				return Redirect::to(URL::previous());
-			}
+			// Remove these users from the group to avoid duplicate entries
+			UserGroup::whereIn('user_id', $userIds)->where('group_id', $group->id)->delete();
+
+			// Add the users to the group
+			UserGroup::insert($userGroups);
+
+			// Redirect back to the group
+			Session::flash('messages.success', Lang::get('group.users_added'));
+
+			return Redirect::to("group/view/{$group->hash}");
+		}
+		else
+		{
+			Session::flash('messages.error', Lang::get('group.users_not_selected'));
+
+			return Redirect::to(URL::previous());
 		}
 	}
 

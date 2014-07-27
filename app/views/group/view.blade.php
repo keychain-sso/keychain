@@ -206,13 +206,7 @@
 		<div class="row">
 			<div class="col-xs-12">
 				{{ Form::hidden('hash', $group->hash) }}
-
-				{{
-					Form::submit(Lang::get('group.remove_users'), array(
-						'name'     => '_remove',
-						'class'    => 'btn btn-default',
-					))
-				}}
+				{{ Form::submit(Lang::get('group.remove_users'), array('class' => 'btn btn-default')) }}
 			</div>
 		</div>
 

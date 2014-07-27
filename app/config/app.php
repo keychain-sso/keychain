@@ -135,6 +135,9 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
+		// Intervention
+		'Intervention\Image\ImageServiceProvider',
+
 		// Jenssegers
 		'Jenssegers\Agent\AgentServiceProvider',
 
@@ -205,6 +208,9 @@ return array(
 		'Str'                     => 'Illuminate\Support\Str',
 		'URL'                     => 'Illuminate\Support\Facades\URL',
 		'Validator'               => 'Illuminate\Support\Facades\Validator',
+
+		// Intervention
+		'Image'                   => 'Intervention\Image\Facades\Image',
 
 		// Jenssegers
 		'Agent'                   => 'Jenssegers\Agent\Facades\Agent',

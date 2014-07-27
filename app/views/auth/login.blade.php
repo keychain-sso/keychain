@@ -29,12 +29,7 @@
 		{{ Lang::get('auth.create_account') }}
 	</a>
 
-	{{
-		Form::submit(Lang::get('auth.login'), array(
-			'name'  => '_login',
-			'class' => 'btn btn-primary'
-		))
-	}}
+	{{ Form::submit(Lang::get('auth.login'), array('class' => 'btn btn-primary')) }}
 
 	<a href="{{ url('auth/forgot') }}" class="btn btn-link">
 		{{ Lang::get('auth.forgot_password') }}

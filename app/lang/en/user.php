@@ -24,6 +24,7 @@ return array(
 	'other_email'            => 'Other e-mail addresses',
 	'settings'               => 'Settings',
 	'viewing_profile'        => 'Viewing profile - :name',
+	'change_avatar'          => 'Change avatar',
 	'edit_profile'           => 'Edit profile',
 	'manage_emails'          => 'Manage emails',
 	'manage_ssh_keys'        => 'Manage SSH keys',

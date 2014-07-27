@@ -110,13 +110,7 @@
 
 <div class="modal-footer">
 	{{ Form::hidden('hash', $group->hash) }}
-
-	{{
-		Form::submit(Lang::get('global.save'), array(
-			'name'     => '_save',
-			'class'    => 'btn btn-primary',
-		))
-	}}
+	{{ Form::submit(Lang::get('global.save'), array('class' => 'btn btn-primary')) }}
 
 	@if (empty($group->id))
 		<a href="{{ url('group/list') }}" class="btn btn-default">

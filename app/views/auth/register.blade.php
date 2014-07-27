@@ -38,10 +38,5 @@
 		{{ Lang::get('auth.already_have_account') }}
 	</a>
 
-	{{
-		Form::submit(Lang::get('auth.register'), array(
-			'name'  => '_register',
-			'class' => 'btn btn-primary'
-		))
-	}}
+	{{ Form::submit(Lang::get('auth.register'), array('class' => 'btn btn-primary')) }}
 @stop

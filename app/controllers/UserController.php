@@ -66,45 +66,42 @@ class UserController extends BaseController {
 	 */
 	public function postCreate()
 	{
-		if (Input::has('_save'))
+		// Validate manage rights
+		Access::restrict(ACLFlags::USER_MANAGE);
+
+		// Validate posted fields
+		$validator = Validator::make(Input::all(), array(
+			'name'     => 'required|max:80',
+			'email'    => 'required|email|max:80|unique:user_emails,address',
+			'password' => 'required',
+		));
+
+		// Run the validator
+		if ($validator->fails())
 		{
-			// Validate manage rights
-			Access::restrict(ACLFlags::USER_MANAGE);
+			Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
 
-			// Validate posted fields
-			$validator = Validator::make(Input::all(), array(
-				'name'     => 'required|max:80',
-				'email'    => 'required|email|max:80|unique:user_emails,address',
-				'password' => 'required',
-			));
-
-			// Run the validator
-			if ($validator->fails())
-			{
-				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
-
-				return Redirect::to(URL::previous())->withInput();
-			}
-
-			// Create the new user
-			$user = new User;
-			$user->name = Input::get('name');
-			$user->password = Hash::make(Input::get('password'));
-			$user->hash = Utilities::hash($user);
-			$user->status = UserStatus::ACTIVE;
-			$user->save();
-
-			// Insert the user's email address
-			$email = new UserEmail;
-			$email->user_id = $user->id;
-			$email->address = Input::get('email');
-			$email->primary = Flags::YES;
-			$email->verified = Flags::YES;
-			$email->save();
-
-			// Redirect to the new user's profile
-			return Redirect::to("user/view/{$user->hash}");
+			return Redirect::to(URL::previous())->withInput();
 		}
+
+		// Create the new user
+		$user = new User;
+		$user->name = Input::get('name');
+		$user->password = Hash::make(Input::get('password'));
+		$user->hash = Utilities::hash($user);
+		$user->status = UserStatus::ACTIVE;
+		$user->save();
+
+		// Insert the user's email address
+		$email = new UserEmail;
+		$email->user_id = $user->id;
+		$email->address = Input::get('email');
+		$email->primary = Flags::YES;
+		$email->verified = Flags::YES;
+		$email->save();
+
+		// Redirect to the new user's profile
+		return Redirect::to("user/view/{$user->hash}");
 	}
 
 	/**
@@ -125,6 +122,79 @@ class UserController extends BaseController {
 
 		// Show the view screen
 		return View::make('user/view', $title, $data);
+	}
+
+	/**
+	 * Handles avatar upload operation
+	 *
+	 * @access public
+	 * @return Redirect
+	 */
+	public function postView()
+	{
+		// Fetch the associated user
+		$hash = Input::get('hash');
+		$user = User::where('hash', $hash)->firstOrFail();
+
+		// Validate edit rights
+		Access::restrict(ACLFlags::USER_EDIT, $user);
+
+		// Validate posted fields
+		$validator = Validator::make(Input::all(), array('avatar' => 'required|image'));
+
+		// Run the validator
+		if ($validator->fails())
+		{
+			Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+			return Redirect::to(URL::previous());
+		}
+
+		// Save the file temporarily to a staging folder
+		if (Input::hasFile('avatar'))
+		{
+			$name = str_random(20);
+			$avatar = Input::file('avatar');
+
+			if ($avatar->isValid())
+			{
+				$avatar->move(public_path().'/uploads/avatars', $name);
+			}
+
+			// Save the file name in session
+			Session::put('user.avatar', $name);
+		}
+
+		// Take the user to the avatar resizing utility
+		return Redirect::to("user/avatar/{$user->hash}");
+	}
+
+	/**
+	 * Shows the avatar resize screen
+	 *
+	 * @access public
+	 * @param  string  $hash
+	 * @return View
+	 */
+	public function getAvatar($hash)
+	{
+		if (Session::has('user.avatar'))
+		{
+			// Fetch the user's profile
+			$user = User::where('hash', $hash)->firstOrFail();
+			$data = $this->getUserViewData($user);
+
+			// Validate edit rights
+			Access::restrict(ACLFlags::USER_EDIT, $user);
+
+			// Merge the user data with editor data
+			$data = array_merge($data, array(
+				'avatar' => Session::get('user.avatar'),
+				'modal'  => 'user.avatar',
+			));
+
+			return View::make('user/view', 'user.change_avatar', $data);
+		}
 	}
 
 	/**
@@ -161,29 +231,26 @@ class UserController extends BaseController {
 	 */
 	public function postEdit()
 	{
-		if (Input::has('_save'))
+		// Fetch the associated user
+		$hash = Input::get('hash');
+		$user = User::where('hash', $hash)->firstOrFail();
+
+		// Validate edit rights
+		Access::restrict(ACLFlags::USER_EDIT, $user);
+
+		// Save the form data and show the status
+		$status = FormField::save($user, Input::all());
+
+		if ($status === true)
 		{
-			// Fetch the associated user
-			$hash = Input::get('hash');
-			$user = User::where('hash', $hash)->firstOrFail();
-
-			// Validate edit rights
-			Access::restrict(ACLFlags::USER_EDIT, $user);
-
-			// Save the form data and show the status
-			$status = FormField::save($user, Input::all());
-
-			if ($status === true)
-			{
-				Session::flash('messages.success', Lang::get('user.profile_saved'));
-			}
-			else
-			{
-				Session::flash('messages.error', $status);
-			}
-
-			return Redirect::to(URL::previous())->withInput();
+			Session::flash('messages.success', Lang::get('user.profile_saved'));
 		}
+		else
+		{
+			Session::flash('messages.error', $status);
+		}
+
+		return Redirect::to(URL::previous())->withInput();
 	}
 
 	/**
@@ -289,51 +356,48 @@ class UserController extends BaseController {
 	 */
 	public function postEmails()
 	{
-		if (Input::has('_add'))
+		// Fetch the associated user
+		$hash = Input::get('hash');
+		$user = User::where('hash', $hash)->firstOrFail();
+
+		// Validate edit rights
+		Access::restrict(ACLFlags::USER_EDIT, $user);
+
+		// Does the user have manager access?
+		$manager = Access::check(ACLFlags::USER_MANAGE);
+
+		// Validate posted fields
+		$validator = Validator::make(Input::all(), array('email' => 'required|email|max:80|unique:user_emails,address'));
+
+		// Run the validator
+		if ($validator->fails())
 		{
-			// Fetch the associated user
-			$hash = Input::get('hash');
-			$user = User::where('hash', $hash)->firstOrFail();
+			Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
 
-			// Validate edit rights
-			Access::restrict(ACLFlags::USER_EDIT, $user);
-
-			// Does the user have manager access?
-			$manager = Access::check(ACLFlags::USER_MANAGE);
-
-			// Validate posted fields
-			$validator = Validator::make(Input::all(), array('email' => 'required|email|max:80|unique:user_emails,address'));
-
-			// Run the validator
-			if ($validator->fails())
-			{
-				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
-
-				return Redirect::to(URL::previous())->withInput();
-			}
-
-			// Save the email address
-			$email = new UserEmail;
-			$email->user_id = $user->id;
-			$email->address = Input::get('email');
-			$email->primary = Flags::NO;
-			$email->verified = $manager;
-			$email->save();
-
-			// Send the verification token for non-managers only
-			if ( ! $manager)
-			{
-				Verifier::make(TokenTypes::EMAIL, 'email.address_add', $email);
-			}
-
-			// Purge the user field data cache
-			Cache::tags("field.user.{$user->id}")->flush();
-
-			// Redirect back to the previous URL
-			Session::flash('messages.success', $manager ? Lang::get('user.email_added') : Lang::get('user.email_verify'));
-
-			return Redirect::to(URL::previous());
+			return Redirect::to(URL::previous())->withInput();
 		}
+
+		// Save the email address
+		$email = new UserEmail;
+		$email->user_id = $user->id;
+		$email->address = Input::get('email');
+		$email->primary = Flags::NO;
+		$email->verified = $manager;
+		$email->save();
+
+		// Send the verification token for non-managers only
+		if ( ! $manager)
+		{
+			Verifier::make(TokenTypes::EMAIL, 'email.address_add', $email);
+		}
+
+		// Purge the user field data cache
+		Cache::tags("field.user.{$user->id}")->flush();
+
+		// Redirect back to the previous URL
+		Session::flash('messages.success', $manager ? Lang::get('user.email_added') : Lang::get('user.email_verify'));
+
+		return Redirect::to(URL::previous());
 	}
 
 	/**
@@ -387,52 +451,49 @@ class UserController extends BaseController {
 	 */
 	public function postKeys()
 	{
-		if (Input::has('_add'))
+		// Fetch the associated user
+		$hash = Input::get('hash');
+		$user = User::where('hash', $hash)->firstOrFail();
+
+		// Validate edit rights
+		Access::restrict(ACLFlags::USER_EDIT, $user);
+
+		// Validate posted fields
+		$validator = Validator::make(Input::all(), array(
+			'title' => 'required|max:30',
+			'key'   => 'required',
+		));
+
+		// Run the validator
+		if ($validator->fails())
 		{
-			// Fetch the associated user
-			$hash = Input::get('hash');
-			$user = User::where('hash', $hash)->firstOrFail();
+			Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
 
-			// Validate edit rights
-			Access::restrict(ACLFlags::USER_EDIT, $user);
-
-			// Validate posted fields
-			$validator = Validator::make(Input::all(), array(
-				'title' => 'required|max:30',
-				'key'   => 'required',
-			));
-
-			// Run the validator
-			if ($validator->fails())
-			{
-				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
-
-				return Redirect::to(URL::previous())->withInput();
-			}
-
-			// Generate the fingerprint
-			$key = Input::get('key');
-
-			// Validate the fingerprint
-			if (is_null($fingerprint = Utilities::fingerprint($key)))
-			{
-				Session::flash('messages.error', Lang::get('user.invalid_key'));
-
-				return Redirect::to(URL::previous())->withInput();
-			}
-
-			// Save the SSH key
-			$userKey = new UserKey;
-			$userKey->user_id = $user->id;
-			$userKey->title = Input::get('title');
-			$userKey->key = $key;
-			$userKey->fingerprint = $fingerprint;
-			$userKey->save();
-
-			Session::flash('messages.success', Lang::get('user.ssh_key_added'));
-
-			return Redirect::to(URL::previous());
+			return Redirect::to(URL::previous())->withInput();
 		}
+
+		// Generate the fingerprint
+		$key = Input::get('key');
+
+		// Validate the fingerprint
+		if (is_null($fingerprint = Utilities::fingerprint($key)))
+		{
+			Session::flash('messages.error', Lang::get('user.invalid_key'));
+
+			return Redirect::to(URL::previous())->withInput();
+		}
+
+		// Save the SSH key
+		$userKey = new UserKey;
+		$userKey->user_id = $user->id;
+		$userKey->title = Input::get('title');
+		$userKey->key = $key;
+		$userKey->fingerprint = $fingerprint;
+		$userKey->save();
+
+		Session::flash('messages.success', Lang::get('user.ssh_key_added'));
+
+		return Redirect::to(URL::previous());
 	}
 
 	/**
@@ -495,87 +556,84 @@ class UserController extends BaseController {
 	 */
 	public function postSecurity()
 	{
-		if (Input::has('_save'))
+		$userId = Auth::id();
+
+		// Fetch the associated user
+		$hash = Input::get('hash');
+		$user = User::where('hash', $hash)->firstOrFail();
+		$manager = Access::check(ACLFlags::USER_MANAGE);
+		$save = false;
+
+		// Validate edit rights
+		Access::restrict(ACLFlags::USER_EDIT, $user);
+
+		// Define the validation rules
+		$rules = array(
+			'new_password'     => 'min:7',
+			'confirm_password' => 'required_with:new_password|same:new_password',
+		);
+
+		// Validate the status field only if it was displayed
+		if ($manager && $user->id != $userId)
 		{
-			$userId = Auth::id();
-
-			// Fetch the associated user
-			$hash = Input::get('hash');
-			$user = User::where('hash', $hash)->firstOrFail();
-			$manager = Access::check(ACLFlags::USER_MANAGE);
-			$save = false;
-
-			// Validate edit rights
-			Access::restrict(ACLFlags::USER_EDIT, $user);
-
-			// Define the validation rules
-			$rules = array(
-				'new_password'     => 'min:7',
-				'confirm_password' => 'required_with:new_password|same:new_password',
-			);
-
-			// Validate the status field only if it was displayed
-			if ($manager && $user->id != $userId)
-			{
-				$rules['status'] = 'required|exists:user_status,id';
-			}
-
-			// Create the validator instance
-			$validator = Validator::make(Input::all(), $rules);
-
-			// Run the validator
-			if ($validator->fails())
-			{
-				Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
-
-				return Redirect::to(URL::previous())->withInput();
-			}
-
-			// Check the old password
-			if ( ! $manager && ! Hash::check(Input::get('old_password'), $user->password))
-			{
-				Session::flash('messages.error', Lang::get('user.old_password_invalid'));
-
-				return Redirect::to(URL::previous())->withInput();
-			}
-
-			// Finally, we change the password
-			if (Input::has('new_password'))
-			{
-				$user->password = Hash::make(Input::get('new_password'));
-
-				$save = true;
-			}
-
-			// Check if logged in user has manage rights
-			// If so, update the account settings as well
-			if ($manager && $user->id != $userId)
-			{
-				$user->status = Input::get('status');
-
-				$save = true;
-			}
-
-			if ($save)
-			{
-				// Save the user data
-				$user->save();
-
-				// Purge the user field data cache
-				Cache::tags("field.user.{$user->id}")->flush();
-
-				// Show a success message
-				Session::flash('messages.success', Lang::get('user.security_saved'));
-			}
-			else
-			{
-				// There's nothing to save
-				Session::flash('messages.info', Lang::get('user.security_no_changes'));
-			}
-
-			// Redirect back to the previous URL
-			return Redirect::to(URL::previous());
+			$rules['status'] = 'required|exists:user_status,id';
 		}
+
+		// Create the validator instance
+		$validator = Validator::make(Input::all(), $rules);
+
+		// Run the validator
+		if ($validator->fails())
+		{
+			Session::flash('messages.error', $validator->messages()->all('<p>:message</p>'));
+
+			return Redirect::to(URL::previous())->withInput();
+		}
+
+		// Check the old password
+		if ( ! $manager && ! Hash::check(Input::get('old_password'), $user->password))
+		{
+			Session::flash('messages.error', Lang::get('user.old_password_invalid'));
+
+			return Redirect::to(URL::previous())->withInput();
+		}
+
+		// Finally, we change the password
+		if (Input::has('new_password'))
+		{
+			$user->password = Hash::make(Input::get('new_password'));
+
+			$save = true;
+		}
+
+		// Check if logged in user has manage rights
+		// If so, update the account settings as well
+		if ($manager && $user->id != $userId)
+		{
+			$user->status = Input::get('status');
+
+			$save = true;
+		}
+
+		if ($save)
+		{
+			// Save the user data
+			$user->save();
+
+			// Purge the user field data cache
+			Cache::tags("field.user.{$user->id}")->flush();
+
+			// Show a success message
+			Session::flash('messages.success', Lang::get('user.security_saved'));
+		}
+		else
+		{
+			// There's nothing to save
+			Session::flash('messages.info', Lang::get('user.security_no_changes'));
+		}
+
+		// Redirect back to the previous URL
+		return Redirect::to(URL::previous());
 	}
 
 	/**

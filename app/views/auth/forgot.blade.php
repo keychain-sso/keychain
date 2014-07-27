@@ -17,10 +17,5 @@
 		{{ Lang::get('auth.return_login') }}
 	</a>
 
-	{{
-		Form::submit(Lang::get('auth.send_confirmation_code'), array(
-			'name'  => '_send',
-			'class' => 'btn btn-primary'
-		))
-	}}
+	{{ Form::submit(Lang::get('auth.send_confirmation_code'), array('class' => 'btn btn-primary')) }}
 @stop

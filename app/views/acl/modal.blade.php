@@ -117,25 +117,13 @@
 			{{ Form::hidden('object_type', ACLTypes::USER) }}
 		</div>
 
-		{{
-			Form::submit(Lang::get('global.submit'), array(
-				'name'  => '_submit',
-				'class' => 'btn btn-primary spacer-lg-bottom',
-			))
-		}}
+		{{ Form::submit(Lang::get('global.submit'), array('class' => 'btn btn-primary spacer-lg-bottom')) }}
 	</fieldset>
 
 	@include('acl.list')
 </div>
 
 <div class="modal-footer">
-	{{
-		Form::submit(Lang::get('global.save'), array(
-			'name'     => '_save',
-			'class'    => 'btn btn-primary',
-		))
-	}}
-
 	<a href="{{ $return }}" class="btn btn-default">
 		{{ Lang::get('global.close') }}
 	</a>

@@ -6,7 +6,17 @@
 }}
 
 <div class="modal-body">
-	@include('user.header')
+	<nav class="navbar navbar-default navbar-static-top navbar-modal">
+		<div class="container-fluid">
+			<a href="{{ url('user/list') }}" class="close">&times;</a>
+
+			<div class="text-center">
+				<h3 class="spacer-none-top">{{ $title }}</h3>
+			</div>
+		</div>
+	</nav>
+
+	@include('common.alerts')
 
 	<div class="form-group">
 		{{ Form::label('name', Lang::get('global.name'), array('class' => 'control-label')) }}
@@ -25,12 +35,7 @@
 </div>
 
 <div class="modal-footer">
-	{{
-		Form::submit(Lang::get('global.save'), array(
-			'name'     => '_save',
-			'class'    => 'btn btn-primary',
-		))
-	}}
+	{{ Form::submit(Lang::get('global.save'), array('class' => 'btn btn-primary')) }}
 
 	<a href="{{ url('user/list') }}" class="btn btn-default">
 		{{ Lang::get('global.close') }}

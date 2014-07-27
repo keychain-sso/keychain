@@ -13,6 +13,18 @@
 
 $(function()
 {
+	// Handle change avatar button click
+	$('#change-avatar').on('click', function(e)
+	{
+		$('[name=avatar]').click();
+	});
+
+	// Handle avatar upload control change event
+	$('[name=avatar]').on('change', function(e)
+	{
+		$(this).parent().submit();
+	});
+
 	// Bind to the permissions dropdown and change the search URL and state of
 	// the search textbox based on the selected value of the dropdown
 	$('#permission-add .dropdown-menu a[data-value]').on('click', function(e)

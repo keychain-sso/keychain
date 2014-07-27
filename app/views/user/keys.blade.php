@@ -49,13 +49,7 @@
 
 <div class="modal-footer">
 	{{ Form::hidden('hash', $user->hash) }}
-
-	{{
-		Form::submit(Lang::get('global.add'), array(
-			'name'     => '_add',
-			'class'    => 'btn btn-primary',
-		))
-	}}
+	{{ Form::submit(Lang::get('global.add'), array('class' => 'btn btn-primary')) }}
 
 	<a href="{{ url("user/view/{$user->hash}") }}" class="btn btn-default">
 		{{ Lang::get('global.close') }}

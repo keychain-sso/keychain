@@ -190,6 +190,17 @@
   padding-bottom: 2px;
 }
 
+/* Overlay button */
+.btn-overlay {
+  position: absolute;
+  margin-left: -160px;
+  margin-top: 160px;
+  opacity: 0.4;
+}
+.btn-overlay:hover {
+  opacity: 1;
+}
+
 /* Editor popups */
 .modal-editor fieldset:not(:nth-child(3)) {
   margin-top: 20px;

@@ -1,11 +1,22 @@
 @extends('common.page')
 
 @section('body')
+	@if ( ! isset($modal))
+		@include('common.alerts')
+	@endif
+
 	<div class="text-center">
 		@if ( ! empty($user->avatar))
 			<img src="{{ asset("uploads/avatars/{$user->avatar}") }}" class="img-circle img-thumbnail" alt="" />
 		@else
 			<img src="{{ asset('img/default-avatar.png') }}" class="img-circle img-thumbnail" alt="" />
+		@endif
+
+		@if ($editor)
+			<button id="change-avatar" class="btn btn-default btn-xs btn-overlay">
+				<span class="glyphicon glyphicon-picture"></span>
+				{{ Lang::get('user.change_avatar') }}
+			</button>
 		@endif
 
 		<h1>{{{ $user->name }}}</h1>
@@ -224,4 +235,15 @@
 			</div>
 		</div>
 	@endif
+
+	{{
+		Form::open(array(
+			'role'  => 'form',
+			'files' => true,
+		))
+	}}
+
+	{{ Form::file('avatar') }}
+	{{ Form::hidden('hash', $user->hash) }}
+	{{ Form::close() }}
 @stop
