@@ -120,8 +120,16 @@ class UserController extends BaseController {
 		// Set the page title
 		$title = Lang::get('user.viewing_profile', array('name' => $user->name));
 
-		// Show the view screen
-		return View::make('user/view', $title, $data);
+		// Make the response
+		$response = Response::layout('user/view', $title, $data);
+
+		// Purge view cache, if instructed to
+		if (Session::has('global.nocache'))
+		{
+			Utilities::noCache($response);
+		}
+
+		return $response;
 	}
 
 	/**
@@ -178,6 +186,9 @@ class UserController extends BaseController {
 				// Move the avatar to the upload folder
 				$avatar->move(public_path().'/uploads/avatars', $user->hash);
 
+				// Direct the browser to flush its cache
+				Session::flash('global.nocache', true);
+
 				return Redirect::to("user/view/{$user->hash}");
 			}
 			else
@@ -224,19 +235,11 @@ class UserController extends BaseController {
 		// Show the resize dialog if the file name was set in the session
 		if (Session::has('user.avatar.resize'))
 		{
-			// Merge the user data with the view data
-			$data = array_merge($data, array(
-				'title' => Lang::get('user.change_avatar'),
-				'modal' => 'user.avatar'
-			));
-
 			// Make the response
-			return Response::view('user/view', $data);
+			$response = Response::layout('user/view', 'user.change_avatar', array_merge($data, array('modal' => 'user.avatar')));
 
 			// We disable the browser cache to avoid displaying the old avatar
-			$response->header('Cache-Control', 'nocache, no-store, max-age=0, must-revalidate');
-			$response->header('Pragma', 'no-cache');
-			$response->header('Expires', 'Fri, 01 Jan 1990 00:00:00 GMT');
+			Utilities::noCache($response);
 
 			return $response;
 		}

@@ -13,6 +13,8 @@
  * @filesource
  */
 
+use Lang;
+
 /**
  * Response class
  *
@@ -29,14 +31,15 @@ class Response extends \Illuminate\Support\Facades\Response {
 	 * @static
 	 * @access public
 	 * @param  string  $view
+	 * @param  string  $title
 	 * @param  array  $data
 	 * @param  int  $status
 	 * @param  array  $headers
-	 * @return View
+	 * @return Response
 	 */
-	public static function view($view, $data = array(), $status = 200, array $headers = array())
+	public static function layout($view, $title = null, $data = array(), $status = 200, array $headers = array())
 	{
-		$data = array_merge(View::defaults(), $data);
+		$data = array_merge(View::defaults(), $data, array('title' => Lang::get($title)));
 
 		return parent::view($view, $data, $status, $headers);
 	}

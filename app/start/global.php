@@ -167,12 +167,11 @@ App::error(function($exception, $code)
 		// Build the view data
 		$data = array(
 			'type'    => NoticeTypes::ERROR,
-			'title'   => Lang::get('global.error'),
 			'message' => Lang::get("errors.{$key}"),
 		);
 
 		// Return the notice to the user
-		return Response::view('common/notice', $data, $code);
+		return Response::layout('common/notice', 'global.error', $data, $code);
 	}
 });
 
