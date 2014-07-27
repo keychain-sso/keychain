@@ -44,6 +44,34 @@
 							</a>
 						</li>
 
+						@if ($manager->acl || $manager->field)
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+									<span class="glyphicon glyphicon-cog"></span>
+									{{ Lang::get('global.admin') }}
+									<span class="caret"></span>
+								</a>
+
+								<ul class="dropdown-menu">
+									@if ($manager->field)
+										<li>
+											<a href="{{ url('admin/fields') }}">
+												{{ Lang::get('global.manage_fields') }}
+											</a>
+										</li>
+									@endif
+
+									@if ($manager->acl)
+										<li>
+											<a href="{{ url('admin/permissions') }}">
+												{{ Lang::get('global.modify_acl_entries') }}
+											</a>
+										</li>
+									@endif
+								</ul>
+							</li>
+						@endif
+
 						@if (Auth::check())
 							<li>
 								<a href="{{ url('auth/logout') }}">
