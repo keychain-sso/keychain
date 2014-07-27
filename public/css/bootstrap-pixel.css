@@ -220,6 +220,7 @@ fieldset {
 .has-overlay .collapse {
   display: none;
 }
+.btn-overlay:focus .collapse,
 .has-overlay:hover .collapse {
   opacity: 1;
   display: inline;
