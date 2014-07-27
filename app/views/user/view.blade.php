@@ -5,18 +5,18 @@
 		@include('common.alerts')
 	@endif
 
-	<div class="text-center">
+	<div class="text-center has-overlay">
+		@if ($editor)
+			<button id="change-avatar" class="btn btn-default btn-sm btn-overlay">
+				<span class="glyphicon glyphicon-camera"></span>
+				<span class="collapse">{{ Lang::get('user.change_avatar') }}</span>
+			</button>
+		@endif
+
 		@if ($user->avatar)
 			<img src="{{ asset("uploads/avatars/{$user->hash}") }}" class="img-circle img-thumbnail" alt="" />
 		@else
 			<img src="{{ asset('img/default-avatar.png') }}" class="img-circle img-thumbnail" alt="" />
-		@endif
-
-		@if ($editor)
-			<button id="change-avatar" class="btn btn-default btn-xs btn-overlay">
-				<span class="glyphicon glyphicon-picture"></span>
-				{{ Lang::get('user.change_avatar') }}
-			</button>
 		@endif
 
 		<h1>{{{ $user->name }}}</h1>
