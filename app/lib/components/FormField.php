@@ -192,7 +192,8 @@ class FormField {
 
 		foreach ($fieldInfo as $field)
 		{
-			$value = isset($data['custom_'.$field->machine_name]) ? $data['custom_'.$field->machine_name] : '';
+			$key = "custom_{$field->machine_name}";
+			$value = isset($data->$key) ? $data->$key : '';
 
 			// Validate if user can edit this field
 			Access::restrict(ACLFlags::FIELD_EDIT, $user, $field);
@@ -243,7 +244,6 @@ class FormField {
 			$userField->field_id = $field->id;
 			$userField->value = $value;
 			$userField->save();
-
 		}
 
 		// All OK!
