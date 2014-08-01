@@ -145,7 +145,7 @@ class FormField {
 					'disabled'     => Access::check(ACLFlags::FIELD_EDIT, $user, $field) ? null : 'disabled',
 				);
 
-				$fields->{$field->category}[$field->order] = View::make("controls/{$fieldTypes[$field->type]}", null, $data)->render();
+				$fields->{$field->category}[$field->order] = View::make("control/{$fieldTypes[$field->type]}", null, $data)->render();
 			}
 		}
 

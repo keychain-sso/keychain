@@ -347,7 +347,7 @@ class GroupController extends BaseController {
 					'group'         => $group,
 				);
 
-				Mail::queue('emails/group', $data, function($message) use ($editor)
+				Mail::queue('email/group', $data, function($message) use ($editor)
 				{
 					$message->to($editor->primaryEmail[0]->address)->subject(Lang::get('email.subject_group'));
 				});
@@ -478,7 +478,7 @@ class GroupController extends BaseController {
 					'group'  => $group,
 				);
 
-				Mail::queue('emails/group', $data, function($message) use ($request)
+				Mail::queue('email/group', $data, function($message) use ($request)
 				{
 					$message->to($request->user->primaryEmail[0]->address)->subject(Lang::get('email.subject_group'));
 				});
@@ -500,7 +500,7 @@ class GroupController extends BaseController {
 					'group'  => $group,
 				);
 
-				Mail::queue('emails/group', $data, function($message) use ($request)
+				Mail::queue('email/group', $data, function($message) use ($request)
 				{
 					$message->to($request->user->primaryEmail[0]->address)->subject(Lang::get('email.subject_group'));
 				});
