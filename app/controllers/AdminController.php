@@ -32,7 +32,7 @@ class AdminController extends BaseController {
 	 * @param  int  $id
 	 * @return View
 	 */
-	public function getPermissions($action = null, $id = 0)
+	public function getPermission($action = null, $id = 0)
 	{
 		// Validate acl_manage rights
 		Access::restrict(ACLFlags::ACL_MANAGE);
@@ -79,7 +79,7 @@ class AdminController extends BaseController {
 	 * @access public
 	 * @return Redirect
 	 */
-	public function postPermissions()
+	public function postPermission()
 	{
 		// Validate manage rights
 		Access::restrict(ACLFlags::ACL_MANAGE);
@@ -107,7 +107,7 @@ class AdminController extends BaseController {
 	 * @param  int  $id
 	 * @return View|Redirect
 	 */
-	public function getFields($action = null, $id = 0)
+	public function getField($action = null, $id = 0)
 	{
 		// Validate manage rights
 		Access::restrict(ACLFlags::FIELD_MANAGE);

@@ -11,8 +11,11 @@ return array(
 	|
 	*/
 
-	'create_field'       => 'Create profile field',
-	'move_up'            => 'Move up',
-	'move_down'          => 'Move down',
+	'create_field' => 'Create profile field',
+	'move_up'      => 'Move up',
+	'move_down'    => 'Move down',
+	'edit'         => 'Edit',
+	'delete'       => 'Delete',
+	'no_fields'    => 'No fields in this category.',
 
 );

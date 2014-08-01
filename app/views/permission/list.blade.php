@@ -39,7 +39,7 @@
 						<td>{{ Lang::get("flag.{$permission->flag}") }}</td>
 
 						<td>
-							<a href="{{ url("admin/permissions/remove/{$permission->id}") }}"
+							<a href="{{ url("admin/permission/remove/{$permission->id}") }}"
 							   title="{{ Lang::get('global.remove') }}" data-toggle="tooltip">
 								<span class="glyphicon glyphicon-remove text-danger"></span>
 							</a>
@@ -139,7 +139,7 @@
 					@endif
 
 					<td>
-						<a href="{{ url("admin/permissions/remove/{$permission->id}") }}"
+						<a href="{{ url("admin/permission/remove/{$permission->id}") }}"
 						   title="{{ Lang::get('global.remove') }}" data-toggle="tooltip">
 							<span class="glyphicon glyphicon-remove text-danger"></span>
 						</a>

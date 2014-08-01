@@ -86,6 +86,7 @@ function bootstrapOptIn()
  *
  * @access public
  * @return void
+ * @rerunnable
  */
 function clickableIcons()
 {
@@ -111,7 +112,7 @@ function clickableIcons()
  */
 function itemSearch()
 {
-	$('[data-toggle=search]').off('keyup').on('keyup', function(e)
+	$('[data-toggle=search]').on('keyup', function(e)
 	{
 		// Set the search instance
 		search = $(this);
@@ -239,7 +240,7 @@ function itemSearch()
  */
 function confirmPrompts()
 {
-	$('[data-toggle=confirm]').off('click').on('click', function(e)
+	$('[data-toggle=confirm]').on('click', function(e)
 	{
 		// Set the link instance
 		link = $(this);
@@ -319,7 +320,7 @@ function confirmPrompts()
  */
 function bootstrapDropdowns()
 {
-	$('.dropdown-menu a').off('click').on('click', function(e)
+	$('.dropdown-menu a').on('click', function(e)
 	{
 		button = $(this).parents().eq(2).find('[data-toggle=dropdown]');
 
@@ -364,7 +365,7 @@ function bootstrapDropdowns()
  */
 function autoComplete()
 {
-	$('[data-toggle=autocomplete]').off('keydown').on('keydown', function(e)
+	$('[data-toggle=autocomplete]').on('keydown', function(e)
 	{
 		if (e.keyCode == 13)
 		{
@@ -372,7 +373,7 @@ function autoComplete()
 		}
 	});
 
-	$('[data-toggle=autocomplete]').off('keyup').on('keyup', function(e)
+	$('[data-toggle=autocomplete]').on('keyup', function(e)
 	{
 		search = $(this);
 		uid = guid();

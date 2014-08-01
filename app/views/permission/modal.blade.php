@@ -1,6 +1,6 @@
 {{
 	Form::open(array(
-		'action' => 'AdminController@postPermissions',
+		'action' => 'AdminController@postPermission',
 		'role'   => 'form'
 	))
 }}
