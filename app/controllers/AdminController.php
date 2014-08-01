@@ -45,7 +45,7 @@ class AdminController extends BaseController {
 				// Remove the selected permission
 				Access::remove($id);
 
-				Session::flash('messages.success', Lang::get('global.permission_removed'));
+				Session::flash('messages.success', Lang::get('permission.permission_removed'));
 
 				return Redirect::to(URL::previous());
 
@@ -65,12 +65,11 @@ class AdminController extends BaseController {
 				$data = array(
 					'acl'    => $acl,
 					'show'   => $show,
-					'return' => url(),
 					'fields' => Field::lists('name', 'id'),
-					'flags'  => Lang::get('permissions'),
+					'flags'  => Lang::get('flag'),
 				);
 
-				return View::make('acl/full', 'global.modify_acl_entries', $data);
+				return View::make('permission/full', 'global.modify_acl_entries', $data);
 		}
 	}
 
@@ -90,7 +89,7 @@ class AdminController extends BaseController {
 
 		if ($status === true)
 		{
-			Session::flash('messages.success', Lang::get('global.permission_added'));
+			Session::flash('messages.success', Lang::get('permission.permission_added'));
 		}
 		else
 		{
@@ -98,6 +97,28 @@ class AdminController extends BaseController {
 		}
 
 		return Redirect::to(URL::previous())->withInput();
+	}
+
+	/**
+	 * Handles field management screen actions
+	 *
+	 * @access public
+	 * @param  string  $action
+	 * @param  int  $id
+	 * @return View|Redirect
+	 */
+	public function getFields($action = null, $id = 0)
+	{
+		// Validate manage rights
+		Access::restrict(ACLFlags::FIELD_MANAGE);
+
+		// Perform the requested action
+		switch ($action)
+		{
+			default:
+
+				return View::make('field/manage', 'global.manage_fields', array('fields' => Field::all()));
+		}
 	}
 
 }

@@ -455,7 +455,7 @@ class Access {
 
 				default:
 
-					return Lang::get('global.invalid_subject');
+					return Lang::get('permission.invalid_subject');
 			}
 		}
 

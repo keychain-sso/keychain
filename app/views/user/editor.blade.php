@@ -6,7 +6,7 @@
 	<fieldset>
 		<legend>
 			<span class="glyphicon glyphicon-user"></span>
-			{{ Lang::get('user.basic_info') }}
+			{{ Lang::get('global.basic_info') }}
 		</legend>
 
 		<div class="form-group">
@@ -71,7 +71,7 @@
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-phone-alt"></span>
-				{{ Lang::get('user.contact_info') }}
+				{{ Lang::get('global.contact_info') }}
 			</legend>
 
 			@foreach ($fieldEdit->{FieldCategories::CONTACT} as $field)
@@ -84,7 +84,7 @@
 		<fieldset>
 			<legend>
 				<span class="glyphicon glyphicon-th"></span>
-				{{ Lang::get('user.other_details') }}
+				{{ Lang::get('global.other_details') }}
 			</legend>
 
 			@foreach ($fieldEdit->{FieldCategories::OTHER} as $field)

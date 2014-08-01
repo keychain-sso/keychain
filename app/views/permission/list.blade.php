@@ -2,17 +2,17 @@
 	<fieldset>
 		<legend>
 			<span class="glyphicon glyphicon-retweet"></span>
-			{{ Lang::get('global.site_permissions') }}
+			{{ Lang::get('permission.site_permissions') }}
 		</legend>
 
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr>
 					@if ($show->subjects)
-						<th>{{ Lang::get('global.user_group') }}</th>
+						<th>{{ Lang::get('permission.user_group') }}</th>
 					@endif
 
-					<th>{{ Lang::get('global.permission') }}</th>
+					<th>{{ Lang::get('permission.permission') }}</th>
 					<th width="30"></th>
 				</tr>
 			</thead>
@@ -36,7 +36,7 @@
 							</td>
 						@endif
 
-						<td>{{ Lang::get("permissions.{$permission->flag}") }}</td>
+						<td>{{ Lang::get("flag.{$permission->flag}") }}</td>
 
 						<td>
 							<a href="{{ url("admin/permissions/remove/{$permission->id}") }}"
@@ -49,7 +49,7 @@
 
 				@if (count($acl->site) == 0)
 					<tr>
-						<td colspan="3">{{ Lang::get('global.no_permissions') }}</td>
+						<td colspan="3">{{ Lang::get('permission.no_permissions') }}</td>
 					</tr>
 				@endif
 			</tbody>
@@ -61,10 +61,10 @@
 	<legend>
 		@if ($show->site)
 			<span class="glyphicon glyphicon-record"></span>
-			{{ Lang::get('global.scope_permissions') }}
+			{{ Lang::get('permission.scope_permissions') }}
 		@else
 			<span class="glyphicon glyphicon-list"></span>
-			{{ Lang::get('global.permissions') }}
+			{{ Lang::get('permission.permissions') }}
 		@endif
 	</legend>
 
@@ -72,13 +72,13 @@
 		<thead>
 			<tr>
 				@if ($show->subjects)
-					<th>{{ Lang::get('global.user_group') }}</th>
+					<th>{{ Lang::get('permission.user_group') }}</th>
 				@endif
 
-				<th>{{ Lang::get('global.permission') }}</th>
+				<th>{{ Lang::get('permission.permission') }}</th>
 
 				@if ($show->objects)
-					<th>{{ Lang::get('global.scope') }}</th>
+					<th>{{ Lang::get('permission.scope') }}</th>
 				@endif
 
 				<th width="30"></th>
@@ -105,7 +105,7 @@
 					@endif
 
 					<td>
-						{{ Lang::get("permissions.{$permission->flag}") }}
+						{{ Lang::get("flag.{$permission->flag}") }}
 
 						@if ($permission->field_id > 0)
 							@if ($show->fields)
@@ -120,10 +120,10 @@
 						<td>
 							@if ($permission->object_type == ACLTypes::ALL)
 								<span class="glyphicon glyphicon-globe"></span>
-								{{ Lang::get('global.global') }}
+								{{ Lang::get('permission.global') }}
 							@elseif ($permission->object_type == ACLTypes::SELF)
 								<span class="glyphicon glyphicon-bookmark"></span>
-								{{ Lang::get('global.self') }}
+								{{ Lang::get('permission.self') }}
 							@elseif ($permission->object_type == ACLTypes::USER)
 								{? $object = $acl->users->objects->find($permission->object_id) ?}
 
@@ -149,7 +149,7 @@
 
 			@if (count($acl->scope) == 0)
 				<tr>
-					<td colspan="3">{{ Lang::get('global.no_permissions') }}</td>
+					<td colspan="3">{{ Lang::get('permission.no_permissions') }}</td>
 				</tr>
 			@endif
 		</tbody>

@@ -97,7 +97,7 @@
 		<div class="col-md-4">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div class="panel-title">{{ Lang::get('user.basic_info') }}</div>
+					<div class="panel-title">{{ Lang::get('global.basic_info') }}</div>
 				</div>
 
 				<ul class="list-group">
@@ -142,7 +142,7 @@
 		<div class="col-md-4">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<div class="panel-title">{{ Lang::get('user.contact_info') }}</div>
+					<div class="panel-title">{{ Lang::get('global.contact_info') }}</div>
 				</div>
 
 				<ul class="list-group">
@@ -220,7 +220,7 @@
 			<div class="col-md-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<div class="panel-title">{{ Lang::get('user.other_details') }}</div>
+						<div class="panel-title">{{ Lang::get('global.other_details') }}</div>
 					</div>
 
 					<ul class="list-group">

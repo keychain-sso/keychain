@@ -2,7 +2,7 @@
 
 @section('body')
 	<h3 class="spacer-none-top">
-		<a href="{{ $return }}" class="back" title="{{ Lang::get('global.return_index') }}" data-toggle="tooltip">
+		<a href="{{ url() }}" class="back" title="{{ Lang::get('global.return_index') }}" data-toggle="tooltip">
 			<span class="glyphicon glyphicon-chevron-left"></span>
 		</a>
 
@@ -21,7 +21,7 @@
 	<fieldset id="permission-add">
 		<legend>
 			<span class="glyphicon glyphicon-import"></span>
-			{{ Lang::get('global.add_permissions') }}
+			{{ Lang::get('permission.add_permissions') }}
 		</legend>
 
 		<div class="row">
@@ -29,7 +29,7 @@
 				<div class="form-group has-feedback has-justification">
 					{? $type = isset($subject) ? strtolower(get_class($subject)) : 'user' ?}
 
-					{{ Form::label('subject', Lang::get('global.user_group'), array('class' => 'control-label')) }}
+					{{ Form::label('subject', Lang::get('permission.user_group'), array('class' => 'control-label')) }}
 
 					<div class="input-group">
 						<div class="input-group-btn">
@@ -67,7 +67,7 @@
 
 			<div class="col-md-6 col-lg-4">
 				<div class="form-group">
-					{{ Form::label('flag', Lang::get('global.permission')) }}
+					{{ Form::label('flag', Lang::get('permission.permission')) }}
 					{{ Form::select('flag', $flags, null, array('class' => 'form-control')) }}
 				</div>
 			</div>
@@ -75,7 +75,7 @@
 			@if (isset($fields))
 				<div id="permission-field" class="col-md-6 col-lg-4 @if ( ! str_contains(array_keys($flags)[0], 'field')) hide @endif">
 					<div class="form-group">
-						{{ Form::label('field', Lang::get('global.field')) }}
+						{{ Form::label('field', Lang::get('permission.field')) }}
 
 						{{
 							Form::select('field', $fields, isset($field) ? $field->id : null, array(
@@ -89,7 +89,7 @@
 
 			<div id="permission-object" class="col-md-6 col-lg-4 hide">
 				<div class="form-group has-feedback has-justification">
-					{{ Form::label('object', Lang::get('global.scope'), array('class' => 'control-label')) }}
+					{{ Form::label('object', Lang::get('permission.scope'), array('class' => 'control-label')) }}
 
 					<div class="input-group">
 						<div class="input-group-btn">
@@ -100,8 +100,8 @@
 							</button>
 
 							<ul class="dropdown-menu">
-								<li><a href="#" data-value="1">{{ Lang::get('global.self') }}</a></li>
-								<li><a href="#" data-value="2">{{ Lang::get('global.global') }}</a></li>
+								<li><a href="#" data-value="1">{{ Lang::get('permission.self') }}</a></li>
+								<li><a href="#" data-value="2">{{ Lang::get('permission.global') }}</a></li>
 								<li><a href="#" data-value="3">{{ Lang::get('global.user') }}</a></li>
 								<li><a href="#" data-value="4">{{ Lang::get('global.group') }}</a></li>
 							</ul>
@@ -130,7 +130,7 @@
 		{{ Form::submit(Lang::get('global.submit'), array('class' => 'btn btn-primary spacer-lg-bottom')) }}
 	</fieldset>
 
-	@include('acl.list')
+	@include('permission.list')
 
 	{{ Form::close() }}
 @stop

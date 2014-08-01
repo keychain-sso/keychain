@@ -162,12 +162,12 @@ App::error(function($exception, $code)
 
 		// Check if the language file has a friendly text for the error
 		// If not, fall back to generic verbiage
-		$key = Lang::has("errors.{$code}") ? $code : 'default';
+		$key = Lang::has("error.{$code}") ? $code : 'default';
 
 		// Build the view data
 		$data = array(
 			'type'    => NoticeTypes::ERROR,
-			'message' => Lang::get("errors.{$key}"),
+			'message' => Lang::get("error.{$key}"),
 		);
 
 		// Return the notice to the user

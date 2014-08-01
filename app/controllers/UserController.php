@@ -808,7 +808,7 @@ class UserController extends BaseController {
 			'return' => url("user/view/{$user->hash}"),
 			'fields' => Field::lists('name', 'id'),
 			'flags'  => Lang::get('permissions'),
-			'modal'  => 'acl.modal',
+			'modal'  => 'permission.modal',
 			'subject' => $user,
 		));
 

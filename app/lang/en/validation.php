@@ -85,16 +85,16 @@ return array(
 
 	'custom' => array(
 		'subject_id'   => array(
-			'required' => 'Please select a valid user or group',
+			'required' => 'Please select a valid user or group.',
 		),
 		'subject_type' => array(
-			'required' => 'Please select a valid user or group',
+			'required' => 'Please select a valid user or group.',
 		),
 		'object_id'   => array(
-			'required' => 'Please select a valid scope',
+			'required' => 'Please select a valid scope.',
 		),
 		'object_type' => array(
-			'required' => 'Please select a valid scope',
+			'required' => 'Please select a valid scope.',
 		),
 	),
 

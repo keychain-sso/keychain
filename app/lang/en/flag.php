@@ -4,7 +4,7 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
-	| ACL Permissions Language Lines
+	| ACL Flags Language Lines
 	|--------------------------------------------------------------------------
 	|
 	| The following are localized texts that define ACL access flags

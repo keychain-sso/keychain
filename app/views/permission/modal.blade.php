@@ -21,13 +21,13 @@
 	<fieldset id="permission-add">
 		<legend>
 			<span class="glyphicon glyphicon-import"></span>
-			{{ Lang::get('global.add_permissions') }}
+			{{ Lang::get('permission.add_permissions') }}
 		</legend>
 
 		<div id="permission-subject" class="form-group has-feedback">
 			{? $type = isset($subject) ? strtolower(get_class($subject)) : 'user' ?}
 
-			{{ Form::label('subject', Lang::get('global.user_group'), array('class' => 'control-label')) }}
+			{{ Form::label('subject', Lang::get('permission.user_group'), array('class' => 'control-label')) }}
 
 			<div class="input-group">
 				<div class="input-group-btn">
@@ -63,13 +63,13 @@
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('flag', Lang::get('global.permission')) }}
+			{{ Form::label('flag', Lang::get('permission.permission')) }}
 			{{ Form::select('flag', $flags, null, array('class' => 'form-control')) }}
 		</div>
 
 		@if (isset($fields))
 			<div id="permission-field" class="form-group @if ( ! str_contains(array_keys($flags)[0], 'field')) hide @endif">
-				{{ Form::label('field', Lang::get('global.field')) }}
+				{{ Form::label('field', Lang::get('permission.field')) }}
 
 				{{
 					Form::select('field', $fields, isset($field) ? $field->id : null, array(
@@ -81,7 +81,7 @@
 		@endif
 
 		<div id="permission-object" class="form-group has-feedback hide">
-			{{ Form::label('object', Lang::get('global.scope'), array('class' => 'control-label')) }}
+			{{ Form::label('object', Lang::get('permission.scope'), array('class' => 'control-label')) }}
 
 			<div class="input-group">
 				<div class="input-group-btn">
@@ -92,8 +92,8 @@
 					</button>
 
 					<ul class="dropdown-menu">
-						<li><a href="#" data-value="1">{{ Lang::get('global.self') }}</a></li>
-						<li><a href="#" data-value="2">{{ Lang::get('global.global') }}</a></li>
+						<li><a href="#" data-value="1">{{ Lang::get('permission.self') }}</a></li>
+						<li><a href="#" data-value="2">{{ Lang::get('permission.global') }}</a></li>
 						<li><a href="#" data-value="3">{{ Lang::get('global.user') }}</a></li>
 						<li><a href="#" data-value="4">{{ Lang::get('global.group') }}</a></li>
 					</ul>
@@ -120,7 +120,7 @@
 		{{ Form::submit(Lang::get('global.submit'), array('class' => 'btn btn-primary spacer-lg-bottom')) }}
 	</fieldset>
 
-	@include('acl.list')
+	@include('permission.list')
 </div>
 
 <div class="modal-footer">

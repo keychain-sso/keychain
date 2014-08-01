@@ -646,7 +646,7 @@ class GroupController extends BaseController {
 			'return' => url("group/view/{$group->hash}"),
 			'fields' => Field::lists('name', 'id'),
 			'flags'  => Access::flags(),
-			'modal'  => 'acl.modal',
+			'modal'  => 'permission.modal',
 			'subject' => $group,
 		));
 

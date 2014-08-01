@@ -92,6 +92,11 @@ class FormField {
 				}
 			}
 
+			// Sort the fields by their order
+			ksort($fields->{FieldCategories::BASIC});
+			ksort($fields->{FieldCategories::CONTACT});
+			ksort($fields->{FieldCategories::OTHER});
+
 			return $fields;
 		});
 	}
