@@ -58,7 +58,7 @@ class Setup extends Migration {
 			$table->integer('status')->unsigned()->index();
 			$table->string('hash', 8)->unique()->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->foreign('status')->references('id')->on('user_status')->onDelete('cascade');
 		});
@@ -72,7 +72,7 @@ class Setup extends Migration {
 			$table->boolean('primary');
 			$table->boolean('verified')->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
@@ -86,7 +86,7 @@ class Setup extends Migration {
 			$table->mediumText('key');
 			$table->string('fingerprint', 48);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
@@ -106,7 +106,7 @@ class Setup extends Migration {
 			$table->text('payload');
 			$table->string('ip_address', 45);
 			$table->integer('device_type')->unsigned();
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->foreign('device_type')->references('id')->on('device_types')->onDelete('cascade');
 		});
@@ -138,7 +138,7 @@ class Setup extends Migration {
 			$table->boolean('required')->default(0);
 			$table->integer('order');
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->foreign('type')->references('id')->on('field_types')->onDelete('cascade');
 			$table->foreign('category')->references('id')->on('field_categories')->onDelete('cascade');
@@ -162,7 +162,7 @@ class Setup extends Migration {
 			$table->boolean('notify')->default(0);
 			$table->boolean('auto_join')->default(0);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->foreign('type')->references('id')->on('group_types')->onDelete('cascade');
 		});
@@ -175,7 +175,7 @@ class Setup extends Migration {
 			$table->integer('group_id')->unsigned()->index();
 			$table->mediumText('justification');
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
@@ -189,7 +189,7 @@ class Setup extends Migration {
 			$table->integer('field_id')->unsigned()->index();
 			$table->mediumText('value');
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
@@ -202,7 +202,7 @@ class Setup extends Migration {
 			$table->integer('user_id')->unsigned()->index();
 			$table->integer('group_id')->unsigned()->index();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
@@ -233,7 +233,7 @@ class Setup extends Migration {
 			$table->integer('object_type')->unsigned()->default(1);
 			$table->integer('field_id')->unsigned()->default(0);
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->index(array('subject_id', 'subject_type'));
 			$table->foreign('flag')->references('name')->on('acl_flags')->onDelete('cascade');
@@ -256,7 +256,7 @@ class Setup extends Migration {
 			$table->integer('permits_id')->unsigned();
 			$table->integer('permits_type')->unsigned();
 			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
-			$table->timestamp('updated_at');
+			$table->timestamp('updated_at')->nullable();
 
 			$table->index(array('permits_id', 'permits_type'));
 			$table->foreign('permits_type')->references('id')->on('token_types')->onDelete('cascade');
