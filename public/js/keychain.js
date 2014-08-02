@@ -88,22 +88,6 @@ function avatarUpload()
  */
 function permissionModals()
 {
-	// Retain the dropdown state based on the hidden field data
-	subjectType = $('[name=subject_type]');
-	objectType = $('[name=object_type]');
-
-	if (subjectType.length == 1 && objectType.length == 1)
-	{
-		$('#permission-add [name=flag]').change();
-
-		if ( ! $('#permission-subject [name=subject]').is(':disabled'))
-		{
-			$('#permission-subject .dropdown-menu a[data-value=' + subjectType.val() + ']').click();
-		}
-
-		$('#permission-object .dropdown-menu a[data-value=' + objectType.val() + ']').click();
-	}
-
 	// Bind to the permissions dropdown and change the search URL and state of
 	// the search textbox based on the selected value of the dropdown
 	$('#permission-add .dropdown-menu a[data-value]').on('click', function(e)
@@ -158,4 +142,21 @@ function permissionModals()
 			$('#permission-object .dropdown-menu a[data-value=4]').click();
 		}
 	});
+
+	// Retain the dropdown state based on the hidden field data
+	subjectType = $('[name=subject_type]');
+	objectType = $('[name=object_type]');
+
+	if (subjectType.length == 1 && objectType.length == 1)
+	{
+		if ( ! $('#permission-subject [name=subject]').is(':disabled'))
+		{
+			$('#permission-subject .dropdown-menu a[data-value=' + subjectType.val() + ']').click();
+		}
+
+		$('#permission-object .dropdown-menu a[data-value=' + objectType.val() + ']').click();
+	}
+
+	// Simulate flag change on load
+	$('#permission-add [name=flag]').change();
 }

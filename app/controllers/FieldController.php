@@ -122,9 +122,15 @@ class FieldController extends BaseController {
 		$field->order = $order;
 		$field->save();
 
-		// Redirect to the field management page
-		Session::flash('messages.success', Lang::get('field.field_created'));
+		// Clear the field cache
+		Cache::tags('field')->flush();
 
+		// Build the 'field created' message
+		$link = link_to("field/permission/{$field->id}", Lang::get('field.manage_permissions'));
+
+		Session::flash('messages.success', Lang::get('field.field_created', array('link' => $link)));
+
+		// Redirect to the field management page
 		return Redirect::to('field');
 	}
 
@@ -199,6 +205,9 @@ class FieldController extends BaseController {
 		$field->order = $order;
 		$field->save();
 
+		// Clear the field cache
+		Cache::tags('field')->flush();
+
 		// Redirect to the field management page
 		Session::flash('messages.success', Lang::get('field.field_updated'));
 
@@ -214,8 +223,16 @@ class FieldController extends BaseController {
 	 */
 	public function getDelete($id)
 	{
+		// Delete the field
 		Field::findOrFail($id)->delete();
 
+		// Delete all field permissions
+		ACL::where('field_id', $id)->delete();
+
+		// Clear the field cache
+		Cache::tags('field')->flush();
+
+		// Redirect to the previous page
 		Session::flash('messages.success', Lang::get('field.field_deleted'));
 
 		return Redirect::to(URL::previous());
@@ -253,17 +270,63 @@ class FieldController extends BaseController {
 				break;
 		}
 
-		// Swap the field orders
 		if ( ! is_null($other))
 		{
+			// Swap the field orders
 			list($field->order, $other->order) = array($other->order, $field->order);
 
+			// Save both the fields
 			$field->save();
 			$other->save();
+
+			// Clear the field cache
+			Cache::tags('field')->flush();
 		}
 
 		// Redirect to the previous page
 		return Redirect::to(URL::previous());
+	}
+
+	/**
+	 * Displays the field permissions page
+	 *
+	 * @access public
+	 * @param  int  $id
+	 * @return View
+	 */
+	public function getPermission($id)
+	{
+		$field = Field::findOrFail($id);
+
+		// Build the ACL query
+		$query = new stdClass;
+		$query->field = $field;
+
+		// Query the ACL for user permissions
+		$acl = Access::query(QueryMethods::BY_OBJECT, $query);
+
+		// Set display flags
+		$show = new stdClass;
+		$show->site = false;
+		$show->subjects = true;
+		$show->objects = true;
+		$show->fields = false;
+
+		// Get the flags to display
+		$filter = array(ACLFlags::FIELD_EDIT => true, ACLFlags::FIELD_VIEW => true);
+		$flags = array_intersect_key(Lang::get('flag'), $filter);
+
+		// Build the view data
+		$data = array(
+			'acl'    => $acl,
+			'show'   => $show,
+			'field'  => $field,
+			'flags'  => $flags,
+			'fields' => Field::lists('name', 'id'),
+			'return' => url('field'),
+		);
+
+		return View::make('permission/full', 'field.manage_permissions', $data);
 	}
 
 	/**

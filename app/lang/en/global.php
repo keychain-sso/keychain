@@ -31,6 +31,7 @@ return array(
 	'remove'             => 'Remove',
 	'approve'            => 'Approve',
 	'reject'             => 'Reject',
+	'permissions'        => 'Permissions',
 	'name'               => 'Name',
 	'information'        => 'Information',
 	'error'              => 'Error',

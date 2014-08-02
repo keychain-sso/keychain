@@ -2,9 +2,15 @@
 
 @section('body')
 	<h3>
-		<a href="{{ url() }}" class="back" title="{{ Lang::get('global.return_index') }}" data-toggle="tooltip">
-			<span class="glyphicon glyphicon-chevron-left"></span>
-		</a>
+		@if (isset($return))
+			<a href="{{ $return }}" class="back" title="{{ Lang::get('global.return_previous') }}" data-toggle="tooltip">
+				<span class="glyphicon glyphicon-chevron-left"></span>
+			</a>
+		@else
+			<a href="{{ url() }}" class="back" title="{{ Lang::get('global.return_index') }}" data-toggle="tooltip">
+				<span class="glyphicon glyphicon-chevron-left"></span>
+			</a>
+		@endif
 
 		{{ $title }}
 	</h3>
@@ -85,6 +91,10 @@
 								'disabled' => isset($field) ? 'disabled' : null,
 							))
 						}}
+
+						@if (isset($field))
+							{{ Form::hidden('field', $field->id) }}
+						@endif
 					</div>
 				</div>
 			@endif

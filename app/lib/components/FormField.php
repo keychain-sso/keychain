@@ -53,7 +53,7 @@ class FormField {
 	 */
 	public static function getView($user)
 	{
-		return Cache::tags('field.view')->remember(Auth::id(), 60, function() use ($user)
+		return Cache::tags('field')->remember(Auth::id(), 60, function() use ($user)
 		{
 			$userFields = UserField::where('user_id', $user->id)->get();
 			$userFieldInfo = array();
@@ -164,7 +164,7 @@ class FormField {
 	public static function save($user, $data)
 	{
 		// Purge the user profile data session cache
-		Cache::tags('field.view')->forget($user->id);
+		Cache::tags('field')->forget($user->id);
 
 		// Validate basic fields
 		$validator = Validator::make($data, array(
@@ -264,7 +264,7 @@ class FormField {
 	 */
 	public static function fieldInfo()
 	{
-		return Cache::tags('global')->rememberForever('field.info', function()
+		return Cache::tags('field')->rememberForever('info', function()
 		{
 			$info = array();
 
@@ -286,7 +286,7 @@ class FormField {
 	 */
 	public static function fieldTypes()
 	{
-		return Cache::tags('global')->rememberForever('field.types', function()
+		return Cache::tags('field')->rememberForever('types', function()
 		{
 			$types = array();
 

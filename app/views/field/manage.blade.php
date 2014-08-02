@@ -53,6 +53,12 @@
 
 								<ul class="dropdown-menu">
 									<li>
+										<a href="{{ url("field/permission/{$fieldBasic->id}") }}">
+											{{ Lang::get('global.permissions') }}
+										</a>
+									</li>
+
+									<li>
 										<a href="{{ url("field/edit/{$fieldBasic->id}") }}">
 											{{ Lang::get('field.edit') }}
 										</a>
@@ -107,6 +113,12 @@
 
 								<ul class="dropdown-menu">
 									<li>
+										<a href="{{ url("field/permission/{$fieldContact->id}") }}">
+											{{ Lang::get('global.permissions') }}
+										</a>
+									</li>
+
+									<li>
 										<a href="{{ url("field/edit/{$fieldContact->id}") }}">
 											{{ Lang::get('field.edit') }}
 										</a>
@@ -160,6 +172,12 @@
 								<a href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></a>
 
 								<ul class="dropdown-menu">
+									<li>
+										<a href="{{ url("field/permission/{$fieldOther->id}") }}">
+											{{ Lang::get('global.permissions') }}
+										</a>
+									</li>
+
 									<li>
 										<a href="{{ url("field/edit/{$fieldOther->id}") }}">
 											{{ Lang::get('field.edit') }}

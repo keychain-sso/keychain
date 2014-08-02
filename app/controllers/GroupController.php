@@ -641,13 +641,13 @@ class GroupController extends BaseController {
 
 		// Merge the group data with view data
 		$data = array_merge($data, array(
-			'acl'    => $acl,
-			'show'   => $show,
-			'return' => url("group/view/{$group->hash}"),
-			'fields' => Field::lists('name', 'id'),
-			'flags'  => Access::flags(),
-			'modal'  => 'permission.modal',
+			'acl'     => $acl,
+			'show'    => $show,
 			'subject' => $group,
+			'return'  => url("group/view/{$group->hash}"),
+			'fields'  => Field::lists('name', 'id'),
+			'flags'   => Lang::get('flag'),
+			'modal'   => 'permission.modal',
 		));
 
 		return View::make('group/view', 'group.group_permissions', $data);

@@ -64,7 +64,7 @@
 			{{ Lang::get('permission.scope_permissions') }}
 		@else
 			<span class="glyphicon glyphicon-list"></span>
-			{{ Lang::get('permission.permissions') }}
+			{{ Lang::get('global.permissions') }}
 		@endif
 	</legend>
 
@@ -111,7 +111,7 @@
 							@if ($show->fields)
 								&rarr; <em>{{ $acl->fields->find($permission->field_id)->name }}</em>
 							@else
-								{{ Lang::get('global.data') }}
+								{{ Lang::get('permission.data') }}
 							@endif
 						@endif
 					</td>

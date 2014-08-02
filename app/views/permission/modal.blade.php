@@ -77,6 +77,10 @@
 						'disabled' => isset($field) ? 'disabled' : null,
 					))
 				}}
+
+				@if (isset($field))
+					{{ Form::hidden('field', $field->id) }}
+				@endif
 			</div>
 		@endif
 

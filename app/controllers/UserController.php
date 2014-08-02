@@ -424,7 +424,7 @@ class UserController extends BaseController {
 					$email->delete();
 
 					// Purge the user field data cache
-					Cache::tags('field.view')->forget($user->id);
+					Cache::tags('field')->forget($user->id);
 
 					// Redirect back to the previous URL
 					Session::flash('messages.success', Lang::get('user.email_removed'));
@@ -468,7 +468,7 @@ class UserController extends BaseController {
 					UserEmail::where('user_id', $user->id)->where('id', '<>', $id)->update(array('primary' => Flags::NO));
 
 					// Purge the user field data cache
-					Cache::tags('field.view')->forget($user->id);
+					Cache::tags('field')->forget($user->id);
 
 					// Redirect back to the previous URL
 					return Redirect::to(URL::previous());
@@ -527,7 +527,7 @@ class UserController extends BaseController {
 		}
 
 		// Purge the user field data cache
-		Cache::tags('field.view')->forget($user->id);
+		Cache::tags('field')->forget($user->id);
 
 		// Redirect back to the previous URL
 		Session::flash('messages.success', $manager ? Lang::get('user.email_added') : Lang::get('user.email_verify'));
@@ -756,7 +756,7 @@ class UserController extends BaseController {
 			$user->save();
 
 			// Purge the user field data cache
-			Cache::tags('field.view')->forget($user->id);
+			Cache::tags('field')->forget($user->id);
 
 			// Show a success message
 			Session::flash('messages.success', Lang::get('user.security_saved'));
@@ -803,13 +803,13 @@ class UserController extends BaseController {
 
 		// Merge the user data with view data
 		$data = array_merge($data, array(
-			'acl'    => $acl,
-			'show'   => $show,
-			'return' => url("user/view/{$user->hash}"),
-			'fields' => Field::lists('name', 'id'),
-			'flags'  => Lang::get('permissions'),
-			'modal'  => 'permission.modal',
+			'acl'     => $acl,
+			'show'    => $show,
 			'subject' => $user,
+			'return'  => url("user/view/{$user->hash}"),
+			'fields'  => Field::lists('name', 'id'),
+			'flags'   => Lang::get('flag'),
+			'modal'   => 'permission.modal',
 		));
 
 		return View::make('user/view', 'user.user_permissions', $data);
