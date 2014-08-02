@@ -424,7 +424,7 @@ class UserController extends BaseController {
 					$email->delete();
 
 					// Purge the user field data cache
-					Cache::tags("field.user.{$user->id}")->flush();
+					Cache::tags('field.view')->forget($user->id);
 
 					// Redirect back to the previous URL
 					Session::flash('messages.success', Lang::get('user.email_removed'));
@@ -468,7 +468,7 @@ class UserController extends BaseController {
 					UserEmail::where('user_id', $user->id)->where('id', '<>', $id)->update(array('primary' => Flags::NO));
 
 					// Purge the user field data cache
-					Cache::tags("field.user.{$user->id}")->flush();
+					Cache::tags('field.view')->forget($user->id);
 
 					// Redirect back to the previous URL
 					return Redirect::to(URL::previous());
@@ -527,7 +527,7 @@ class UserController extends BaseController {
 		}
 
 		// Purge the user field data cache
-		Cache::tags("field.user.{$user->id}")->flush();
+		Cache::tags('field.view')->forget($user->id);
 
 		// Redirect back to the previous URL
 		Session::flash('messages.success', $manager ? Lang::get('user.email_added') : Lang::get('user.email_verify'));
@@ -756,7 +756,7 @@ class UserController extends BaseController {
 			$user->save();
 
 			// Purge the user field data cache
-			Cache::tags("field.user.{$user->id}")->flush();
+			Cache::tags('field.view')->forget($user->id);
 
 			// Show a success message
 			Session::flash('messages.success', Lang::get('user.security_saved'));

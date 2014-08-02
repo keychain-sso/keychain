@@ -55,7 +55,7 @@
 								<ul class="dropdown-menu">
 									@if ($manager->field)
 										<li>
-											<a href="{{ url('admin/field') }}">
+											<a href="{{ url('field') }}">
 												{{ Lang::get('global.manage_fields') }}
 											</a>
 										</li>
@@ -63,7 +63,7 @@
 
 									@if ($manager->acl)
 										<li>
-											<a href="{{ url('admin/permission') }}">
+											<a href="{{ url('permission') }}">
 												{{ Lang::get('global.modify_acl_entries') }}
 											</a>
 										</li>

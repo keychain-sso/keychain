@@ -116,6 +116,7 @@ class Setup extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name', 80)->unique();
+			$table->boolean('option');
 		});
 
 		// Create the field categories table
@@ -281,23 +282,6 @@ class Setup extends Migration {
 			array('name' => 'user_manage'),
 		));
 
-		// Insert field categories
-		DB::table('field_categories')->insert(array(
-			array('name' => 'Basic'),
-			array('name' => 'Contact'),
-			array('name' => 'Other'),
-		));
-
-		// Insert field types
-		DB::table('field_types')->insert(array(
-			array('name' => 'TextBox'),
-			array('name' => 'TextArea'),
-			array('name' => 'Radio'),
-			array('name' => 'CheckBox'),
-			array('name' => 'Dropdown'),
-			array('name' => 'DatePicker'),
-		));
-
 		// Insert the user status values
 		DB::table('user_status')->insert(array(
 			array('name' => 'Inactive'),
@@ -323,6 +307,41 @@ class Setup extends Migration {
 			array('name' => 'Open'),
 			array('name' => 'Request'),
 			array('name' => 'Closed'),
+		));
+
+		// Insert field categories
+		DB::table('field_categories')->insert(array(
+			array('name' => 'Basic'),
+			array('name' => 'Contact'),
+			array('name' => 'Other'),
+		));
+
+		// Insert field types
+		DB::table('field_types')->insert(array(
+			array(
+				'name'   => 'TextBox',
+				'option' => Flags::NO,
+			),
+			array(
+				'name'   => 'TextArea',
+				'option' => Flags::NO,
+			),
+			array(
+				'name'   => 'Radio',
+				'option' => Flags::YES,
+			),
+			array(
+				'name'   => 'CheckBox',
+				'option' => Flags::YES,
+			),
+			array(
+				'name'   => 'Dropdown',
+				'option' => Flags::YES,
+			),
+			array(
+				'name'   => 'DatePicker',
+				'option' => Flags::NO,
+			),
 		));
 
 		// Insert admin user account

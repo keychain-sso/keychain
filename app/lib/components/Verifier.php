@@ -143,7 +143,7 @@ class Verifier {
 				}
 
 				// Purge the user field data cache
-				Cache::tags("field.user.{$email->user_id}")->flush();
+				Cache::tags('field.view')->forget($email->user_id);
 
 				// Delete the token
 				$token->delete();

@@ -1,6 +1,6 @@
 {{
 	Form::open(array(
-		'action' => 'AdminController@postPermission',
+		'action' => 'PermissionController@postIndex',
 		'role'   => 'form'
 	))
 }}
@@ -11,7 +11,7 @@
 			<a href="{{ $return }}" class="close">&times;</a>
 
 			<div class="text-center">
-				<h3 class="spacer-none-top">{{ $title }}</h3>
+				<h3>{{ $title }}</h3>
 			</div>
 		</div>
 	</nav>

@@ -10,7 +10,7 @@
 				</a>
 			@endif
 
-			<h2 class="spacer-none-top">
+			<h2>
 				<span class="glyphicon glyphicon-user"></span>
 				{{ Lang::get('global.users') }}
 			</h2>

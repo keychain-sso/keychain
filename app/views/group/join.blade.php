@@ -1,4 +1,4 @@
-{{ Form::open(array('role'   => 'form')) }}
+{{ Form::open(array('role' => 'form')) }}
 
 <div class="modal-body">
 	@include('group.header')

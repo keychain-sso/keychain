@@ -1,7 +1,7 @@
 @extends('common.page')
 
 @section('body')
-	<h3 class="spacer-none-top">
+	<h3>
 		<a href="{{ url() }}" class="back" title="{{ Lang::get('global.return_index') }}" data-toggle="tooltip">
 			<span class="glyphicon glyphicon-chevron-left"></span>
 		</a>
@@ -11,12 +11,14 @@
 
 	{{
 		Form::open(array(
-			'action' => 'AdminController@postPermission',
+			'action' => 'PermissionController@postIndex',
 			'role'   => 'form'
 		))
 	}}
 
-	@include('common.alerts')
+	<div class="spacer-lg-top">
+		@include('common.alerts')
+	</div>
 
 	<fieldset id="permission-add">
 		<legend>

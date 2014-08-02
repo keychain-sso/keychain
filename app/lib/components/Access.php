@@ -237,7 +237,7 @@ class Access {
 	 */
 	public static function manager()
 	{
-		return Cache::tags('security.user.'.Auth::id())->remember('admin', 60, function()
+		return Cache::tags('security.user.'.Auth::id())->remember('manager', 60, function()
 		{
 			return (object) array(
 				'acl' => static::check(ACLFlags::ACL_MANAGE),
@@ -520,7 +520,7 @@ class Access {
 		          ->where('field_id', $entry->field)
 		          ->first();
 
-		if ($acl == null)
+		if (is_null($acl))
 		{
 			$acl = new ACL;
 			$acl->flag = $entry->flag;

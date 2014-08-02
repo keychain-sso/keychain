@@ -28,8 +28,11 @@ Route::controller('token', 'TokenController');
 // Authentication route
 Route::controller('auth', 'AuthController');
 
-// API route
-Route::controller('admin', 'AdminController');
+// Field management route
+Route::controller('field', 'FieldController');
+
+// ACL management route
+Route::controller('permission', 'PermissionController');
 
 // Global authentication check
 Route::when('*', 'auth');

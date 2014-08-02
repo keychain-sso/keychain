@@ -96,7 +96,7 @@ class MultiFactorUserProvider implements UserProviderInterface {
 		$email = UserEmail::where('address', $credentials['email'])->where('verified', Flags::YES)->first();
 
 		// If an email address match is found, return the corresponding user
-		if ($email != null)
+		if ( ! is_null($email))
 		{
 			$user = $email->user;
 

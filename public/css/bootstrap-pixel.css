@@ -7,6 +7,11 @@
  * @filesource
  */
 
+/* Heading fixes */
+h1:first-of-type, h2:first-of-type, h3:first-of-type {
+  margin-top: 0;
+}
+
 /* Form feedback for < 100% wide controls */
 [class^="col"] .form-control-feedback {
   top: 0;
@@ -16,7 +21,7 @@
 }
 
 /* Fieldsets need margins */
-fieldset {
+fieldset:not(:first-of-type) {
   margin-top: 20px;
 }
 
@@ -227,9 +232,6 @@ fieldset {
 }
 
 /* Editor popups */
-.modal-editor fieldset:nth-child(3) {
-  margin-top: 0;
-}
 .modal-editor .modal-body {
   padding-bottom: 5px;
 }

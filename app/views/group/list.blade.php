@@ -10,7 +10,7 @@
 				</a>
 			@endif
 
-			<h2 class="spacer-none-top">
+			<h2>
 				<span class="glyphicon glyphicon-th-large"></span>
 				{{ Lang::get('global.groups') }}
 			</h2>

@@ -11,7 +11,7 @@
 			<a href="{{ url('user/list') }}" class="close">&times;</a>
 
 			<div class="text-center">
-				<h3 class="spacer-none-top">{{ $title }}</h3>
+				<h3>{{ $title }}</h3>
 			</div>
 		</div>
 	</nav>

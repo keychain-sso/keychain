@@ -124,6 +124,21 @@ Validator::extend('alpha_space', function($attribute, $value)
 
 /*
 |--------------------------------------------------------------------------
+| Validator Alpha Newline Rule
+|--------------------------------------------------------------------------
+|
+| Defines a custom validation rule to allow alphabets, spaces and newlines
+| only.
+|
+*/
+
+Validator::extend('alpha_newline', function($attribute, $value)
+{
+	return preg_match('/^[\pL\s\r\n]+$/u', $value);
+});
+
+/*
+|--------------------------------------------------------------------------
 | Handle application errors
 |--------------------------------------------------------------------------
 |

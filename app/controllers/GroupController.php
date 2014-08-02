@@ -193,7 +193,7 @@ class GroupController extends BaseController {
 
 		// Validate posted fields
 		$validator = Validator::make(Input::all(), array(
-			'name'        => 'required|alpha_space|max:80|unique:groups,name,'.$group->id,
+			'name'        => "required|alpha_space|max:80|unique:groups,name,{$group->id}",
 			'description' => 'required',
 			'type'        => 'required|exists:group_types,id',
 			'notify'      => 'required|in:0,1',
