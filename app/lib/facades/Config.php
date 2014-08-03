@@ -9,7 +9,7 @@
  * @copyright   (c) Keychain Developers
  * @license     http://opensource.org/licenses/BSD-3-Clause
  * @link        https://github.com/keychain-sso/keychain
- * @since       Version 1.0
+ * @since       Version 1.0.0
  * @filesource
  */
 

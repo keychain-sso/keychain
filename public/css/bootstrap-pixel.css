@@ -3,7 +3,7 @@
  *
  * @copyright   (c) Sayak Banerjee <sayakb@kde.org>
  * @license     http://opensource.org/licenses/BSD-3-Clause
- * @since       Version 1.0
+ * @since       Version 1.0.0
  * @filesource
  */
 

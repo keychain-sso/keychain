@@ -21,10 +21,14 @@ $ php composer.phar install
 
 The next step is to set up your database. Rename `database.sample.php` in `app/config` to `database.php` and key in your database server details. Then execute the following command:
 ```
-$ php artisan migrate
+$ php artisan migrate --seed
 ```
 
 Next, you need to set up an encryption key for your keychain instance. Open `app/config/app.php` and set the `key` parameter to a 32 character alphanumeric hash.
+
+Finally, you may log into Keychain with the following credentials:
+ * Username: `admin@keychain.sso`
+ * Password: `password`
 
 ## Reporting issues
 
