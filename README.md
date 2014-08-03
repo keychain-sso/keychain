@@ -1,4 +1,4 @@
-# ![](https://avatars3.githubusercontent.com/u/7920184?s=32) Keychain
+# ![](https://avatars3.githubusercontent.com/u/7920184?s=32) Keychain [![Build Status](https://api.travis-ci.org/keychain-sso/keychain.svg)](https://travis-ci.org/keychain-sso/keychain)
 
 Keychain is a SSO provider for enterprise. The project is currently in its inception phase.
 
