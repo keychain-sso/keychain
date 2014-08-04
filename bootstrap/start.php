@@ -26,7 +26,7 @@ $app = new Illuminate\Foundation\Application;
 
 $env = $app->detectEnvironment(function()
 {
-	$env = ini_get('laravel_environment');
+	$env = getenv('LARAVEL_ENVIRONMENT');
 
 	return $env !== false ? $env : 'production';
 });

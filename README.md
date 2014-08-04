@@ -19,7 +19,7 @@ Keychain uses [Composer](https://getcomposer.org/) to manage dependencies. To fe
 $ php composer.phar install
 ```
 
-The next step is to set up your database. Rename `database.sample.php` in `app/config` to `database.php` and key in your database server details. Then execute the following command:
+The next step is to set up your database. Key in your database server details in `app/config/database.php` and execute the following command:
 ```
 $ php artisan migrate --seed
 ```
