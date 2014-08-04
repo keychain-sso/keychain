@@ -7,10 +7,12 @@
 
 	<div class="text-center has-overlay">
 		@if ($editor)
-			<button id="change-avatar" class="btn btn-default btn-sm btn-overlay">
+			<button id="avatar-change" class="btn btn-default btn-sm btn-overlay">
 				<span class="glyphicon glyphicon-camera"></span>
 				<span class="collapse">{{ Lang::get('user.change_avatar') }}</span>
 			</button>
+
+			<span id="avatar-loader" class="hide">{{ Lang::get('user.uploading') }}</span>
 		@endif
 
 		@if ($user->avatar)

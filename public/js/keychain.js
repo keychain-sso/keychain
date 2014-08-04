@@ -29,7 +29,7 @@ $(function()
 function avatarUpload()
 {
 	// Handle change avatar button click
-	$('#change-avatar').on('click', function(e)
+	$('#avatar-change').on('click', function(e)
 	{
 		$('[name=avatar]').click();
 	});
@@ -37,6 +37,17 @@ function avatarUpload()
 	// Handle avatar upload control change event
 	$('[name=avatar]').on('change', function(e)
 	{
+		// Show 'uploading..' on the button
+		loader = $('#avatar-loader').text();
+
+		$('#avatar-change')
+			.addClass('loading')
+			.css({ marginLeft: 52 })
+			.find('.collapse')
+				.addClass('show-inline')
+				.html(loader);
+
+		// Submit the upload form
 		$(this).parent().submit();
 	});
 

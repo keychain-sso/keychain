@@ -25,6 +25,7 @@ return array(
 	'settings'               => 'Settings',
 	'viewing_profile'        => 'Viewing profile - :name',
 	'change_avatar'          => 'Change avatar',
+	'uploading'              => 'Uploading&hellip;',
 	'edit_profile'           => 'Edit profile',
 	'manage_emails'          => 'Manage emails',
 	'manage_ssh_keys'        => 'Manage SSH keys',
