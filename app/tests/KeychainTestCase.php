@@ -50,7 +50,7 @@ class KeychainTestCase extends Illuminate\Foundation\Testing\TestCase {
 
 		Artisan::call('migrate');
 
-		Route::enableFilters();
+		Eloquent::unguard();
 	}
 
 }
