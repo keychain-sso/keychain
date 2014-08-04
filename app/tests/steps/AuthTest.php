@@ -45,7 +45,7 @@ class AuthTest extends KeychainTestCase {
 	 */
 	public function testPostLoginPrimaryActive()
 	{
-		$data = TestHelper::createUser(UserTypes::REGISTERED);
+		$data = TestHelper::createUser();
 
 		$this->call('POST', 'auth/login', array(
 			'email'    => $data->emailPrimary->address,
@@ -67,7 +67,7 @@ class AuthTest extends KeychainTestCase {
 	 */
 	public function testPostLoginAlternateActive()
 	{
-		$data = TestHelper::createUser(UserTypes::REGISTERED);
+		$data = TestHelper::createUser();
 
 		$this->call('POST', 'auth/login', array(
 			'email'    => $data->emailAlternate->address,
@@ -89,7 +89,7 @@ class AuthTest extends KeychainTestCase {
 	 */
 	public function testPostLoginUnverified()
 	{
-		$data = TestHelper::createUser(UserTypes::REGISTERED, false);
+		$data = TestHelper::createUser(UserStatus::ACTIVE, false, false);
 
 		$this->call('POST', 'auth/login', array(
 			'email'    => $data->emailPrimary->address,
@@ -99,7 +99,7 @@ class AuthTest extends KeychainTestCase {
 
 		$this->assertFalse(Auth::check());
 
-		$this->assertSessionHas('messages.error');
+		$this->assertEquals(Session::get('messages.error'), Lang::get('auth.account_inactive'));
 	}
 
 	/**
@@ -111,7 +111,7 @@ class AuthTest extends KeychainTestCase {
 	 */
 	public function testPostLoginInactive()
 	{
-		$data = TestHelper::createUser(UserTypes::INACTIVE);
+		$data = TestHelper::createUser(UserStatus::INACTIVE);
 
 		$this->call('POST', 'auth/login', array(
 			'email'    => $data->emailPrimary->address,
@@ -121,7 +121,7 @@ class AuthTest extends KeychainTestCase {
 
 		$this->assertFalse(Auth::check());
 
-		$this->assertSessionHas('messages.error');
+		$this->assertEquals(Session::get('messages.error'), Lang::get('auth.account_inactive'));
 	}
 
 	/**
@@ -133,7 +133,7 @@ class AuthTest extends KeychainTestCase {
 	 */
 	public function testPostLoginBlocked()
 	{
-		$data = TestHelper::createUser(UserTypes::BLOCKED);
+		$data = TestHelper::createUser(UserStatus::BLOCKED);
 
 		$this->call('POST', 'auth/login', array(
 			'email'    => $data->emailPrimary->address,
@@ -143,7 +143,28 @@ class AuthTest extends KeychainTestCase {
 
 		$this->assertFalse(Auth::check());
 
-		$this->assertSessionHas('messages.error');
+		$this->assertEquals(Session::get('messages.error'), Lang::get('auth.account_blocked'));
+	}
+
+	/**
+	 * Tests the postLogin method of the controller with an incorrect password
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testPostLoginIncorrect()
+	{
+		$data = TestHelper::createUser();
+
+		$this->call('POST', 'auth/login', array(
+			'email'    => $data->emailPrimary->address,
+			'password' => 'unittestinc',
+			'remember' => 'on',
+		));
+
+		$this->assertFalse(Auth::check());
+
+		$this->assertEquals(Session::get('messages.error'), Lang::get('auth.login_failed'));
 	}
 
 }

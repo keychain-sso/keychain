@@ -72,7 +72,7 @@ class AuthController extends BaseController {
 
 			return Redirect::intended('/');
 		}
-		else
+		else if ( ! Session::has('messages.error'))
 		{
 			Session::flash('messages.error', Lang::get('auth.login_failed'));
 

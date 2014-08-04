@@ -16,6 +16,8 @@ return array(
 	'register'               => 'Register',
 	'remember'               => 'Remember me',
 	'login_failed'           => 'Incorrect email address and/or password.',
+	'account_inactive'       => 'You must verify your email address before logging in.',
+	'account_blocked'        => 'Your account has been blocked.',
 	'create_account'         => 'Create an account',
 	'forgot_password'        => 'Forgot your password?',
 	'reset_password'         => 'Reset password',

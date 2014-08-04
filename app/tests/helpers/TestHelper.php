@@ -28,26 +28,13 @@ class TestHelper {
 	 *
 	 * @static
 	 * @access public
-	 * @param  UserTypes  $type
+	 * @param  UserStatus  $status
+	 * @param  bool  $admin
 	 * @param  bool  $verified
 	 * @return User
 	 */
-	public static function createUser($type, $verified = true)
+	public static function createUser($status = UserStatus::ACTIVE, $admin = false, $verified = true)
 	{
-		// Set the user status based on the type
-		if ($type == UserTypes::INACTIVE)
-		{
-			$status = UserStatus::INACTIVE;
-		}
-		else if ($type == UserTypes::BLOCKED)
-		{
-			$status = UserStatus::BLOCKED;
-		}
-		else
-		{
-			$status = UserStatus::ACTIVE;
-		}
-
 		// Create the user
 		$user = User::create(array(
 			'name'          => 'Unit Test',
@@ -80,7 +67,7 @@ class TestHelper {
 		));
 
 		// Add the user to the admin group
-		if ($type == UserTypes::ADMIN)
+		if ($admin)
 		{
 			$groupAdmin = UserGroup::create(array(
 				'user_id'  => 1,

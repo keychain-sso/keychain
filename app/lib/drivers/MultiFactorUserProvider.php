@@ -16,6 +16,7 @@
 use Config;
 use Flags;
 use Hash;
+use Lang;
 use Session;
 use User;
 use UserEmail;
@@ -93,18 +94,36 @@ class MultiFactorUserProvider implements UserProviderInterface {
 	public function retrieveByCredentials(array $credentials)
 	{
 		// First, we fetch a matching verified email address
-		$email = UserEmail::where('address', $credentials['email'])->where('verified', Flags::YES)->first();
+		$email = UserEmail::where('address', $credentials['email'])->first();
 
 		// If an email address match is found, return the corresponding user
-		if ( ! is_null($email))
+		if ( ! is_null($email) && $email->verified)
 		{
 			$user = $email->user;
 
 			// Only active users can log in
-			if ($user->status == UserStatus::ACTIVE)
+			switch ($user->status)
 			{
-				return $user;
+				case UserStatus::INACTIVE:
+
+					Session::flash('messages.error', Lang::get('auth.account_inactive'));
+
+					break;
+
+				case UserStatus::BLOCKED:
+
+					Session::flash('messages.error', Lang::get('auth.account_blocked'));
+
+					break;
+
+				case UserStatus::ACTIVE:
+
+					return $user;
 			}
+		}
+		else
+		{
+			Session::flash('messages.error', Lang::get('auth.account_inactive'));
 		}
 	}
 
