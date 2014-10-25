@@ -54,7 +54,6 @@ class AuthTest extends KeychainTestCase {
 		));
 
 		$this->assertTrue(Auth::check());
-
 		$this->assertRedirectedTo('/');
 	}
 
@@ -76,7 +75,6 @@ class AuthTest extends KeychainTestCase {
 		));
 
 		$this->assertTrue(Auth::check());
-
 		$this->assertRedirectedTo('/');
 	}
 
@@ -98,7 +96,6 @@ class AuthTest extends KeychainTestCase {
 		));
 
 		$this->assertFalse(Auth::check());
-
 		$this->assertEquals(Session::get('messages.error'), Lang::get('auth.account_inactive'));
 	}
 
@@ -120,7 +117,6 @@ class AuthTest extends KeychainTestCase {
 		));
 
 		$this->assertFalse(Auth::check());
-
 		$this->assertEquals(Session::get('messages.error'), Lang::get('auth.account_inactive'));
 	}
 
@@ -142,7 +138,6 @@ class AuthTest extends KeychainTestCase {
 		));
 
 		$this->assertFalse(Auth::check());
-
 		$this->assertEquals(Session::get('messages.error'), Lang::get('auth.account_blocked'));
 	}
 
@@ -163,7 +158,6 @@ class AuthTest extends KeychainTestCase {
 		));
 
 		$this->assertFalse(Auth::check());
-
 		$this->assertEquals(Session::get('messages.error'), Lang::get('auth.login_failed'));
 	}
 

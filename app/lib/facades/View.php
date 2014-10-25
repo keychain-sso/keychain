@@ -87,4 +87,16 @@ class View extends \Illuminate\Support\Facades\View {
 		return parent::make($view, $data, static::defaults());
 	}
 
+	/**
+	 * Flushes the default value cache
+	 *
+	 * @static
+	 * @access public
+	 * @return void
+	 */
+	public static function flush()
+	{
+		static::$defaults = null;
+	}
+
 }

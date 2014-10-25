@@ -6,6 +6,7 @@
 	"require": {
 		"laravel/framework": "4.2.*",
 		"intervention/image": "2.*",
+		"mockery/mockery": "dev-master@dev",
 		"jenssegers/agent": "*"
 	},
 	"autoload": {

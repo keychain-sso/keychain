@@ -46,7 +46,7 @@ class TestHelper {
 
 		// Add a primary email address
 		$emailPrimary = UserEmail::create(array(
-			'user_id'  => 1,
+			'user_id'  => $user->id,
 			'address'  => 'primary@unittest.sso',
 			'primary'  => Flags::YES,
 			'verified' => $verified,
@@ -54,7 +54,7 @@ class TestHelper {
 
 		// Add an alternate email address
 		$emailAlternate = UserEmail::create(array(
-			'user_id'  => 1,
+			'user_id'  => $user->id,
 			'address'  => 'alternate@unittest.sso',
 			'primary'  => Flags::NO,
 			'verified' => $verified,
@@ -62,7 +62,7 @@ class TestHelper {
 
 		// Add the user to the registered users group
 		$groupRegistered = UserGroup::create(array(
-			'user_id'  => 1,
+			'user_id'  => $user->id,
 			'group_id' => 1,
 		));
 
@@ -70,8 +70,8 @@ class TestHelper {
 		if ($admin)
 		{
 			$groupAdmin = UserGroup::create(array(
-				'user_id'  => 1,
-				'group_id' => 1,
+				'user_id'  => $user->id,
+				'group_id' => 2,
 			));
 		}
 		else

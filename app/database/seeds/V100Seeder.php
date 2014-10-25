@@ -148,13 +148,13 @@ class V100Seeder extends Seeder {
 			'hash'        => str_random(8),
 		));
 
-		// Link the admin user to the sysadmin group
+		// Link the user to registered users group
 		DB::table('user_groups')->insert(array(
 			'user_id'  => 1,
 			'group_id' => 1,
 		));
 
-		// Link admin to registered users group
+		// Link user to the sysadmin group
 		DB::table('user_groups')->insert(array(
 			'user_id'  => 1,
 			'group_id' => 2,

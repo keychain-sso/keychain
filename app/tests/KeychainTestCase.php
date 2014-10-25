@@ -32,7 +32,6 @@ class KeychainTestCase extends Illuminate\Foundation\Testing\TestCase {
 	public function createApplication()
 	{
 		$unitTesting = true;
-
 		$testEnvironment = 'testing';
 
 		return require __DIR__.'/../../bootstrap/start.php';
@@ -49,8 +48,11 @@ class KeychainTestCase extends Illuminate\Foundation\Testing\TestCase {
 		parent::setUp();
 
 		Artisan::call('migrate');
-
 		Eloquent::unguard();
+		Mail::pretend(true);
+		View::flush();
+
+		$this->seed();
 	}
 
 }
