@@ -34,7 +34,6 @@ class UserTest extends KeychainTestCase {
 	public function testGetList()
 	{
 		$this->be(TestHelper::createUser(UserStatus::ACTIVE, true)->user);
-
 		$this->call('GET', 'user/list');
 
 		$this->assertResponseOk();
@@ -49,7 +48,6 @@ class UserTest extends KeychainTestCase {
 	public function testGetCreate()
 	{
 		$this->be(TestHelper::createUser(UserStatus::ACTIVE, true)->user);
-
 		$this->call('GET', 'user/create');
 
 		$this->assertResponseOk();
@@ -85,7 +83,6 @@ class UserTest extends KeychainTestCase {
 		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
 
 		$this->be($user);
-
 		$this->call('GET', "user/view/{$user->hash}");
 
 		$this->assertResponseOk();
@@ -111,15 +108,9 @@ class UserTest extends KeychainTestCase {
 			'avatar' => new UploadedFile($temp, null)
 		]);
 
-		if (File::exists($upload))
-		{
-			File::delete($upload);
-		}
-		else
-		{
-			$this->assertTrue(false);
-		}
+		File::delete($upload);
 
+		$this->assertFalse(File::exists($upload));
 		$this->assertRedirectedTo("user/view/{$user->hash}");
 	}
 
@@ -148,16 +139,173 @@ class UserTest extends KeychainTestCase {
 			'avatar' => new UploadedFile($temp, null)
 		]);
 
-		if (File::exists($upload))
-		{
-			File::delete($upload);
-		}
-		else
-		{
-			$this->assertTrue(false);
-		}
+		File::delete($upload);
 
+		$this->assertFalse(File::exists($upload));
 		$this->assertRedirectedTo("user/avatar/{$user->hash}");
+	}
+
+	/**
+	 * Tests the getAvatar method of the controller without an action
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetAvatar()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($user);
+		$this->session(['user.avatar.resize' => true]);
+		$this->call('GET', "user/avatar/{$user->hash}");
+
+		$this->assertResponseOk();
+	}
+
+	/**
+	 * Tests the getAvatar method of the controller with the 'remove' action
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetAvatarRemove()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$upload = public_path()."/uploads/avatars/{$user->hash}";
+
+		File::copy(public_path().'/img/default-avatar.png', $upload);
+
+		$this->be($user);
+		$this->session(['user.avatar.resize' => true]);
+		$this->call('GET', "user/avatar/{$user->hash}/remove");
+
+		$this->assertFalse(File::Exists($upload));
+		$this->assertRedirectedTo("user/view/{$user->hash}");
+	}
+
+	/**
+	 * Tests the postAvatar method of the controller without an action
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testPostAvatar()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$upload = public_path()."/uploads/avatars/{$user->hash}";
+
+		File::copy(public_path().'/img/default-avatar.png', $upload);
+
+		$this->be($user);
+		$this->session(['user.avatar.resize' => true]);
+
+		$this->call('POST', 'user/avatar', [
+			'hash'          => $user->hash,
+			'screen_width'  => '200',
+			'screen_height' => '200',
+			'width'         => '50',
+			'height'        => '50',
+			'x'             => '0',
+			'y'             => '0',
+		]);
+
+		File::delete($upload);
+
+		$this->assertFalse(File::exists($upload));
+		$this->assertRedirectedTo("user/view/{$user->hash}");
+	}
+
+	/**
+	 * Tests the getEdit method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetEdit()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($user);
+		$this->call('GET', "user/edit/{$user->hash}");
+
+		$this->assertResponseOk();
+	}
+
+	/**
+	 * Tests the getEdit method of the controller for users without permission
+	 *
+	 * @access public
+	 * @return void
+	 * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
+	 */
+	public function testGetEditNoPermission()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+		$hash = User::first()->hash;
+
+		$this->be($user);
+		$this->call('GET', "user/edit/{$hash}");
+
+		$this->assertResponseOk();
+	}
+
+	/**
+	 * Tests the postEdit method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testPostEdit()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
+
+		$this->call('POST', 'user/edit', [
+			'hash'          => $user->hash,
+			'name'          => 'unittestnew',
+			'title'         => 'title',
+			'gender'        => 'M',
+			'date_of_birth' => '1980-01-01',
+			'timezone'      => 'America/Chicago',
+		]);
+
+		$this->assertSessionHas('messages.success');
+		$this->assertEquals(User::where('name', 'unittestnew')->count(), 1);
+	}
+
+	/**
+	 * Tests the getEmails method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetEmails()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($user);
+		$this->call('GET', "user/emails/{$user->hash}");
+
+		$this->assertResponseOk();
+	}
+
+	/**
+	 * Tests the getEmails method of the controller with the 'remove' action
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetEmailsRemove()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$emailId = UserEmail::where('user_id', $user->id)->where('primary', Flags::NO)->first()->id;
+
+		$this->be($user);
+		$this->call('GET', "user/emails/{$user->hash}/remove/{$emailId}");
+
+		$this->assertSessionHas('messages.success');
+		$this->assertEquals(UserEmail::find($emailId), null);
 	}
 
 }
