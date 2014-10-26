@@ -126,7 +126,7 @@ class FieldController extends BaseController {
 		Cache::tags('field')->flush();
 
 		// Build the 'field created' message
-		$link = link_to("field/permission/{$field->id}", Lang::get('field.manage_permissions'));
+		$link = link_to("field/permissions/{$field->id}", Lang::get('field.manage_permissions'));
 
 		Session::flash('messages.success', Lang::get('field.field_created', array('link' => $link)));
 
@@ -294,7 +294,7 @@ class FieldController extends BaseController {
 	 * @param  int  $id
 	 * @return View
 	 */
-	public function getPermission($id)
+	public function getPermissions($id)
 	{
 		$field = Field::findOrFail($id);
 

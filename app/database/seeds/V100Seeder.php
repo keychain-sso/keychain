@@ -32,84 +32,66 @@ class V100Seeder extends Seeder {
 	{
 		// Insert ACL types
 		DB::table('acl_types')->insert(array(
-			array('name' => 'Self'),
-			array('name' => 'All'),
-			array('name' => 'User'),
-			array('name' => 'Group'),
+			array('id' => 1, 'name' => 'Self'),
+			array('id' => 2, 'name' => 'All'),
+			array('id' => 3, 'name' => 'User'),
+			array('id' => 4, 'name' => 'Group'),
 		));
 
 		// Insert ACL flags
 		DB::table('acl_flags')->insert(array(
-			array('name' => 'acl_manage'),
-			array('name' => 'field_edit'),
-			array('name' => 'field_manage'),
-			array('name' => 'field_view'),
-			array('name' => 'group_edit'),
-			array('name' => 'group_manage'),
-			array('name' => 'user_edit'),
-			array('name' => 'user_manage'),
+			array('id' => 1, 'name' => 'acl_manage'),
+			array('id' => 2, 'name' => 'field_edit'),
+			array('id' => 3, 'name' => 'field_manage'),
+			array('id' => 4, 'name' => 'field_view'),
+			array('id' => 5, 'name' => 'group_edit'),
+			array('id' => 6, 'name' => 'group_manage'),
+			array('id' => 7, 'name' => 'user_edit'),
+			array('id' => 8, 'name' => 'user_manage'),
 		));
 
 		// Insert the user status values
 		DB::table('user_status')->insert(array(
-			array('name' => 'Inactive'),
-			array('name' => 'Active'),
-			array('name' => 'Blocked'),
+			array('id' => 1, 'name' => 'Inactive'),
+			array('id' => 2, 'name' => 'Active'),
+			array('id' => 3, 'name' => 'Blocked'),
 		));
 
 		// Insert token types
 		DB::table('token_types')->insert(array(
-			array('name' => 'Email'),
-			array('name' => 'Password'),
+			array('id' => 1, 'name' => 'Email'),
+			array('id' => 2, 'name' => 'Password'),
 		));
 
 		// Insert device types
 		DB::table('device_types')->insert(array(
-			array('name' => 'Computer'),
-			array('name' => 'Mobile'),
-			array('name' => 'Tablet'),
+			array('id' => 1, 'name' => 'Computer'),
+			array('id' => 2, 'name' => 'Mobile'),
+			array('id' => 3, 'name' => 'Tablet'),
 		));
 
 		// Insert group types
 		DB::table('group_types')->insert(array(
-			array('name' => 'Open'),
-			array('name' => 'Request'),
-			array('name' => 'Closed'),
+			array('id' => 1, 'name' => 'Open'),
+			array('id' => 2, 'name' => 'Request'),
+			array('id' => 3, 'name' => 'Closed'),
 		));
 
 		// Insert field categories
 		DB::table('field_categories')->insert(array(
-			array('name' => 'Basic'),
-			array('name' => 'Contact'),
-			array('name' => 'Other'),
+			array('id' => 1, 'name' => 'Basic'),
+			array('id' => 2, 'name' => 'Contact'),
+			array('id' => 3, 'name' => 'Other'),
 		));
 
 		// Insert field types
 		DB::table('field_types')->insert(array(
-			array(
-				'name'   => 'TextBox',
-				'option' => Flags::NO,
-			),
-			array(
-				'name'   => 'TextArea',
-				'option' => Flags::NO,
-			),
-			array(
-				'name'   => 'Radio',
-				'option' => Flags::YES,
-			),
-			array(
-				'name'   => 'CheckBox',
-				'option' => Flags::YES,
-			),
-			array(
-				'name'   => 'Dropdown',
-				'option' => Flags::YES,
-			),
-			array(
-				'name'   => 'DatePicker',
-				'option' => Flags::NO,
-			),
+			array('id' => 1, 'name' => 'TextBox', 'option' => Flags::NO),
+			array('id' => 2, 'name' => 'TextArea', 'option' => Flags::NO),
+			array('id' => 3, 'name' => 'Radio', 'option' => Flags::YES),
+			array('id' => 4, 'name' => 'CheckBox', 'option' => Flags::YES),
+			array('id' => 5, 'name' => 'Dropdown', 'option' => Flags::YES),
+			array('id' => 6, 'name' => 'DatePicker', 'option' => Flags::NO),
 		));
 
 		// Insert admin user account

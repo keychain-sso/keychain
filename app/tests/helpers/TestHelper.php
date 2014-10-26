@@ -154,6 +154,29 @@ class TestHelper {
 		);
 	}
 
+	/**
+	 * Creates a field in the test database
+	 *
+	 * @static
+	 * @access public
+	 * @return Field
+	 */
+	public static function createField()
+	{
+		$order = Field::where('category', FieldCategories::BASIC)->max('order') + 1;
+
+		$field = Field::create(array(
+			'name'         => 'unit test field',
+			'machine_name' => str_random(10),
+			'type'         => FieldTypes::TEXTBOX,
+			'category'     => FieldCategories::BASIC,
+			'required'     => false,
+			'order'        => $order,
+		));
+
+		return $field;
+	}
+
 }
 
 ?>
