@@ -197,6 +197,29 @@ class TestHelper {
 		return $token;
 	}
 
+	/**
+	 * Creates an ACL entry in the test database
+	 *
+	 * @static
+	 * @access public
+	 * @param  int  $subjectType
+	 * @param  int  $subjectId
+	 * @return ACL
+	 */
+	public static function createPermission($subjectType, $subjectId)
+	{
+		$acl = ACL::create(array(
+			'flag'         => 'user_manage',
+			'subject_type' => $subjectType,
+			'subject_id'   => $subjectId,
+			'object_type'  => ACLTypes::ALL,
+			'object_id'    => 0,
+			'field_id'     => 0,
+		));
+
+		return $acl;
+	}
+
 }
 
 ?>

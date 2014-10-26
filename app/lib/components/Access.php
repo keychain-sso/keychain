@@ -447,26 +447,6 @@ class Access {
 			'flag'         => 'required|exists:acl_flags,name',
 		);
 
-		// Set field to 0 for non-field permissions
-		if ( ! str_contains($entry->flag, 'field'))
-		{
-			$entry->field = 0;
-		}
-
-		// Set field to 0 and object to 'all' for manage permissions
-		if (str_contains($entry->flag, 'manage'))
-		{
-			$entry->field = 0;
-			$entry->object_id = 0;
-			$entry->object_type = ACLTypes::ALL;
-		}
-
-		// Determine the field rules
-		if ($entry->field != 0)
-		{
-			$rules['field'] = 'required|exists:fields,id';
-		}
-
 		// Determine the subject lookup rules
 		if (isset($entry->subject_type))
 		{
@@ -493,8 +473,15 @@ class Access {
 		// Based on the flag, determine whether we need the object
 		if (isset($entry->flag))
 		{
+			// Set object to 'all' for manage permissions
+			if (str_contains($entry->flag, 'manage'))
+			{
+				$entry->object_id = 0;
+				$entry->object_type = ACLTypes::ALL;
+			}
+
 			// We need the object_type for all view/edit permissions
-			if (str_contains($entry->flag, 'edit') || str_contains($entry->flag, 'view'))
+			else if (str_contains($entry->flag, 'edit') || str_contains($entry->flag, 'view'))
 			{
 				$rules['object_type'] = 'required|exists:acl_types,id';
 
@@ -516,6 +503,17 @@ class Access {
 							break;
 					}
 				}
+			}
+
+			// Determine whether field is required. If not, we set the
+			// value to 0
+			if (str_contains($entry->flag, 'field') && ! str_contains($entry->flag, 'manage'))
+			{
+				$rules['field'] = 'required|exists:fields,id';
+			}
+			else
+			{
+				$entry->field = 0;
 			}
 		}
 
