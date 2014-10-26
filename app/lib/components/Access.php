@@ -432,9 +432,28 @@ class Access {
 		// Set up the validation rules
 		$rules = array(
 			'subject_type' => 'required',
-			'field'        => 'required|exists:fields,id',
 			'flag'         => 'required|exists:acl_flags,name',
 		);
+
+		// Set field to 0 for non-field permissions
+		if ( ! str_contains($entry->flag, 'field'))
+		{
+			$entry->field = 0;
+		}
+
+		// Set field to 0 and object to 'all' for manage permissions
+		if (str_contains($entry->flag, 'manage'))
+		{
+			$entry->field = 0;
+			$entry->object_id = 0;
+			$entry->object_type = ACLTypes::ALL;
+		}
+
+		// Determine the field rules
+		if ($entry->field != 0)
+		{
+			$rules['field'] = 'required|exists:fields,id';
+		}
 
 		// Determine the subject lookup rules
 		if (isset($entry->subject_type))
@@ -495,20 +514,6 @@ class Access {
 		if ($validator->fails())
 		{
 			return $validator->messages()->all('<p>:message</p>');
-		}
-
-		// Set field to 0 for non-field permissions
-		if ( ! str_contains($entry->flag, 'field'))
-		{
-			$entry->field = 0;
-		}
-
-		// Set field to 0 and object to 'all' for manage permissions
-		if (str_contains($entry->flag, 'manage'))
-		{
-			$entry->field = 0;
-			$entry->object_id = 0;
-			$entry->object_type = ACLTypes::ALL;
 		}
 
 		// Check if an existing entry already exists

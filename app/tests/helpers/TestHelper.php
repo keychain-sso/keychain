@@ -111,7 +111,7 @@ class TestHelper {
 	public static function createGroup($type = GroupTypes::OPEN, $user = null, $request = false)
 	{
 		$group = Group::create(array(
-			'name'        => 'unittestgrp',
+			'name'        => str_random(20),
 			'description' => 'group description',
 			'type'        => $type,
 			'hash'        => str_random(8),
