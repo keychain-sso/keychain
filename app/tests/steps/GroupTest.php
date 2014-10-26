@@ -542,7 +542,7 @@ class GroupTest extends KeychainTestCase {
 	}
 
 	/**
-	 * Tests the getAddUser method of the controller when user does not
+	 * Tests the getPermissions method of the controller when user does not
 	 * have permissions
 	 *
 	 * @access public
@@ -556,6 +556,77 @@ class GroupTest extends KeychainTestCase {
 
 		$this->be($user);
 		$this->call('GET', "group/permissions/{$group->hash}");
+	}
+
+	/**
+	 * Tests the getDelete method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetDelete()
+	{
+		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$group = TestHelper::createGroup(GroupTypes::CLOSED)->group;
+
+		$this->be($admin);
+		$this->call('GET', "group/delete/{$group->hash}");
+
+		$this->assertRedirectedTo('group/list');
+		$this->assertSessionHas('messages.success');
+		$this->assertEquals(null, Group::find($group->id));
+	}
+
+	/**
+	 * Tests the getDelete method of the controller when the user
+	 * does not have access
+	 *
+	 * @access public
+	 * @return void
+	 * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
+	 */
+	public function testGetDeleteNoPermissions()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+		$group = TestHelper::createGroup(GroupTypes::CLOSED)->group;
+
+		$this->be($user);
+		$this->call('GET', "group/delete/{$group->hash}");
+	}
+
+	/**
+	 * Tests the getSearch method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetSearch()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
+		$this->call('GET', 'group/search', array('query' => 'Registered Users'), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
+
+		$this->assertResponseOk();
+		$this->assertViewHas('items');
+	}
+
+	/**
+	 * Tests the getMemberSearch method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetMemberSearch()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+		$group = TestHelper::createGroup(GroupTypes::OPEN, $user)->group;
+
+		$this->be($user);
+		$this->call('GET', "group/member-search/{$group->hash}", array('query' => 'Unit Test'), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
+
+		$this->assertResponseOk();
+		$this->assertViewHas('users');
 	}
 
 }
