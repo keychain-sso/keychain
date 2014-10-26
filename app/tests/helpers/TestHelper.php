@@ -66,6 +66,14 @@ class TestHelper {
 			'group_id' => 1,
 		));
 
+		// Create a user key
+		$userKey = UserKey::create(array(
+			'user_id'     => $user->id,
+			'title'       => 'Primary SSH Key',
+			'key'         => 'keyhash',
+			'fingerprint' => 'fingerprint',
+		));
+
 		// Add the user to the admin group
 		if ($admin)
 		{
@@ -86,6 +94,7 @@ class TestHelper {
 			'emailAlternate'  => $emailAlternate,
 			'groupRegistered' => $groupRegistered,
 			'groupAdmin'      => $groupAdmin,
+			'userKey'         => $userKey,
 		);
 	}
 

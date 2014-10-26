@@ -37,6 +37,7 @@ class UserTest extends KeychainTestCase {
 		$this->call('GET', 'user/list');
 
 		$this->assertResponseOk();
+		$this->assertViewHas('users');
 	}
 
 	/**
@@ -51,6 +52,7 @@ class UserTest extends KeychainTestCase {
 		$this->call('GET', 'user/create');
 
 		$this->assertResponseOk();
+		$this->assertViewHas('modal');
 	}
 
 	/**
@@ -86,6 +88,7 @@ class UserTest extends KeychainTestCase {
 		$this->call('GET', "user/view/{$user->hash}");
 
 		$this->assertResponseOk();
+		$this->assertViewHas('user');
 	}
 
 	/**
@@ -160,6 +163,7 @@ class UserTest extends KeychainTestCase {
 		$this->call('GET', "user/avatar/{$user->hash}");
 
 		$this->assertResponseOk();
+		$this->assertViewHas('modal');
 	}
 
 	/**
@@ -229,6 +233,8 @@ class UserTest extends KeychainTestCase {
 		$this->call('GET', "user/edit/{$user->hash}");
 
 		$this->assertResponseOk();
+		$this->assertViewHas('modal');
+		$this->assertViewHas('fieldEdit');
 	}
 
 	/**
@@ -288,6 +294,8 @@ class UserTest extends KeychainTestCase {
 		$this->call('GET', "user/emails/{$user->hash}");
 
 		$this->assertResponseOk();
+		$this->assertViewHas('modal');
+		$this->assertViewHas('emails');
 	}
 
 	/**
@@ -299,13 +307,178 @@ class UserTest extends KeychainTestCase {
 	public function testGetEmailsRemove()
 	{
 		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
-		$emailId = UserEmail::where('user_id', $user->id)->where('primary', Flags::NO)->first()->id;
+		$email = UserEmail::where('user_id', $user->id)->where('primary', Flags::NO)->first();
 
 		$this->be($user);
-		$this->call('GET', "user/emails/{$user->hash}/remove/{$emailId}");
+		$this->call('GET', "user/emails/{$user->hash}/remove/{$email->id}");
 
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(UserEmail::find($emailId), null);
+		$this->assertEquals(UserEmail::find($email->id), null);
+	}
+
+	/**
+	 * Tests the getEmails method of the controller with the 'verify' action
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetEmailsVerify()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$email = UserEmail::where('user_id', $user->id)->where('primary', Flags::NO)->first();
+		$email->verified = Flags::NO;
+		$email->save();
+
+		$this->be($user);
+		$this->call('GET', "user/emails/{$user->hash}/verify/{$email->id}");
+
+		$this->assertSessionHas('messages.success');
+		$this->assertEquals(UserEmail::find($email->id)->verified, Flags::YES);
+	}
+
+	/**
+	 * Tests the getEmails method of the controller with the 'primary' action
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetEmailsPrimary()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$email = UserEmail::where('user_id', $user->id)->where('primary', Flags::NO)->first();
+
+		$this->be($user);
+		$this->call('GET', "user/emails/{$user->hash}/primary/{$email->id}");
+
+		$this->assertEquals(UserEmail::find($email->id)->primary, Flags::YES);
+	}
+
+	/**
+	 * Tests the postEmails method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testPostEmails()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($user);
+
+		$this->call('POST', 'user/emails', [
+			'hash'    => $user->hash,
+			'email'   => 'unittest@newzmail.com',
+		]);
+
+		$this->assertSessionHas('messages.success');
+		$this->assertEquals(UserEmail::where('address', 'unittest@newzmail.com')->count(), 1);
+	}
+
+	/**
+	 * Tests the getKeys method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetKeys()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
+		$this->call('GET', "user/keys/{$user->hash}");
+
+		$this->assertResponseOk();
+		$this->assertViewHas('modal');
+		$this->assertViewHas('keys');
+	}
+
+	/**
+	 * Tests the getKeys method of the controller with the 'remove' action
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetKeysRemove()
+	{
+		$data = TestHelper::createUser(UserStatus::ACTIVE);
+
+		$this->be($data->user);
+		$this->call('GET', "user/keys/{$data->user->hash}/remove/{$data->userKey->id}");
+
+		$this->assertSessionHas('messages.success');
+		$this->assertEquals(UserKey::find($data->userKey->id), null);
+	}
+
+	/**
+	 * Tests the postKeys method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testPostKeys()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
+		$this->call('POST', 'user/keys', [
+			'hash'  => $user->hash,
+			'title' => 'RSA Key',
+			'key'   => 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSU'.
+			           'GPl+nafzlHDTYW7hdI4yZ5ew18JH4JW9jbhUFrviQzM7xlELEVf4h9lFX5QVkbPppSwg0cda3'.
+			           'Pbv7kOdJ/MTyBlWXFCR+HAo3FXRitBqxiX1nKhXpHAZsMciLq8V6RjsNAQwdsdMFvSlVK/7XA'.
+			           't3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/En'.
+			           'mZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbx'.
+			           'NrRFi9wrf+M7Q== schacon@mylaptop.local'
+		]);
+
+		$this->assertSessionHas('messages.success');
+		$this->assertEquals(UserKey::where('title', 'RSA Key')->count(), 1);
+	}
+
+	/**
+	 * Tests the getSecurity method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetSecurity()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
+		$this->call('GET', "user/security/{$user->hash}");
+
+		$this->assertResponseOk();
+		$this->assertViewHas('modal');
+		$this->assertViewHas('sessions');
+	}
+
+	/**
+	 * Tests the getSecurity method of the controller with the 'killall' action
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetSecurityKillall()
+	{
+		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($admin);
+
+		DB::table('user_sessions')->insert(array(
+			'id'          => Session::getId(),
+			'user_id'     => $user->id,
+			'ip_address'  => '192.168.1.1',
+			'payload'     => '',
+			'device_type' => DeviceTypes::TABLET,
+		));
+
+		$this->call('GET', "user/security/{$user->hash}/killall");
+
+		$this->assertSessionHas('messages.success');
+		$this->assertEquals(UserSession::where('user_id', $user->id)->count(), 0);
 	}
 
 }
