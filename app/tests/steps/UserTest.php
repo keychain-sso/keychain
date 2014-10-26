@@ -67,7 +67,7 @@ class UserTest extends KeychainTestCase {
 
 		$this->call('POST', 'user/create', array(
 			'name'     => 'unittestname',
-			'email'    => 'unittest@unittest.com',
+			'email'    => 'unittest@unittest.sso',
 			'password' => 'somepassword',
 		));
 
@@ -368,11 +368,11 @@ class UserTest extends KeychainTestCase {
 
 		$this->call('POST', 'user/emails', [
 			'hash'    => $user->hash,
-			'email'   => 'unittest@newzmail.com',
+			'email'   => 'unittest@unitnew.sso',
 		]);
 
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(UserEmail::where('address', 'unittest@newzmail.com')->count(), 1);
+		$this->assertEquals(UserEmail::where('address', 'unittest@unitnew.sso')->count(), 1);
 	}
 
 	/**
@@ -479,6 +479,104 @@ class UserTest extends KeychainTestCase {
 
 		$this->assertSessionHas('messages.success');
 		$this->assertEquals(UserSession::where('user_id', $user->id)->count(), 0);
+	}
+
+	/**
+	 * Tests the postSecurity method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testPostSecurity()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($admin);
+
+		$this->call('POST', 'user/security', [
+			'hash'             => $user->hash,
+			'old_password'     => 'unittest',
+			'new_password'     => 'newpass',
+			'confirm_password' => 'newpass',
+			'status'           => UserStatus::ACTIVE,
+		]);
+
+		$newPass = User::find($user->id)->password;
+
+		$this->assertSessionHas('messages.success');
+		$this->assertTrue(Hash::check('newpass', $newPass));
+	}
+
+	/**
+	 * Tests the getPermissions method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetPermissions()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($user);
+		$this->call('GET', "user/permissions/{$user->hash}");
+
+		$this->assertResponseOk();
+		$this->assertViewHas('modal');
+		$this->assertViewHas('acl');
+	}
+
+	/**
+	 * Tests the getDelete method of the controller
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetDelete()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($admin);
+		$this->call('GET', "user/delete/{$user->hash}");
+
+		$this->assertRedirectedTo('user/list');
+		$this->assertSessionHas('messages.success');
+		$this->assertEquals(User::find($user->id), null);
+	}
+
+	/**
+	 * Tests the getSearch method of the controller with 'format' as icons
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetSearchIcons()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($user);
+		$this->call('GET', 'user/search/icons', ['query' => 'Unit Test'], [], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+
+		$this->assertResponseOk();
+		$this->assertViewHas('users');
+	}
+
+	/**
+	 * Tests the getSearch method of the controller with 'format' as list
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function testGetSearchList()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($user);
+		$this->call('GET', 'user/search/list', ['query' => 'Unit Test'], [], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+
+		$this->assertResponseOk();
+		$this->assertViewHas('items');
 	}
 
 }
