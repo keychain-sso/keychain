@@ -177,6 +177,26 @@ class TestHelper {
 		return $field;
 	}
 
+	/**
+	 * Creates a token in the test database
+	 *
+	 * @static
+	 * @access public
+	 * @param  int  $type
+	 * @param  UserEmail  $email
+	 * @return Token
+	 */
+	public static function createToken($type, $email)
+	{
+		$token = Token::create(array(
+			'token'        => str_random(10),
+			'permits_id'   => $email->id,
+			'permits_type' => $type,
+		));
+
+		return $token;
+	}
+
 }
 
 ?>

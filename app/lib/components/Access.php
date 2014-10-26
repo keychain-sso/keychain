@@ -237,15 +237,27 @@ class Access {
 	 */
 	public static function manager()
 	{
-		return Cache::tags('security.user.'.Auth::user()->id)->remember('manager', 60, function()
+		if (Auth::check())
+		{
+			return Cache::tags('security.user.'.Auth::user()->id)->remember('manager', 60, function()
+			{
+				return (object) array(
+					'acl' => static::check(ACLFlags::ACL_MANAGE),
+					'field' => static::check(ACLFlags::FIELD_MANAGE),
+					'group' => static::check(ACLFlags::GROUP_MANAGE),
+					'user' => static::check(ACLFlags::USER_MANAGE),
+				);
+			});
+		}
+		else
 		{
 			return (object) array(
-				'acl' => static::check(ACLFlags::ACL_MANAGE),
-				'field' => static::check(ACLFlags::FIELD_MANAGE),
-				'group' => static::check(ACLFlags::GROUP_MANAGE),
-				'user' => static::check(ACLFlags::USER_MANAGE),
+				'acl' => false,
+				'field' => false,
+				'group' => false,
+				'user' => false,
 			);
-		});
+		}
 	}
 
 	/**

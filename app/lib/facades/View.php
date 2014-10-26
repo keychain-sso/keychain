@@ -54,16 +54,9 @@ class View extends \Illuminate\Support\Facades\View {
 				'info'      => Session::get('messages.info'),
 				'appconfig' => Config::get('app'),
 				'title'     => null,
+				'auth'      => Auth::user(),
+				'manager'   => Access::manager(),
 			);
-
-			// Assign keys for logged in users
-			if (Auth::check())
-			{
-				static::$defaults = array_merge(static::$defaults, array(
-					'auth'    => Auth::user(),
-					'manager' => Access::manager(),
-				));
-			}
 		}
 
 		return static::$defaults;

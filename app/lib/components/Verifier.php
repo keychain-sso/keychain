@@ -92,10 +92,10 @@ class Verifier {
 	 * @param  string  $hash
 	 * @return bool
 	 */
-	public static function check($hash)
+	public static function check($token)
 	{
 		// Fetch the token
-		$token = Token::where('token', $hash)->firstOrFail();
+		$token = Token::where('token', $token)->firstOrFail();
 
 		// Get the associated user and email
 		$email = UserEmail::findOrFail($token->permits_id);
