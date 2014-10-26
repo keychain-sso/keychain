@@ -105,7 +105,7 @@ class CoupledSessionHandler implements SessionHandlerInterface, ExistenceAwareIn
 		// If user is logged in, set the user_id as well
 		if (Auth::check())
 		{
-			$session['user_id'] = Auth::id();
+			$session['user_id'] = Auth::user()->id;
 		}
 
 		// Save the session data

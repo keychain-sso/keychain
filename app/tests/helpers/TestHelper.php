@@ -31,7 +31,7 @@ class TestHelper {
 	 * @param  UserStatus  $status
 	 * @param  bool  $admin
 	 * @param  bool  $verified
-	 * @return User
+	 * @return stdClass
 	 */
 	public static function createUser($status = UserStatus::ACTIVE, $admin = false, $verified = true)
 	{
@@ -42,6 +42,14 @@ class TestHelper {
 			'date_of_birth' => '1980-07-01',
 			'status'        => $status,
 			'hash'          => str_random(8),
+		));
+
+		// Create a user key
+		$key = UserKey::create(array(
+			'user_id'     => $user->id,
+			'title'       => 'Primary SSH Key',
+			'key'         => 'keyhash',
+			'fingerprint' => 'fingerprint',
 		));
 
 		// Add a primary email address
@@ -66,14 +74,6 @@ class TestHelper {
 			'group_id' => 1,
 		));
 
-		// Create a user key
-		$userKey = UserKey::create(array(
-			'user_id'     => $user->id,
-			'title'       => 'Primary SSH Key',
-			'key'         => 'keyhash',
-			'fingerprint' => 'fingerprint',
-		));
-
 		// Add the user to the admin group
 		if ($admin)
 		{
@@ -90,11 +90,67 @@ class TestHelper {
 		// Return all relevant data
 		return (object) array(
 			'user'            => $user,
+			'key'             => $key,
 			'emailPrimary'    => $emailPrimary,
 			'emailAlternate'  => $emailAlternate,
 			'groupRegistered' => $groupRegistered,
 			'groupAdmin'      => $groupAdmin,
-			'userKey'         => $userKey,
+		);
+	}
+
+	/**
+	 * Creates a group in the test database
+	 *
+	 * @static
+	 * @access public
+	 * @param  int  $type
+	 * @param  User  $user
+	 * @param  bool  $request
+	 * @return stdClass
+	 */
+	public static function createGroup($type = GroupTypes::OPEN, $user = null, $request = false)
+	{
+		$group = Group::create(array(
+			'name'        => 'unittestgrp',
+			'description' => 'group description',
+			'type'        => $type,
+			'hash'        => str_random(8),
+			'notify'      => Flags::YES,
+			'auto_join'   => Flags::NO,
+		));
+
+		if ( ! is_null($user))
+		{
+			if ($request)
+			{
+				$userGroup = null;
+
+				$groupRequest = GroupRequest::create(array(
+					'user_id'       => $user->id,
+					'group_id'      => $group->id,
+					'justification' => 'request justification',
+				));
+			}
+			else
+			{
+				$groupRequest = null;
+
+				$userGroup = UserGroup::create(array(
+					'user_id'  => $user->id,
+					'group_id' => $group->id,
+				));
+			}
+		}
+		else
+		{
+			$userGroup = null;
+			$groupRequest = null;
+		}
+
+		return (object) array(
+			'group'        => $group,
+			'userGroup'    => $userGroup,
+			'groupRequest' => $groupRequest,
 		);
 	}
 

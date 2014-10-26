@@ -657,7 +657,7 @@ class UserController extends BaseController {
 				$sessions = UserSession::where('user_id', $user->id);
 
 				// If user is viewing their own profile, don't kill their own session
-				if ($user->id == Auth::id())
+				if ($user->id == Auth::user()->id)
 				{
 					$sessions->where('id', '<>', Session::getId());
 				}
@@ -691,7 +691,7 @@ class UserController extends BaseController {
 	 */
 	public function postSecurity()
 	{
-		$userId = Auth::id();
+		$userId = Auth::user()->id;
 
 		// Fetch the associated user
 		$hash = Input::get('hash');

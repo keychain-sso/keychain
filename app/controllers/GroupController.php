@@ -239,7 +239,7 @@ class GroupController extends BaseController {
 	 */
 	public function getJoin($hash)
 	{
-		$userId = Auth::id();
+		$userId = Auth::user()->id;
 
 		// Get the group details
 		$group = Group::where('hash', $hash)->firstOrFail();
@@ -293,7 +293,7 @@ class GroupController extends BaseController {
 	 */
 	public function postJoin()
 	{
-		$userId = Auth::id();
+		$userId = Auth::user()->id;
 		$userName = Auth::user()->name;
 
 		// Fetch the associated group
@@ -373,7 +373,7 @@ class GroupController extends BaseController {
 	 */
 	public function getLeave($hash)
 	{
-		$userId = Auth::id();
+		$userId = Auth::user()->id;
 
 		// Get the group details
 		$group = Group::where('hash', $hash)->firstOrFail();
@@ -414,7 +414,7 @@ class GroupController extends BaseController {
 	 */
 	public function getWithdraw($hash)
 	{
-		$userId = Auth::id();
+		$userId = Auth::user()->id;
 
 		// Get the group details
 		$group = Group::where('hash', $hash)->firstOrFail();
@@ -779,7 +779,7 @@ class GroupController extends BaseController {
 		$groupItems = Group::paginate($length);
 
 		// Get a list of current user's memberships
-		$userGroups = UserGroup::where('user_id', Auth::id())->lists('group_id');
+		$userGroups = UserGroup::where('user_id', Auth::user()->id)->lists('group_id');
 
 		// Return the list data
 		return array(
@@ -797,7 +797,7 @@ class GroupController extends BaseController {
 	 */
 	private function getGroupViewData($group)
 	{
-		$userId = Auth::id();
+		$userId = Auth::user()->id;
 		$length = Config::get('view.icon_length');
 
 		// Get the group members

@@ -237,7 +237,7 @@ class Access {
 	 */
 	public static function manager()
 	{
-		return Cache::tags('security.user.'.Auth::id())->remember('manager', 60, function()
+		return Cache::tags('security.user.'.Auth::user()->id)->remember('manager', 60, function()
 		{
 			return (object) array(
 				'acl' => static::check(ACLFlags::ACL_MANAGE),

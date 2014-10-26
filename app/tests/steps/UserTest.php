@@ -33,7 +33,9 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetList()
 	{
-		$this->be(TestHelper::createUser(UserStatus::ACTIVE, true)->user);
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
 		$this->call('GET', 'user/list');
 
 		$this->assertResponseOk();
@@ -48,11 +50,29 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetCreate()
 	{
-		$this->be(TestHelper::createUser(UserStatus::ACTIVE, true)->user);
+		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($admin);
 		$this->call('GET', 'user/create');
 
 		$this->assertResponseOk();
 		$this->assertViewHas('modal');
+	}
+
+	/**
+	 * Tests the getCreate method of the controller when user does not
+	 * have permission
+	 *
+	 * @access public
+	 * @return void
+	 * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
+	 */
+	public function testGetCreateNoPermissions()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
+		$this->call('GET', 'user/create');
 	}
 
 	/**
@@ -63,7 +83,9 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testPostCreate()
 	{
-		$this->be(TestHelper::createUser(UserStatus::ACTIVE, true)->user);
+		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+
+		$this->be($admin);
 
 		$this->call('POST', 'user/create', array(
 			'name'     => 'unittestname',
@@ -71,7 +93,28 @@ class UserTest extends KeychainTestCase {
 			'password' => 'somepassword',
 		));
 
-		$this->assertEquals(User::where('name', 'unittestname')->count(), 1);
+		$this->assertEquals(1, User::where('name', 'unittestname')->count());
+	}
+
+	/**
+	 * Tests the postCreate method of the controller when user does not
+	 * have permission
+	 *
+	 * @access public
+	 * @return void
+	 * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
+	 */
+	public function testPostCreateNoPermissions()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
+
+		$this->call('POST', 'user/create', array(
+			'name'     => 'unittestname',
+			'email'    => 'unittest@unittest.sso',
+			'password' => 'somepassword',
+		));
 	}
 
 	/**
@@ -82,7 +125,7 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetView()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 
 		$this->be($user);
 		$this->call('GET', "user/view/{$user->hash}");
@@ -99,17 +142,17 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testPostViewSmallAvatar()
 	{
-		$temp = '/tmp/keychain-'.md5(microtime()).'.png';
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 		$upload = public_path()."/uploads/avatars/{$user->hash}";
+		$temp = '/tmp/keychain-'.md5(microtime()).'.png';
 
 		File::copy(public_path().'/img/default-avatar.png', $temp);
 
 		$this->be($user);
 
-		$this->call('POST', "user/view", ['hash' => $user->hash], [
+		$this->call('POST', "user/view", array('hash' => $user->hash), array(
 			'avatar' => new UploadedFile($temp, null)
-		]);
+		));
 
 		File::delete($upload);
 
@@ -125,10 +168,10 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testPostViewLargeAvatar()
 	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+		$upload = public_path()."/uploads/avatars/{$user->hash}";
 		$size = Config::get('view.icon_size');
 		$temp = '/tmp/keychain-'.md5(microtime()).'.png';
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
-		$upload = public_path()."/uploads/avatars/{$user->hash}";
 
 		File::copy(public_path().'/img/default-avatar.png', $temp);
 
@@ -138,9 +181,9 @@ class UserTest extends KeychainTestCase {
 
 		$this->be($user);
 
-		$this->call('POST', "user/view", ['hash' => $user->hash], [
+		$this->call('POST', "user/view", array('hash' => $user->hash), array(
 			'avatar' => new UploadedFile($temp, null)
-		]);
+		));
 
 		File::delete($upload);
 
@@ -156,10 +199,10 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetAvatar()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 
 		$this->be($user);
-		$this->session(['user.avatar.resize' => true]);
+		$this->session(array('user.avatar.resize' => true));
 		$this->call('GET', "user/avatar/{$user->hash}");
 
 		$this->assertResponseOk();
@@ -174,13 +217,13 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetAvatarRemove()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 		$upload = public_path()."/uploads/avatars/{$user->hash}";
 
 		File::copy(public_path().'/img/default-avatar.png', $upload);
 
 		$this->be($user);
-		$this->session(['user.avatar.resize' => true]);
+		$this->session(array('user.avatar.resize' => true));
 		$this->call('GET', "user/avatar/{$user->hash}/remove");
 
 		$this->assertFalse(File::Exists($upload));
@@ -195,15 +238,15 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testPostAvatar()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 		$upload = public_path()."/uploads/avatars/{$user->hash}";
 
 		File::copy(public_path().'/img/default-avatar.png', $upload);
 
 		$this->be($user);
-		$this->session(['user.avatar.resize' => true]);
+		$this->session(array('user.avatar.resize' => true));
 
-		$this->call('POST', 'user/avatar', [
+		$this->call('POST', 'user/avatar', array(
 			'hash'          => $user->hash,
 			'screen_width'  => '200',
 			'screen_height' => '200',
@@ -211,7 +254,7 @@ class UserTest extends KeychainTestCase {
 			'height'        => '50',
 			'x'             => '0',
 			'y'             => '0',
-		]);
+		));
 
 		File::delete($upload);
 
@@ -227,7 +270,7 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetEdit()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 
 		$this->be($user);
 		$this->call('GET', "user/edit/{$user->hash}");
@@ -244,15 +287,13 @@ class UserTest extends KeychainTestCase {
 	 * @return void
 	 * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
 	 */
-	public function testGetEditNoPermission()
+	public function testGetEditNoPermissions()
 	{
 		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
-		$hash = User::first()->hash;
+		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
 
 		$this->be($user);
-		$this->call('GET', "user/edit/{$hash}");
-
-		$this->assertResponseOk();
+		$this->call('GET', "user/edit/{$admin->hash}");
 	}
 
 	/**
@@ -267,17 +308,17 @@ class UserTest extends KeychainTestCase {
 
 		$this->be($user);
 
-		$this->call('POST', 'user/edit', [
+		$this->call('POST', 'user/edit', array(
 			'hash'          => $user->hash,
 			'name'          => 'unittestnew',
 			'title'         => 'title',
 			'gender'        => 'M',
 			'date_of_birth' => '1980-01-01',
 			'timezone'      => 'America/Chicago',
-		]);
+		));
 
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(User::where('name', 'unittestnew')->count(), 1);
+		$this->assertEquals(1, User::where('name', 'unittestnew')->count());
 	}
 
 	/**
@@ -288,7 +329,7 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetEmails()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 
 		$this->be($user);
 		$this->call('GET', "user/emails/{$user->hash}");
@@ -306,14 +347,13 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetEmailsRemove()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
-		$email = UserEmail::where('user_id', $user->id)->where('primary', Flags::NO)->first();
+		$data = TestHelper::createUser(UserStatus::ACTIVE);
 
-		$this->be($user);
-		$this->call('GET', "user/emails/{$user->hash}/remove/{$email->id}");
+		$this->be($data->user);
+		$this->call('GET', "user/emails/{$data->user->hash}/remove/{$data->emailAlternate->id}");
 
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(UserEmail::find($email->id), null);
+		$this->assertEquals(null, UserEmail::find($data->emailAlternate->id));
 	}
 
 	/**
@@ -324,17 +364,13 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetEmailsVerify()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$data = TestHelper::createUser(UserStatus::ACTIVE, true, false);
 
-		$email = UserEmail::where('user_id', $user->id)->where('primary', Flags::NO)->first();
-		$email->verified = Flags::NO;
-		$email->save();
-
-		$this->be($user);
-		$this->call('GET', "user/emails/{$user->hash}/verify/{$email->id}");
+		$this->be($data->user);
+		$this->call('GET', "user/emails/{$data->user->hash}/verify/{$data->emailAlternate->id}");
 
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(UserEmail::find($email->id)->verified, Flags::YES);
+		$this->assertEquals(Flags::YES, UserEmail::find($data->emailAlternate->id)->verified);
 	}
 
 	/**
@@ -345,13 +381,13 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetEmailsPrimary()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
-		$email = UserEmail::where('user_id', $user->id)->where('primary', Flags::NO)->first();
+		$data = TestHelper::createUser(UserStatus::ACTIVE);
 
-		$this->be($user);
-		$this->call('GET', "user/emails/{$user->hash}/primary/{$email->id}");
+		$this->be($data->user);
+		$this->call('GET', "user/emails/{$data->user->hash}/primary/{$data->emailAlternate->id}");
 
-		$this->assertEquals(UserEmail::find($email->id)->primary, Flags::YES);
+		$this->assertEquals(Flags::YES, UserEmail::find($data->emailAlternate->id)->primary);
+		$this->assertEquals(Flags::NO, UserEmail::find($data->emailPrimary->id)->primary);
 	}
 
 	/**
@@ -362,17 +398,17 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testPostEmails()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 
 		$this->be($user);
 
-		$this->call('POST', 'user/emails', [
+		$this->call('POST', 'user/emails', array(
 			'hash'    => $user->hash,
 			'email'   => 'unittest@unitnew.sso',
-		]);
+		));
 
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(UserEmail::where('address', 'unittest@unitnew.sso')->count(), 1);
+		$this->assertEquals(1, UserEmail::where('address', 'unittest@unitnew.sso')->count());
 	}
 
 	/**
@@ -404,10 +440,10 @@ class UserTest extends KeychainTestCase {
 		$data = TestHelper::createUser(UserStatus::ACTIVE);
 
 		$this->be($data->user);
-		$this->call('GET', "user/keys/{$data->user->hash}/remove/{$data->userKey->id}");
+		$this->call('GET', "user/keys/{$data->user->hash}/remove/{$data->key->id}");
 
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(UserKey::find($data->userKey->id), null);
+		$this->assertEquals(null, UserKey::find($data->key->id));
 	}
 
 	/**
@@ -421,7 +457,7 @@ class UserTest extends KeychainTestCase {
 		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 
 		$this->be($user);
-		$this->call('POST', 'user/keys', [
+		$this->call('POST', 'user/keys', array(
 			'hash'  => $user->hash,
 			'title' => 'RSA Key',
 			'key'   => 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAklOUpkDHrfHY17SbrmTIpNLTGK9Tjom/BWDSU'.
@@ -430,10 +466,10 @@ class UserTest extends KeychainTestCase {
 			           't3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/En'.
 			           'mZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbx'.
 			           'NrRFi9wrf+M7Q== schacon@mylaptop.local'
-		]);
+		));
 
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(UserKey::where('title', 'RSA Key')->count(), 1);
+		$this->assertEquals(1, UserKey::where('title', 'RSA Key')->count());
 	}
 
 	/**
@@ -462,10 +498,8 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetSecurityKillall()
 	{
-		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
 		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
-
-		$this->be($admin);
+		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
 
 		DB::table('user_sessions')->insert(array(
 			'id'          => Session::getId(),
@@ -475,10 +509,11 @@ class UserTest extends KeychainTestCase {
 			'device_type' => DeviceTypes::TABLET,
 		));
 
+		$this->be($admin);
 		$this->call('GET', "user/security/{$user->hash}/killall");
 
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(UserSession::where('user_id', $user->id)->count(), 0);
+		$this->assertEquals(0, UserSession::where('user_id', $user->id)->count());
 	}
 
 	/**
@@ -494,13 +529,13 @@ class UserTest extends KeychainTestCase {
 
 		$this->be($admin);
 
-		$this->call('POST', 'user/security', [
+		$this->call('POST', 'user/security', array(
 			'hash'             => $user->hash,
 			'old_password'     => 'unittest',
 			'new_password'     => 'newpass',
 			'confirm_password' => 'newpass',
 			'status'           => UserStatus::ACTIVE,
-		]);
+		));
 
 		$newPass = User::find($user->id)->password;
 
@@ -516,14 +551,30 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetPermissions()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$admin = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
 
-		$this->be($user);
-		$this->call('GET', "user/permissions/{$user->hash}");
+		$this->be($admin);
+		$this->call('GET', "user/permissions/{$admin->hash}");
 
 		$this->assertResponseOk();
 		$this->assertViewHas('modal');
 		$this->assertViewHas('acl');
+	}
+
+	/**
+	 * Tests the getPermissions method of the controller when the user
+	 * does not have access
+	 *
+	 * @access public
+	 * @return void
+	 * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
+	 */
+	public function testGetPermissionsNoPermissions()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
+		$this->call('GET', "user/permissions/{$user->hash}");
 	}
 
 	/**
@@ -542,7 +593,23 @@ class UserTest extends KeychainTestCase {
 
 		$this->assertRedirectedTo('user/list');
 		$this->assertSessionHas('messages.success');
-		$this->assertEquals(User::find($user->id), null);
+		$this->assertEquals(null, User::find($user->id));
+	}
+
+	/**
+	 * Tests the getDelete method of the controller when the user
+	 * does not have access
+	 *
+	 * @access public
+	 * @return void
+	 * @expectedException \Symfony\Component\HttpKernel\Exception\HttpException
+	 */
+	public function testGetDeleteNoPermissions()
+	{
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
+
+		$this->be($user);
+		$this->call('GET', "user/delete/{$user->hash}");
 	}
 
 	/**
@@ -553,10 +620,10 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetSearchIcons()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 
 		$this->be($user);
-		$this->call('GET', 'user/search/icons', ['query' => 'Unit Test'], [], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+		$this->call('GET', 'user/search/icons', array('query' => 'Unit Test'), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
 
 		$this->assertResponseOk();
 		$this->assertViewHas('users');
@@ -570,10 +637,10 @@ class UserTest extends KeychainTestCase {
 	 */
 	public function testGetSearchList()
 	{
-		$user = TestHelper::createUser(UserStatus::ACTIVE, true)->user;
+		$user = TestHelper::createUser(UserStatus::ACTIVE)->user;
 
 		$this->be($user);
-		$this->call('GET', 'user/search/list', ['query' => 'Unit Test'], [], ['HTTP_X-Requested-With' => 'XMLHttpRequest']);
+		$this->call('GET', 'user/search/list', array('query' => 'Unit Test'), array(), array('HTTP_X-Requested-With' => 'XMLHttpRequest'));
 
 		$this->assertResponseOk();
 		$this->assertViewHas('items');

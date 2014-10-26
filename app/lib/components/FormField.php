@@ -52,7 +52,7 @@ class FormField {
 	 */
 	public static function getView($user)
 	{
-		return Cache::tags('field')->remember(Auth::id(), 60, function() use ($user)
+		return Cache::tags('field')->remember(Auth::user()->id, 60, function() use ($user)
 		{
 			$userFields = UserField::where('user_id', $user->id)->get();
 			$userFieldInfo = array();
